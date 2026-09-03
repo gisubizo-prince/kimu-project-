@@ -1,0 +1,153 @@
+:root {
+  /* --- Color tokens --- */
+  --kimu-green: #1f6b45;
+  --kimu-green-dark: #164e33;
+  --kimu-green-light: #e6f0ea;
+  --kimu-charcoal: #17211d;
+  --kimu-text: #1c2420;
+  --kimu-text-secondary: #5b6b62;
+  --kimu-text-muted: #8a978f;
+  --kimu-border: #d8e3dc;
+  --kimu-bg: #f4f7f5;
+  --kimu-surface: #ffffff;
+
+  /* Status */
+  --status-success: #1f6b45;
+  --status-success-bg: #e6f0ea;
+  --status-warning: #a5690a;
+  --status-warning-bg: #fbf0dd;
+  --status-danger: #b3261e;
+  --status-danger-bg: #fbe9e8;
+  --status-neutral: #5b6b62;
+  --status-neutral-bg: #eef1ef;
+
+  /* Type */
+  --font-heading: 'Space Grotesk', 'Segoe UI', sans-serif;
+  --font-body: 'Inter', 'Segoe UI', sans-serif;
+
+  /* Layout */
+  --sidebar-width: 240px;
+  --sidebar-width-collapsed: 72px;
+  --header-height: 64px;
+  --radius-card: 10px;
+  --radius-control: 8px;
+  --shadow-elevated: 0 8px 24px rgba(23, 33, 29, 0.12);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-body);
+  color: var(--kimu-text);
+  background: var(--kimu-bg);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  margin: 0;
+  color: var(--kimu-charcoal);
+}
+
+p {
+  margin: 0;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  font-family: var(--font-body);
+  cursor: pointer;
+}
+
+.kimu-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 40px;
+  padding: 10px 18px;
+  border: 1px solid transparent;
+  border-radius: var(--radius-control);
+  font: 600 14px var(--font-body);
+  line-height: 1.2;
+  text-decoration: none;
+  transition: background-color .15s ease, border-color .15s ease, color .15s ease, transform .15s ease;
+}
+
+.kimu-btn:hover:not(:disabled) {
+  transform: translateY(-1px);
+}
+
+.kimu-btn--primary {
+  background: var(--kimu-green);
+  color: #fff;
+  box-shadow: 0 2px 5px rgba(31, 107, 69, .2);
+}
+
+.kimu-btn--primary:hover:not(:disabled) {
+  background: var(--kimu-green-dark);
+}
+
+.kimu-btn--secondary {
+  background: var(--kimu-surface);
+  border-color: var(--kimu-border);
+  color: var(--kimu-text);
+}
+
+.kimu-btn--secondary:hover:not(:disabled) {
+  background: var(--kimu-green-light);
+  border-color: var(--kimu-green);
+  color: var(--kimu-green-dark);
+}
+
+.kimu-btn:disabled {
+  cursor: not-allowed;
+  opacity: .6;
+}
+
+input,
+select,
+textarea {
+  font-family: var(--font-body);
+}
+
+/* Visible keyboard focus everywhere, no exceptions */
+:focus-visible {
+  outline: 2px solid var(--kimu-green);
+  outline-offset: 2px;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--kimu-border);
+  border-radius: 8px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
+}

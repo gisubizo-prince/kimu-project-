@@ -1,0 +1,63 @@
+.kimu-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 10px;
+  padding: 64px 24px;
+  background: var(--kimu-surface);
+  border: 1px solid var(--kimu-border);
+  border-radius: var(--radius-card);
+}
+
+.kimu-empty__icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: var(--kimu-green-light);
+  color: var(--kimu-green);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 6px;
+}
+
+.kimu-empty__title {
+  font-size: 16px;
+}
+
+.kimu-empty__desc {
+  font-size: 14px;
+  color: var(--kimu-text-secondary);
+  max-width: 360px;
+}
+
+.kimu-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 18px;
+  border-radius: var(--radius-control);
+  border: 1px solid transparent;
+  font-size: 14px;
+  font-weight: 600;
+  margin-top: 8px;
+}
+
+.kimu-btn--primary {
+  background: var(--kimu-green);
+  color: #fff;
+}
+.kimu-btn--primary:hover {
+  background: var(--kimu-green-dark);
+}
+
+.kimu-btn--secondary {
+  background: var(--kimu-surface);
+  border-color: var(--kimu-border);
+  color: var(--kimu-text);
+}
+.kimu-btn--secondary:hover {
+  background: var(--kimu-bg);
+}

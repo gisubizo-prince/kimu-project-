@@ -1,0 +1,21 @@
+.kimu-resource__intro { margin-bottom: 24px; }
+.kimu-resource__intro p { color: var(--kimu-text-secondary); margin-top: 6px; }
+.kimu-resource__layout { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 20px; align-items: start; }
+.kimu-resource__table-panel, .kimu-resource__form { padding: 20px; }
+.kimu-resource__toolbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 16px; color: var(--kimu-text-muted); font-size: 13px; }
+.kimu-resource__toolbar input { max-width: 320px; }
+.kimu-resource__table-wrap { overflow-x: auto; }
+.kimu-resource table { border-collapse: separate; border-spacing: 0; width: 100%; min-width: 560px; text-align: left; }
+.kimu-resource th, .kimu-resource td { border-bottom: 1px solid var(--kimu-border); padding: 14px 18px; font-size: 14px; vertical-align: middle; white-space: nowrap; }
+.kimu-resource th:first-child, .kimu-resource td:first-child { padding-left: 4px; }
+.kimu-resource th:last-child, .kimu-resource td:last-child { padding-right: 4px; }
+.kimu-resource td { line-height: 1.45; }
+.kimu-resource th { color: var(--kimu-text-secondary); font-size: 12px; text-transform: uppercase; letter-spacing: .04em; }
+.kimu-resource__form h3 { margin-bottom: 18px; }
+.kimu-resource__form label { display: grid; gap: 6px; margin-bottom: 14px; font-size: 13px; font-weight: 600; }
+.kimu-resource__form input, .kimu-resource__toolbar input { border: 1px solid var(--kimu-border); border-radius: var(--radius-control); padding: 10px 11px; color: var(--kimu-text); background: var(--kimu-surface); }
+.kimu-resource__form-actions, .kimu-resource__actions { display: flex; gap: 8px; }
+.kimu-resource__actions button { border: 0; background: transparent; color: var(--kimu-green); font-size: 13px; padding: 4px; }
+.kimu-resource__actions button:last-child { color: var(--status-danger); }
+.kimu-resource__error { color: var(--status-danger); background: var(--status-danger-bg); padding: 10px; margin-bottom: 12px; border-radius: var(--radius-control); }
+@media (max-width: 900px) { .kimu-resource__layout { grid-template-columns: 1fr; } .kimu-resource__form { order: -1; } }

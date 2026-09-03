@@ -1,0 +1,110 @@
+.kimu-dashboard__intro {
+  margin-bottom: 24px;
+}
+
+.kimu-dashboard__intro h2 {
+  font-size: 22px;
+  margin-bottom: 4px;
+}
+
+.kimu-dashboard__intro p {
+  color: var(--kimu-text-secondary);
+  font-size: 14px;
+}
+
+.kimu-stat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 14px;
+  margin-bottom: 24px;
+}
+
+.kimu-stat-card {
+  background: var(--kimu-surface);
+  border: 1px solid var(--kimu-border);
+  border-radius: var(--radius-card);
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  text-decoration: none;
+  transition: border-color .2s ease, transform .2s ease, box-shadow .2s ease;
+}
+
+.kimu-stat-card:hover, .kimu-stat-card:focus-visible {
+  border-color: var(--kimu-green);
+  box-shadow: 0 8px 18px rgba(28, 87, 57, .1);
+  transform: translateY(-2px);
+  outline: none;
+}
+
+.kimu-stat-card__label {
+  font-size: 13px;
+  color: var(--kimu-text-secondary);
+}
+
+.kimu-stat-card__value {
+  font-family: var(--font-heading);
+  font-size: 28px;
+  font-weight: 600;
+  color: var(--kimu-charcoal);
+}
+
+.kimu-dashboard__grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.kimu-panel {
+  background: var(--kimu-surface);
+  border: 1px solid var(--kimu-border);
+  border-radius: var(--radius-card);
+  padding: 20px;
+}
+
+.kimu-panel h3 {
+  font-size: 15px;
+  margin-bottom: 12px;
+}
+
+.kimu-panel__placeholder {
+  font-size: 13px;
+  color: var(--kimu-text-secondary);
+}
+
+.kimu-chart, .kimu-activity-chart { min-height: 126px; display: flex; flex-direction: column; justify-content: center; gap: 18px; }
+.kimu-chart__legend { display: flex; gap: 20px; flex-wrap: wrap; color: var(--kimu-text-secondary); font-size: 13px; }
+.kimu-chart__legend span { display: inline-flex; align-items: center; gap: 7px; }
+.kimu-chart__legend strong { color: var(--kimu-charcoal); font-weight: 700; }
+.kimu-chart__dot { width: 9px; height: 9px; display: inline-block; border-radius: 50%; background: var(--kimu-border); }
+.kimu-chart__dot--present { background: var(--kimu-green); }
+.kimu-chart__dot--absent { background: var(--status-danger); }
+.kimu-chart__bar, .kimu-activity-chart__track { width: 100%; height: 14px; overflow: hidden; border-radius: 999px; background: var(--status-danger-bg); }
+.kimu-chart__present { display: block; height: 100%; border-radius: inherit; background: var(--kimu-green); transition: width .45s ease; }
+.kimu-chart__caption { color: var(--kimu-text-muted); font-size: 12px; }
+.kimu-activity-chart { gap: 14px; }
+.kimu-activity-chart__item { display: grid; gap: 7px; }
+.kimu-activity-chart__label { display: flex; justify-content: space-between; color: var(--kimu-text-secondary); font-size: 13px; }
+.kimu-activity-chart__label strong { color: var(--kimu-charcoal); }
+.kimu-activity-chart__track { height: 9px; background: var(--kimu-green-light); }
+.kimu-activity-chart__track span { display: block; height: 100%; border-radius: inherit; background: var(--kimu-green); }
+.kimu-activity-chart__track--visitor { background: var(--status-warning-bg); }
+.kimu-activity-chart__track--visitor span { background: var(--status-warning); }
+
+.kimu-quick-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.kimu-quick-actions .kimu-btn {
+  margin-top: 0;
+}
+
+@media (max-width: 900px) {
+  .kimu-dashboard__grid {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,0 +1,15 @@
+import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
+import api from '../../services/api';
+import '../Operations/Operations.css';
+
+export default function VisitorList() {
+  const [visitors, setVisitors] = useState([]); const [search, setSearch] = useState(''); const [selectedDate, setSelectedDate] = useState(localDateKey(new Date())); const [error, setError] = useState('');
+  async function load() { try { const response = await api.get('/visitors', { params: search ? { search } : {} }); setVisitors((response.data.data || []).filter((visitor) => localDateKey(visitor.checkIn || visitor.createdAt) === selectedDate)); } catch (requestError) { setError(requestError.message); } }
+  useEffect(() => { load(); }, [search, selectedDate]);
+  async function checkout(id) { try { await api.put(`/visitors/${id}`, { checkOut: new Date(), status: 'checked_out' }); await load(); } catch (requestError) { setError(requestError.message); } }
+  return <div className="kimu-operations"><div className="kimu-operations__heading"><div><p className="kimu-eyebrow">VISITOR LOG</p><h2>Visitors for {selectedDate}</h2><p>Today&apos;s visitors are shown by default. Choose another day to view older records.</p></div><Link className="kimu-btn kimu-btn--primary" to="/visitors">Record visitor</Link></div><section className="kimu-panel kimu-operations__list"><div className="kimu-list-toolbar"><input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Search visitors" aria-label="Search visitors" /><label className="kimu-date-filter">Day<input type="date" value={selectedDate} onChange={(event) => setSelectedDate(event.target.value)} /></label><span>{visitors.length} visits</span></div>{error && <p className="kimu-resource__error">{error}</p>}<div className="kimu-resource__table-wrap"><table><thead><tr><th>Name</th><th>Phone</th><th>Reason</th><th>Arrival</th><th>Status</th><th>Action</th></tr></thead><tbody>{visitors.length === 0 ? <tr><td colSpan="6">No visitor records found for this day.</td></tr> : visitors.map((visitor) => <tr key={visitor._id}><td className="kimu-name-cell">{visitor.fullName}</td><td>{visitor.phone || '-'}</td><td>{visitor.reason}</td><td>{formatDateTime(visitor.checkIn || visitor.createdAt)}</td><td><span className={`kimu-status kimu-status--${visitor.status}`}>{visitor.status === 'checked_in' ? 'Checked in' : 'Checked out'}</span></td><td>{visitor.status === 'checked_in' && <button className="kimu-link-button" onClick={() => checkout(visitor._id)}>Check out</button>}</td></tr>)}</tbody></table></div></section></div>;
+}
+
+function localDateKey(value) { const date = new Date(value); if (Number.isNaN(date.getTime())) return null; const parts = new Intl.DateTimeFormat('en-US', { year: 'numeric', month: '2-digit', day: '2-digit' }).formatToParts(date); const dateParts = Object.fromEntries(parts.filter((part) => part.type !== 'literal').map((part) => [part.type, part.value])); return `${dateParts.year}-${dateParts.month}-${dateParts.day}`; }
+function formatDateTime(value) { const date = new Date(value); return Number.isNaN(date.getTime()) ? '-' : date.toLocaleString(); }

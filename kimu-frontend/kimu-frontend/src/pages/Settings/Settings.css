@@ -1,0 +1,22 @@
+.kimu-settings { max-width: 1100px; margin: 0 auto; }
+.kimu-settings__grid { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(280px, .65fr); gap: 20px; align-items: start; }
+.kimu-settings__card { padding: 26px; }
+.kimu-settings__card-head { display: flex; justify-content: space-between; gap: 12px; margin-bottom: 22px; }
+.kimu-settings__card-head p { color: var(--kimu-text-secondary); margin-top: 6px; font-size: 13px; }
+.kimu-settings__card label:not(.kimu-settings__checks label) { display: grid; gap: 7px; margin: 16px 0; font-size: 13px; font-weight: 600; }
+.kimu-settings__card input:not([type="checkbox"]), .kimu-settings__card select { width: 100%; border: 1px solid var(--kimu-border); border-radius: var(--radius-control); padding: 11px 12px; background: var(--kimu-surface); color: var(--kimu-text); font: inherit; }
+.kimu-settings__checks { display: grid; gap: 12px; margin: 24px 0; padding-top: 18px; border-top: 1px solid var(--kimu-border); }
+.kimu-settings__checks label { display: flex; align-items: center; gap: 9px; font-size: 13px; color: var(--kimu-text-secondary); }
+.kimu-settings__checks input { width: 16px; height: 16px; accent-color: var(--kimu-green); }
+.kimu-settings__role { align-self: start; color: var(--kimu-green); background: var(--kimu-green-light); padding: 6px 9px; border-radius: 999px; font-size: 11px; text-transform: capitalize; }
+.kimu-settings__admin { margin-top: 28px; }
+.kimu-settings__section-title { margin-bottom: 14px; }
+.kimu-settings__two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 0 18px; }
+.kimu-settings__admin-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 20px; }
+.kimu-user-row, .kimu-audit-row { display: flex; justify-content: space-between; gap: 14px; padding: 13px 0; border-bottom: 1px solid var(--kimu-border); }
+.kimu-user-row:last-child, .kimu-audit-row:last-child { border-bottom: 0; }
+.kimu-user-row div, .kimu-audit-row { display: grid; gap: 4px; }
+.kimu-user-row span, .kimu-audit-row span { color: var(--kimu-text-secondary); font-size: 12px; }
+.kimu-audit-row strong { font-size: 13px; font-weight: 600; }
+@media (max-width: 800px) { .kimu-settings__grid { grid-template-columns: 1fr; } }
+@media (max-width: 700px) { .kimu-settings__two-col, .kimu-settings__admin-grid { grid-template-columns: 1fr; } }

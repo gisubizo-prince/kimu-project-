@@ -1,0 +1,153 @@
+.kimu-login {
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--kimu-charcoal);
+  padding: 32px 20px;
+  overflow-y: auto;
+}
+
+.kimu-login__card {
+  position: relative;
+  isolation: isolate;
+  width: 100%;
+  max-width: 400px;
+  background: var(--kimu-surface);
+  border-radius: 14px;
+  padding: 36px 32px;
+  box-shadow: none;
+  margin: auto;
+}
+
+.kimu-login__card form {
+  width: 100%;
+}
+
+.kimu-login__brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 28px;
+}
+
+.kimu-login__mark {
+  width: 34px;
+  height: 34px;
+}
+
+.kimu-login__brand-name {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 15px;
+  color: var(--kimu-charcoal);
+}
+
+.kimu-login__title {
+  font-size: 22px;
+  margin-bottom: 4px;
+}
+
+.kimu-login__subtitle {
+  font-size: 14px;
+  color: var(--kimu-text-secondary);
+  margin-bottom: 26px;
+}
+
+.kimu-field {
+  margin-bottom: 18px;
+}
+
+.kimu-field label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--kimu-text);
+  margin-bottom: 6px;
+}
+
+.kimu-field input[type='email'],
+.kimu-field input[type='password'],
+.kimu-field input[type='text'] {
+  width: 100%;
+  min-width: 0;
+  padding: 11px 12px;
+  border: 1px solid var(--kimu-border);
+  border-radius: var(--radius-control);
+  font-size: 14px;
+  background: var(--kimu-surface);
+  color: var(--kimu-text);
+}
+
+.kimu-field input:focus {
+  border-color: var(--kimu-green);
+}
+
+.kimu-field__password-wrap {
+  position: relative;
+}
+
+.kimu-field__password-wrap input {
+  padding-right: 40px;
+}
+
+.kimu-field__toggle {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: var(--kimu-text-secondary);
+  display: flex;
+  padding: 4px;
+  z-index: 1;
+}
+
+.kimu-login__row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.kimu-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--kimu-text-secondary);
+}
+
+.kimu-login__error {
+  background: var(--status-danger-bg);
+  color: var(--status-danger);
+  border-radius: var(--radius-control);
+  padding: 10px 12px;
+  font-size: 13px;
+  margin-bottom: 16px;
+}
+
+.kimu-login__submit {
+  width: 100%;
+  padding: 12px;
+  font-size: 14px;
+}
+
+@media (max-width: 480px) {
+  .kimu-login {
+    align-items: flex-start;
+    padding: 20px 12px;
+  }
+
+  .kimu-login__card {
+    max-width: 100%;
+    padding: 28px 22px;
+    border-radius: 10px;
+  }
+
+  .kimu-login__brand {
+    margin-bottom: 22px;
+  }
+}
