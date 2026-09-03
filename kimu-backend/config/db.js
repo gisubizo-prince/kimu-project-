@@ -5,11 +5,13 @@ const mongoose = require('mongoose');
  * Exits the process if the connection fails, since the API is useless without a DB.
  */
 async function connectDB() {
-  try {
-    const uri = process.env.MONGO_URI;
+  const uri = process.env.MONGO_URI;
 
+  try {
     if (!uri) {
-      throw new Error('MONGO_URI is not set. Copy .env.example to .env and configure it.');
+      throw new Error(
+        'MONGO_URI is not set. Copy .env.example to .env and configure it.'
+      );
     }
 
     const conn = await mongoose.connect(uri, {
@@ -18,7 +20,9 @@ async function connectDB() {
       socketTimeoutMS: 10000,
     });
 
-    console.log(`[db] MongoDB connected: ${conn.connection.host}/${conn.connection.name}`);
+    console.log(
+      `[db] MongoDB connected: ${conn.connection.host}/${conn.connection.name}`
+    );
 
     mongoose.connection.on('error', (err) => {
       console.error('[db] MongoDB connection error:', err.message);
@@ -28,8 +32,12 @@ async function connectDB() {
       console.warn('[db] MongoDB disconnected');
     });
   } catch (error) {
-    console.error(`[db] Failed to connect to MongoDB at ${uri}: ${error.message}`);
-    console.error('[db] Start MongoDB on port 27017 or update MONGO_URI in .env.');
+    console.error(
+      `[db] Failed to connect to MongoDB at ${uri || 'undefined'}: ${error.message}`
+    );
+    console.error(
+      '[db] Start MongoDB on port 27017 or update MONGO_URI in .env.'
+    );
     process.exit(1);
   }
 }
