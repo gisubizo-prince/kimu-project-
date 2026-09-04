@@ -5,7 +5,6 @@ const systemSettingsSchema = new mongoose.Schema(
     key: { type: String, default: 'default', unique: true },
     workStartTime: { type: String, default: '08:00' },
     workEndTime: { type: String, default: '17:00' },
-    lateThresholdMinutes: { type: Number, default: 15, min: 0 },
     allowManualCheckIn: { type: Boolean, default: true },
     allowManualCheckOut: { type: Boolean, default: true },
     allowAttendanceEdits: { type: Boolean, default: false },

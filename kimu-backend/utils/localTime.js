@@ -26,12 +26,6 @@ function getLocalDateKey(value = new Date(), timeZone = DEFAULT_TIMEZONE) {
   return `${parts.year}-${String(parts.month).padStart(2, '0')}-${String(parts.day).padStart(2, '0')}`;
 }
 
-function getAttendanceStatus(value, timeZone = DEFAULT_TIMEZONE) {
-  const parts = getLocalParts(value, timeZone);
-  if (!parts) throw new Error('Arrival time is invalid.');
-  return parts.hour * 60 + parts.minute > 8 * 60 ? 'late' : 'present';
-}
-
 function dateKeyAsUtcDate(dateKey) {
   return new Date(`${dateKey}T00:00:00.000Z`);
 }
@@ -42,4 +36,4 @@ function previousDateKey(dateKey) {
   return date.toISOString().slice(0, 10);
 }
 
-module.exports = { getLocalDateKey, getAttendanceStatus, dateKeyAsUtcDate, previousDateKey };
+module.exports = { getLocalDateKey, dateKeyAsUtcDate, previousDateKey };

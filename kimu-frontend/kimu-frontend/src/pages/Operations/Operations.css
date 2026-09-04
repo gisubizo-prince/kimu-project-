@@ -16,7 +16,6 @@
 .kimu-name-cell { font-weight: 600; color: var(--kimu-charcoal); }
 .kimu-status { display: inline-flex; padding: 5px 9px; border-radius: 999px; font-size: 12px; text-transform: capitalize; background: var(--status-neutral-bg); color: var(--status-neutral); }
 .kimu-status--present, .kimu-status--checked_in { background: var(--status-success-bg); color: var(--status-success); }
-.kimu-status--late { background: var(--status-warning-bg); color: var(--status-warning); }
 .kimu-status--absent { background: var(--status-danger-bg); color: var(--status-danger); }
 .kimu-clean-form { width: min(100%, 620px); padding: 32px; }
 .kimu-visitor-form { width: min(100%, 720px); padding: 24px 28px; }

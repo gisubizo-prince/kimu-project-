@@ -1,14 +1,14 @@
 const Attendance = require('../models/Attendance');
 const CompanySettings = require('../models/CompanySettings');
 const { recordActivity } = require('../utils/activity');
-const { dateKeyAsUtcDate, getAttendanceStatus, getLocalDateKey } = require('../utils/localTime');
+const { dateKeyAsUtcDate, getLocalDateKey } = require('../utils/localTime');
 
 async function list(req, res, next) {
   try {
     const filter = {};
     if (req.query.search) filter.employeeName = { $regex: req.query.search.trim(), $options: 'i' };
     if (req.query.status) {
-      if (!['present', 'late', 'absent'].includes(req.query.status)) return res.status(400).json({ success: false, message: 'Invalid attendance status.' });
+      if (!['present', 'absent'].includes(req.query.status)) return res.status(400).json({ success: false, message: 'Invalid attendance status.' });
       filter.status = req.query.status;
     }
     if (req.query.date) {
@@ -46,7 +46,7 @@ async function record(req, res, next) {
 
     let record;
     try {
-      record = await Attendance.create({ employeeName, date: day, status: getAttendanceStatus(now, timeZone), notes, checkIn: now });
+      record = await Attendance.create({ employeeName, date: day, status: 'present', notes, checkIn: now });
     } catch (error) {
       if (error.code === 11000) {
         return res.status(409).json({ success: false, message: `${employeeName} has already registered attendance today.` });

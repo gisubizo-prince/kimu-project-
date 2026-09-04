@@ -7,7 +7,6 @@ import './Dashboard.css';
 // Dashboard values are loaded from the API and default to zero while loading.
 const STATS = [
   { key: 'presentToday', label: 'Present Today', to: '/attendance/list?status=present' },
-  { key: 'lateToday', label: 'Late Today', to: '/attendance/list?status=late' },
   { key: 'absentToday', label: 'Absent Today', to: '/attendance/list?status=absent' },
   { key: 'visitorsToday', label: 'Visitors Today', to: '/visitors/list' },
 ];
@@ -21,7 +20,7 @@ const QUICK_ACTIONS = [
 
 export default function Dashboard() {
   const { user } = useAuth();
-  const [summary, setSummary] = useState({ presentToday: 0, lateToday: 0, absentToday: 0, visitorsToday: 0 });
+  const [summary, setSummary] = useState({ presentToday: 0, absentToday: 0, visitorsToday: 0 });
   useEffect(() => { dashboardApi.summary().then((response) => setSummary(response.data.data)).catch(() => {}); }, []);
   const today = new Date().toLocaleDateString('en-RW', {
     weekday: 'long',

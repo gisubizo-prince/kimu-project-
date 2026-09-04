@@ -4,7 +4,7 @@ import api from '../../services/api';
 import '../Attendance/Attendance.css';
 import '../Operations/Operations.css';
 
-const DEFAULT_VISIT_REASON = 'General visitor';
+const DEFAULT_VISIT_REASON = 'Information';
 
 export default function VisitorForm() {
   const [form, setForm] = useState({ fullName: '', phone: '' });

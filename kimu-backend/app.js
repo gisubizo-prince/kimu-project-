@@ -52,10 +52,9 @@ app.get('/api/dashboard/summary', require('./middleware/auth').protect, async (r
     const today = getLocalDateKey(new Date(), timeZone);
     const arrivalsToday = attendance.filter((record) => getLocalDateKey(record.checkIn, timeZone) === today);
     const visitorsToday = visitors.filter((visitor) => getLocalDateKey(visitor.createdAt, timeZone) === today).length;
-    const presentToday = arrivalsToday.filter((record) => record.status === 'present').length;
-    const lateToday = arrivalsToday.filter((record) => record.status === 'late').length;
+    const presentToday = arrivalsToday.filter((record) => record.status !== 'absent').length;
     const absentToday = Math.max(employees - arrivalsToday.length, 0);
-    res.json({ success: true, data: { presentToday, lateToday, absentToday, visitorsToday } });
+    res.json({ success: true, data: { presentToday, absentToday, visitorsToday } });
   } catch (error) { next(error); }
 });
 app.get('/api/reports/daily', require('./middleware/auth').protect, async (req, res, next) => {
