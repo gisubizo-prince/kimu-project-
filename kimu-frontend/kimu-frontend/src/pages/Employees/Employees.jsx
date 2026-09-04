@@ -15,5 +15,5 @@ const columns = [
 ];
 
 export default function Employees() {
-  return <ResourcePage title="Employees" description="Keep your company directory current for quick, accurate attendance records." endpoint="/employees" fields={fields} columns={columns} />;
+  return <ResourcePage resourceClassName="kimu-employees" title="Employees" description="Keep your company directory current for quick, accurate attendance records." endpoint="/employees" fields={fields} columns={columns} />;
 }

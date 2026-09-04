@@ -19,3 +19,30 @@
 .kimu-resource__actions button:last-child { color: var(--status-danger); }
 .kimu-resource__error { color: var(--status-danger); background: var(--status-danger-bg); padding: 10px; margin-bottom: 12px; border-radius: var(--radius-control); }
 @media (max-width: 900px) { .kimu-resource__layout { grid-template-columns: 1fr; } .kimu-resource__form { order: -1; } }
+@media (max-width: 600px) {
+	.kimu-employees { width: 100%; }
+	.kimu-employees .kimu-resource__intro { margin-bottom: 18px; }
+	.kimu-employees .kimu-resource__intro p { font-size: 13px; line-height: 1.5; }
+	.kimu-employees .kimu-resource__layout { gap: 14px; }
+	.kimu-employees .kimu-resource__table-panel,
+	.kimu-employees .kimu-resource__form { padding: 16px; }
+	.kimu-employees .kimu-resource__toolbar { align-items: stretch; flex-direction: column; }
+	.kimu-employees .kimu-resource__toolbar input { max-width: none; width: 100%; }
+	.kimu-employees .kimu-resource__table-wrap { overflow: visible; }
+	.kimu-employees table { min-width: 0; }
+	.kimu-employees thead { display: none; }
+	.kimu-employees tbody,
+	.kimu-employees tr,
+	.kimu-employees td { display: block; }
+	.kimu-employees tr { border: 1px solid var(--kimu-border); border-radius: var(--radius-control); margin-bottom: 12px; padding: 10px 12px; }
+	.kimu-employees tr:last-child { margin-bottom: 0; }
+	.kimu-employees td { align-items: baseline; border-bottom: 0; display: flex; gap: 12px; justify-content: space-between; padding: 7px 0; white-space: normal; }
+	.kimu-employees td::before { color: var(--kimu-text-secondary); content: attr(data-label); flex: 0 0 38%; font-size: 11px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; }
+	.kimu-employees td:first-child { padding-left: 0; }
+	.kimu-employees td:last-child { padding-right: 0; }
+	.kimu-employees .kimu-resource__actions { border-top: 1px solid var(--kimu-border); justify-content: flex-start; margin-top: 4px; padding-top: 10px; }
+	.kimu-employees .kimu-resource__actions::before { flex-basis: 38%; }
+	.kimu-employees .kimu-resource__actions button { padding: 6px 10px; }
+	.kimu-employees .kimu-resource__form-actions { flex-direction: column; }
+	.kimu-employees .kimu-resource__form-actions .kimu-btn { width: 100%; }
+}
