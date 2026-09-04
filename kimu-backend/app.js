@@ -14,6 +14,7 @@ const Employee = require('./models/Employee');
 const notificationRoutes = require('./routes/notificationRoutes');
 const adminRoutes = require('./routes/adminRoutes');
 const userRoutes = require('./routes/userRoutes');
+const reportRoutes = require('./routes/reportRoutes');
 
 const app = express();
 
@@ -40,6 +41,7 @@ app.use('/api/visitors', createResourceRoutes(Visitor, { searchable: ['fullName'
 app.use('/api/notifications', notificationRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/users', userRoutes);
+app.use('/api/reports', reportRoutes);
 app.get('/api/dashboard/summary', require('./middleware/auth').protect, async (req, res, next) => {
   try {
     const [company, attendance, employees, visitors] = await Promise.all([
