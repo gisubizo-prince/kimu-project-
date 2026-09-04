@@ -3,8 +3,9 @@ import { Link, useNavigate } from 'react-router-dom';
 import api from '../../services/api';
 import '../Attendance/Attendance.css';
 import '../Operations/Operations.css';
+export { default } from './VisitorForm';
 
-export default function Visitors() {
+function LegacyVisitors() {
   const navigate = useNavigate(); const [form, setForm] = useState({}); const [stats, setStats] = useState({ today: 0, inside: 0 }); const [error, setError] = useState(''); const [success, setSuccess] = useState(''); const [saving, setSaving] = useState(false);
   async function loadStats() { try { const response = await api.get('/visitors'); const visitors = response.data.data || []; const today = new Date().toISOString().slice(0, 10); setStats({ today: visitors.filter((visitor) => new Date(visitor.createdAt).toISOString().slice(0, 10) === today).length, inside: visitors.filter((visitor) => visitor.status === 'checked_in').length }); } catch { /* The form remains usable if the summary is unavailable. */ } }
   useEffect(() => { loadStats(); }, []);

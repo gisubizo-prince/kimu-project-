@@ -1,7 +1,7 @@
 # Dependencies
 node_modules/
 
-# Environment files and local secrets
+# Local environment files and secrets
 .env
 .env.*
 !.env.example
