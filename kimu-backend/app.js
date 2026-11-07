@@ -57,16 +57,44 @@ app.get('/api/dashboard/summary', require('./middleware/auth').protect, async (r
     const company = await CompanySettings.findOne({ key: 'default' }).select('timezone').lean();
     const timeZone = company?.timezone || 'Africa/Kigali';
     const today = getLocalDateKey(new Date(), timeZone);
-    const [totalStudents, activeStudents, attendanceToday] = await Promise.all([
+    const todayDate = dateKeyAsUtcDate(today);
+    const weekStart = new Date(todayDate);
+    weekStart.setUTCDate(weekStart.getUTCDate() - 6);
+    const [totalStudents, activeStudents, attendanceWeek] = await Promise.all([
       Student.countDocuments(),
       Student.countDocuments({ isActive: true }),
-      Attendance.find({ date: dateKeyAsUtcDate(today), studentId: { $exists: true } }).select('lesson shift').lean(),
+      Attendance.find({ date: { $gte: weekStart, $lte: todayDate }, studentId: { $exists: true } }).select('date studentId lesson shift').lean(),
     ]);
+    const attendanceToday = attendanceWeek.filter((record) => record.date.toISOString().slice(0, 10) === today);
     const lessons = ['GPS', 'PARKING', 'CIRCULATION'];
     const shifts = Attendance.SHIFTS;
     const attendanceByLesson = Object.fromEntries(lessons.map((lesson) => [lesson, attendanceToday.filter((record) => record.lesson === lesson).length]));
     const attendanceByShift = Object.fromEntries(shifts.map((shift) => [shift, attendanceToday.filter((record) => record.shift === shift).length]));
-    res.json({ success: true, data: { totalStudents, activeStudents, todaysAttendance: attendanceToday.length, attendanceByLesson, attendanceByShift } });
+    const dayKeys = Array.from({ length: 7 }, (_, index) => {
+      const day = new Date(weekStart);
+      day.setUTCDate(day.getUTCDate() + index);
+      return day.toISOString().slice(0, 10);
+    });
+    const attendanceByDay = Object.fromEntries(dayKeys.map((day) => [day, 0]));
+    attendanceWeek.forEach((record) => {
+      const day = record.date.toISOString().slice(0, 10);
+      if (attendanceByDay[day] !== undefined) attendanceByDay[day] += 1;
+    });
+    const studentsAttendedToday = new Set(attendanceToday.map((record) => String(record.studentId))).size;
+    res.json({
+      success: true,
+      data: {
+        totalStudents,
+        activeStudents,
+        inactiveStudents: totalStudents - activeStudents,
+        sessionsToday: attendanceToday.length,
+        sessionsLast7Days: attendanceWeek.length,
+        studentsAttendedToday,
+        attendanceByLesson,
+        attendanceByShift,
+        dailyAttendanceTrend: dayKeys.map((date) => ({ date, count: attendanceByDay[date] })),
+      },
+    });
   } catch (error) { next(error); }
 });
 app.get('/api/reports/daily', require('./middleware/auth').protect, async (req, res, next) => {

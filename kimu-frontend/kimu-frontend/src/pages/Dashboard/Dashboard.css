@@ -1,16 +1,52 @@
-.kimu-dashboard__intro { display: flex; justify-content: space-between; align-items: end; gap: 20px; margin-bottom: 24px; }
-.kimu-dashboard__intro h2 { font-size: 22px; margin: 0 0 5px; }
-.kimu-dashboard__intro > div > p:last-child { color: var(--kimu-text-secondary); font-size: 14px; }
-.kimu-stat-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin-bottom: 20px; }
-.kimu-stat-card { background: var(--kimu-surface); border: 1px solid var(--kimu-border); border-radius: var(--radius-card); padding: 18px; display: flex; flex-direction: column; gap: 8px; text-decoration: none; transition: border-color .2s ease, transform .2s ease, box-shadow .2s ease; }
-.kimu-stat-card:hover, .kimu-stat-card:focus-visible { border-color: var(--kimu-green); box-shadow: 0 8px 18px rgba(28, 87, 57, .1); transform: translateY(-2px); outline: none; }
-.kimu-stat-card__label { font-size: 13px; color: var(--kimu-text-secondary); }
-.kimu-stat-card__value { font-family: var(--font-heading); font-size: 28px; font-weight: 600; color: var(--kimu-charcoal); }
-.kimu-dashboard__grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; margin-bottom: 16px; }
-.kimu-panel { background: var(--kimu-surface); border: 1px solid var(--kimu-border); border-radius: var(--radius-card); padding: 20px; }
-.kimu-panel h3 { font-size: 15px; margin-bottom: 12px; }
-.kimu-breakdown__row { display: flex; justify-content: space-between; gap: 12px; border-top: 1px solid var(--kimu-border); padding: 12px 0; color: var(--kimu-text-secondary); font-size: 13px; }
-.kimu-breakdown__row strong { color: var(--kimu-charcoal); }
-.kimu-dashboard__actions .kimu-quick-actions { display: flex; flex-wrap: wrap; gap: 10px; }
-.kimu-dashboard__actions .kimu-btn { margin-top: 0; }
-@media (max-width: 700px) { .kimu-dashboard__intro { align-items: start; flex-direction: column; } .kimu-dashboard__intro .kimu-btn { width: 100%; } .kimu-dashboard__grid, .kimu-stat-grid { grid-template-columns: 1fr; } }
+.kimu-dashboard { max-width: 1360px; margin: 0 auto; }
+.kimu-dashboard__intro { display: flex; justify-content: space-between; align-items: end; gap: 20px; margin-bottom: 20px; }
+.kimu-dashboard__intro h2 { margin: 0 0 5px; font-size: 23px; }
+.kimu-dashboard__intro > div > p:last-child { color: var(--kimu-text-secondary); font-size: 13px; }
+.kimu-dashboard__metrics { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin-bottom: 14px; }
+.kimu-dashboard__metric { position: relative; display: grid; gap: 7px; min-width: 0; padding: 17px 18px; overflow: hidden; background: var(--kimu-surface); border: 1px solid var(--kimu-border); border-radius: var(--radius-card); transition: border-color .16s ease, box-shadow .16s ease; }
+.kimu-dashboard__metric::before { position: absolute; inset: 0 auto 0 0; width: 3px; background: var(--kimu-green); content: ''; }
+.kimu-dashboard__metric--active::before { background: #327c61; }
+.kimu-dashboard__metric--today::before { background: #596f93; }
+.kimu-dashboard__metric--week::before { background: #a37936; }
+.kimu-dashboard__metric:hover { border-color: var(--kimu-green); box-shadow: 0 5px 16px rgba(23, 33, 29, .06); }
+.kimu-dashboard__metric-label { color: var(--kimu-text-secondary); font-size: 12px; }
+.kimu-dashboard__metric strong { color: var(--kimu-charcoal); font: 600 29px/1 var(--font-heading); }
+.kimu-dashboard__metric-detail { color: var(--kimu-text-muted); font-size: 11px; }
+.kimu-dashboard__overview { display: grid; grid-template-columns: minmax(0, 1.7fr) minmax(250px, .8fr); gap: 14px; margin-bottom: 14px; }
+.kimu-panel { min-width: 0; padding: 19px 20px; background: var(--kimu-surface); border: 1px solid var(--kimu-border); border-radius: var(--radius-card); }
+.kimu-dashboard__panel-head { display: flex; justify-content: space-between; align-items: start; gap: 12px; min-height: 47px; }
+.kimu-dashboard__panel-head .kimu-eyebrow { margin-bottom: 4px; }
+.kimu-dashboard__panel-head h3 { margin: 0; color: var(--kimu-charcoal); font-size: 15px; }
+.kimu-dashboard__panel-head p:not(.kimu-eyebrow) { margin-top: 4px; color: var(--kimu-text-muted); font-size: 11px; }
+.kimu-dashboard__period, .kimu-dashboard__small-total { flex: 0 0 auto; color: var(--kimu-text-muted); font-size: 10px; font-weight: 700; }
+.kimu-dashboard__chart { position: relative; display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 12px; height: 190px; margin-top: 4px; padding: 8px 4px 0; border-bottom: 1px solid var(--kimu-border); }
+.kimu-dashboard__chart-day { display: grid; grid-template-rows: 18px minmax(0, 1fr) 24px; gap: 5px; min-width: 0; text-align: center; }
+.kimu-dashboard__chart-value { color: var(--kimu-text-secondary); font-size: 10px; }
+.kimu-dashboard__chart-column { display: flex; align-items: end; justify-content: center; height: 100%; }
+.kimu-dashboard__chart-column span { display: block; width: min(34px, 72%); min-height: 2px; border-radius: 3px 3px 0 0; background: var(--kimu-green); transition: height .25s ease; }
+.kimu-dashboard__chart-day:last-of-type .kimu-dashboard__chart-column span { background: var(--kimu-charcoal); }
+.kimu-dashboard__chart-label { color: var(--kimu-text-muted); font-size: 10px; }
+.kimu-dashboard__chart-empty { position: absolute; top: 50%; left: 0; width: 100%; color: var(--kimu-text-muted); text-align: center; font-size: 12px; }
+.kimu-dashboard__coverage { display: flex; flex-direction: column; }
+.kimu-dashboard__coverage-value { display: flex; align-items: baseline; gap: 9px; margin: 18px 0 12px; }
+.kimu-dashboard__coverage-value strong { color: var(--kimu-charcoal); font: 600 43px/1 var(--font-heading); }
+.kimu-dashboard__coverage-value span { color: var(--kimu-text-secondary); font-size: 11px; }
+.kimu-dashboard__coverage-track, .kimu-dashboard__bar-track { height: 8px; overflow: hidden; border-radius: 2px; background: #e8ece9; }
+.kimu-dashboard__coverage-track span, .kimu-dashboard__bar-track span { display: block; height: 100%; background: var(--kimu-green); transition: width .25s ease; }
+.kimu-dashboard__coverage-meta { display: grid; grid-template-columns: 1fr auto; gap: 7px 12px; margin-top: 16px; color: var(--kimu-text-secondary); font-size: 11px; }
+.kimu-dashboard__coverage-meta strong { color: var(--kimu-charcoal); font-size: 12px; }
+.kimu-dashboard__text-link { display: flex; justify-content: space-between; align-items: center; margin-top: auto; padding-top: 16px; color: var(--kimu-green-dark); font-size: 11px; font-weight: 700; }
+.kimu-dashboard__breakdowns { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+.kimu-dashboard__bar-list { display: grid; gap: 12px; margin-top: 10px; }
+.kimu-dashboard__bar-row { display: grid; gap: 6px; }
+.kimu-dashboard__bar-heading { display: flex; justify-content: space-between; gap: 12px; color: var(--kimu-text-secondary); font-size: 11px; }
+.kimu-dashboard__bar-heading strong { color: var(--kimu-charcoal); font-size: 11px; }
+.kimu-dashboard__bar-track { height: 5px; }
+.kimu-dashboard__bar-row:nth-child(even) .kimu-dashboard__bar-track span { background: #74877b; }
+.kimu-dashboard__footer { display: flex; justify-content: space-between; gap: 12px; margin-top: 15px; color: var(--kimu-text-muted); font-size: 10px; }
+.kimu-dashboard__footer a { color: var(--kimu-green-dark); font-weight: 700; }
+.kimu-dashboard__error { display: flex; justify-content: space-between; gap: 12px; margin-bottom: 12px; padding: 10px 12px; border: 1px solid var(--status-danger); background: var(--status-danger-bg); color: var(--status-danger); font-size: 12px; }
+.kimu-dashboard__error button { border: 0; background: none; color: inherit; font: 700 12px var(--font-body); text-decoration: underline; cursor: pointer; }
+@media (max-width: 980px) { .kimu-dashboard__metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); } .kimu-dashboard__overview { grid-template-columns: minmax(0, 1fr) minmax(230px, .75fr); } }
+@media (max-width: 700px) { .kimu-dashboard__intro { align-items: start; flex-direction: column; } .kimu-dashboard__intro .kimu-btn { width: 100%; } .kimu-dashboard__overview, .kimu-dashboard__breakdowns { grid-template-columns: 1fr; } .kimu-dashboard__coverage { min-height: 220px; } }
+@media (max-width: 420px) { .kimu-dashboard__metrics { grid-template-columns: 1fr; } .kimu-dashboard__footer { align-items: start; flex-direction: column; } .kimu-dashboard__panel-head { min-height: 0; } .kimu-dashboard__chart { gap: 6px; height: 170px; } }
