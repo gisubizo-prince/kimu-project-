@@ -8,5 +8,6 @@ router.get('/', controller.list);
 router.post('/', authorize('super_admin', 'admin', 'hr_staff', 'manager'), controller.create);
 router.put('/:id', authorize('super_admin', 'admin', 'hr_staff', 'manager'), controller.update);
 router.patch('/:id/status', authorize('super_admin', 'admin', 'hr_staff', 'manager'), controller.setStatus);
+router.delete('/:id', authorize('super_admin', 'admin'), controller.remove);
 
 module.exports = router;

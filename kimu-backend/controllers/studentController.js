@@ -53,6 +53,14 @@ async function setStatus(req, res, next) {
   } catch (error) { next(error); }
 }
 
+async function remove(req, res, next) {
+  try {
+    const student = await Student.findByIdAndDelete(req.params.id);
+    if (!student) return res.status(404).json({ success: false, message: 'Student not found.' });
+    res.json({ success: true, message: 'Student deleted successfully.' });
+  } catch (error) { next(error); }
+}
+
 function createRegistrationNumber() {
   const date = new Date().toISOString().slice(0, 10).replace(/-/g, '');
   return `MTR-${date}-${crypto.randomBytes(3).toString('hex').toUpperCase()}`;
@@ -62,4 +70,4 @@ function escapeRegex(value) {
   return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
-module.exports = { list, create, update, setStatus };
+module.exports = { list, create, update, setStatus, remove };
