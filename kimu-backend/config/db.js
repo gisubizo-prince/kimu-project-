@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const Attendance = require('../models/Attendance');
 
 /**
  * Connects to MongoDB using MONGO_URI from environment variables.
@@ -19,6 +20,12 @@ async function connectDB() {
       connectTimeoutMS: 5000,
       socketTimeoutMS: 10000,
     });
+
+    const attendanceIndexes = await Attendance.collection.indexes().catch(() => []);
+    const obsoleteEmployeeIndex = attendanceIndexes.find((index) =>
+      index.unique && index.key?.employeeName === 1 && index.key?.date === 1 && Object.keys(index.key).length === 2
+    );
+    if (obsoleteEmployeeIndex) await Attendance.collection.dropIndex(obsoleteEmployeeIndex.name);
 
     console.log(
       `[db] MongoDB connected: ${conn.connection.host}/${conn.connection.name}`

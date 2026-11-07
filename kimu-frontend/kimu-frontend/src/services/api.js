@@ -24,7 +24,7 @@ api.interceptors.response.use(
     if (!error.response) {
       // Network error - backend unreachable
       return Promise.reject({
-        message: 'Cannot reach the Kimu Transport server. Check your connection and try again.',
+        message: 'Cannot reach the METRIZE server. Check your connection and try again.',
       });
     }
 

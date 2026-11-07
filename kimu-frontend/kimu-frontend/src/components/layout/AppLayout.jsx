@@ -6,10 +6,12 @@ import './AppLayout.css';
 
 const PAGE_TITLES = {
   '/dashboard': 'Dashboard',
-  '/employees': 'Employees',
+  '/students': 'Students',
+  '/employees': 'Students',
   '/attendance': 'Attendance',
   '/visitors': 'Visitor Management',
-  '/reports': 'Reports',
+  '/reports': 'Daily Reports',
+  '/maitize-report': 'MAITIZE REPORT',
   '/notifications': 'Notifications',
   '/settings': 'Settings',
   '/settings/admin': 'System Controls',
@@ -25,7 +27,7 @@ export default function AppLayout() {
     setMobileOpen(false);
   }, [location.pathname]);
 
-  const pageTitle = PAGE_TITLES[location.pathname] || 'Kimu Transport';
+  const pageTitle = PAGE_TITLES[location.pathname] || 'METRIZE';
 
   return (
     <div className="kimu-shell">

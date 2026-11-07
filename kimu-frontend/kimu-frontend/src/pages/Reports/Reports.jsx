@@ -7,58 +7,43 @@ import '../Operations/Operations.css';
 import './Reports.css';
 
 export default function Reports() {
-  const [view, setView] = useState('visitors');
-  const [visitorReport, setVisitorReport] = useState(null);
-  const [visitorDate, setVisitorDate] = useState(localDateKey(new Date()));
-  const [visitorSearch, setVisitorSearch] = useState('');
-  const [attendance, setAttendance] = useState([]);
-  const [month, setMonth] = useState(currentMonth());
-  const [day, setDay] = useState('');
-  const [search, setSearch] = useState('');
+  const [date, setDate] = useState(localDateKey(new Date()));
+  const [report, setReport] = useState(null);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [emailSending, setEmailSending] = useState(false);
   const [emailSuccess, setEmailSuccess] = useState('');
 
   useEffect(() => {
-    const params = { date: visitorDate };
-    if (visitorSearch.trim()) params.search = visitorSearch.trim();
-    api.get('/reports/daily', { params }).then((response) => setVisitorReport(response.data.data)).catch((requestError) => setError(requestError.message));
-  }, [visitorDate, visitorSearch]);
+    let active = true;
+    setLoading(true);
+    setError('');
+    api.get('/reports/daily', { params: { date } }).then((response) => {
+      if (active) setReport(response.data.data);
+    }).catch((requestError) => {
+      if (active) setError(requestError.message);
+    }).finally(() => {
+      if (active) setLoading(false);
+    });
+    return () => { active = false; };
+  }, [date]);
 
-  useEffect(() => {
-    if (view !== 'attendance') return;
-    const params = day ? { date: day } : { month };
-    if (search.trim()) params.search = search.trim();
-    api.get('/attendance', { params }).then((response) => setAttendance(response.data.data || [])).catch((requestError) => setError(requestError.message));
-  }, [view, month, day, search]);
+  const attendance = report?.attendance || [];
 
-  async function downloadVisitors() {
-    const document = await buildVisitorPdf(visitorReport, visitorSearch);
-    document.save(`kimu-visitors-${visitorReport.date}${visitorSearch.trim() ? `-${visitorSearch.trim().replace(/\s+/g, '-')}` : ''}.pdf`);
+  async function buildPdf() {
+    if (!attendance.length) return;
+    const document = await buildAttendancePdf(attendance, date);
+    document.save(`metrize-attendance-${date}.pdf`);
   }
 
-  async function downloadAttendance() {
-    const period = day || month;
-    const document = await buildAttendancePdf(attendance, period, search);
-    document.save(`kimu-attendance-${period}${search.trim() ? `-${search.trim().replace(/\s+/g, '-')}` : ''}.pdf`);
-  }
-
-  async function emailVisitors() {
-    await emailPdf(() => buildVisitorPdf(visitorReport, visitorSearch), 'visitor', visitorReport.date, `kimu-visitors-${visitorReport.date}.pdf`);
-  }
-
-  async function emailAttendance() {
-    const period = day || month;
-    await emailPdf(() => buildAttendancePdf(attendance, period, search), 'attendance', period, `kimu-attendance-${period}.pdf`);
-  }
-
-  async function emailPdf(buildPdf, reportType, period, fileName) {
+  async function emailReport() {
+    if (!attendance.length) return;
     setEmailSending(true);
     setEmailSuccess('');
     setError('');
     try {
-      const document = await buildPdf();
-      await api.post('/reports/email', { fileName, pdfBase64: document.output('datauristring'), reportType, period });
+      const document = await buildAttendancePdf(attendance, date);
+      await api.post('/reports/email', { fileName: `metrize-attendance-${date}.pdf`, pdfBase64: document.output('datauristring'), reportType: 'daily attendance', period: date });
       setEmailSuccess('Report emailed successfully.');
     } catch (requestError) {
       setError(requestError.message || 'Unable to email report.');
@@ -67,38 +52,74 @@ export default function Reports() {
     }
   }
 
-  const present = attendance.filter((record) => record.status === 'present').length;
-  return <div className="kimu-operations"><div className="kimu-operations__heading"><div><p className="kimu-eyebrow">OPERATIONS REPORTS</p><h2>{view === 'visitors' ? 'Visitor report' : 'Attendance report'}</h2><p>{view === 'visitors' ? 'Search a visitor and choose a day to see all visit details.' : 'Search an employee for the month or choose one specific day.'}</p></div><button className="kimu-btn kimu-btn--secondary" onClick={() => setView(view === 'visitors' ? 'attendance' : 'visitors')}>{view === 'visitors' ? 'View attendance report' : 'View visitor report'}</button></div>{error && <p className="kimu-resource__error">{error}</p>}{emailSuccess && <p className="kimu-resource__success" role="status">{emailSuccess}</p>}{view === 'visitors' ? <VisitorReport report={visitorReport} date={visitorDate} search={visitorSearch} setDate={setVisitorDate} setSearch={setVisitorSearch} onDownload={downloadVisitors} onEmail={emailVisitors} emailSending={emailSending} /> : <AttendanceReport attendance={attendance} month={month} day={day} search={search} setMonth={setMonth} setDay={setDay} setSearch={setSearch} onDownload={downloadAttendance} onEmail={emailAttendance} emailSending={emailSending} present={present} />}</div>;
+  return <div className="kimu-operations kimu-daily-report">
+    <div className="kimu-operations__heading"><div><p className="kimu-eyebrow">METRIZE TRAINING</p><h2>Daily attendance report</h2><p>Review and export real student attendance for a selected day.</p></div></div>
+    {error && <p className="kimu-resource__error" role="alert">{error}</p>}
+    {emailSuccess && <p className="kimu-resource__success" role="status">{emailSuccess}</p>}
+    <section className="kimu-panel kimu-report-section">
+      <div className="kimu-report-section__header"><div><p className="kimu-eyebrow">ATTENDANCE REGISTER</p><h3>Training attendance</h3><span>{attendance.length} records for {date}</span></div><div className="kimu-report-section__actions"><button className="kimu-btn kimu-btn--primary" onClick={buildPdf} disabled={loading || attendance.length === 0}>Download PDF</button><button className="kimu-btn kimu-btn--secondary" onClick={emailReport} disabled={loading || attendance.length === 0 || emailSending}>{emailSending ? 'Emailing...' : 'Email report'}</button></div></div>
+      <div className="kimu-list-toolbar"><label className="kimu-date-filter">Attendance date<input type="date" value={date} onChange={(event) => setDate(event.target.value)} /></label></div>
+      {loading ? <p className="kimu-panel__placeholder">Loading attendance...</p> : attendance.length === 0 ? <p className="kimu-report-empty" role="status">No attendance records for this date. Choose another date to view or download a report.</p> : <div className="kimu-resource__table-wrap"><table><thead><tr><th>NO.</th><th>NAME</th><th>TEL</th><th>SHIFT</th><th>LESSON</th></tr></thead><tbody>{attendance.map((record, index) => <tr key={record._id}><td>{index + 1}</td><td className="kimu-name-cell">{record.studentName}</td><td>{record.telephone || '-'}</td><td>{record.shift}</td><td>{record.lesson}</td></tr>)}</tbody></table></div>}
+    </section>
+  </div>;
 }
 
-async function buildVisitorPdf(report, search) {
-  const document = new jsPDF();
-  const tableStart = await addReportHeader(document, 'Visitor Report', `Report date: ${report.date}${search.trim() ? ` | Visitor: ${search.trim()}` : ''}`);
-  autoTable(document, { startY: tableStart, margin: { bottom: 30 }, head: [['Visitor name', 'Phone', 'Reason', 'Check-in', 'Check-out', 'Status']], body: report.visitors.map((visitor) => [visitor.fullName, visitor.phone || '-', visitor.reason, formatDateTime(visitor.checkIn || visitor.createdAt), formatDateTime(visitor.checkOut), visitor.status]), didDrawPage: () => addReportFooter(document) });
+async function buildAttendancePdf(records, date) {
+  const document = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+  const title = 'REPORT YA MAITRISE';
+  const tableStart = await addReportHeader(document, title, `date: ${date}`);
+  autoTable(document, {
+    theme: 'grid',
+    startY: tableStart,
+    margin: { left: 14, right: 14, bottom: 32 },
+    head: [['NO.', 'NAME', 'TEL', 'SHIFT', 'LESSON']],
+    body: records.map((record, index) => [index + 1, record.studentName, record.telephone || '-', record.shift, record.lesson]),
+    styles: { fontSize: 8, cellPadding: 2, overflow: 'linebreak', valign: 'middle', textColor: [0, 0, 0], fillColor: [255, 255, 255], lineColor: [0, 0, 0], lineWidth: 0.1 },
+    headStyles: { fillColor: [255, 255, 255], textColor: [0, 0, 0], lineColor: [0, 0, 0], fontStyle: 'bold' },
+    columnStyles: { 0: { cellWidth: 11 }, 1: { cellWidth: 45 }, 2: { cellWidth: 34 }, 3: { cellWidth: 48 }, 4: { cellWidth: 44 } },
+    didDrawPage: () => addReportFooter(document),
+  });
+  let signatureTop = document.lastAutoTable.finalY + 10;
+  const pageHeight = document.internal.pageSize.getHeight();
+  if (signatureTop + 39 > pageHeight - 30) {
+    document.addPage();
+    signatureTop = await addReportHeader(document, title, `date: ${date}`) + 5;
+    addReportFooter(document);
+  }
+  document.setTextColor(0, 0, 0);
+  const approvals = [
+    ['Byateguwe na:', 'NIYONZIMA JEAN PIERRE', "DRIVER'S TRAINER"],
+    ['Byagenzuwe na:', 'MANIRAGUHA AGNES', 'HEAD OF TRANSPORT'],
+    ['Byemejwe na:', 'NKUNZIRYAYO JEAN PIERRE', 'CEO KIMU TRANSPORT'],
+  ];
+  const lefts = [14, 77, 140];
+  approvals.forEach((approval, index) => {
+    const blockWidth = 54;
+    const blockX = lefts[index];
+    const blockY = signatureTop;
+    document.setFont('helvetica', 'normal');
+    document.setFontSize(7.5);
+    document.text(approval[0], blockX, blockY);
+    document.setFont('helvetica', 'bold');
+    document.setFontSize(8);
+    document.text(document.splitTextToSize(approval[1], blockWidth), blockX, blockY + 4.5);
+    document.setFont('helvetica', 'normal');
+    document.setFontSize(7.5);
+    document.text(document.splitTextToSize(approval[2], blockWidth), blockX, blockY + 9);
+    const lineY = blockY + 16;
+    document.setDrawColor(0, 0, 0);
+    document.setLineWidth(0.25);
+    document.line(blockX, lineY, blockX + blockWidth, lineY);
+  });
   return document;
 }
 
-function VisitorReport({ report, date, search, setDate, setSearch, onDownload, onEmail, emailSending }) {
-  return <section className="kimu-panel kimu-report-section"><div className="kimu-report-section__header"><div><p className="kimu-eyebrow">VISITOR REPORT</p><h3>Visitor activity</h3><span>{report ? `Report for ${report.date}${search.trim() ? ` · ${search.trim()}` : ''}` : 'Loading report...'}</span></div><div className="kimu-report-section__actions"><button className="kimu-btn kimu-btn--primary" onClick={onDownload}>Download visitor PDF</button><button className="kimu-btn kimu-btn--secondary" onClick={onEmail} disabled={!report || emailSending}>{emailSending ? 'Emailing...' : 'Email report'}</button></div></div><div className="kimu-list-toolbar"><input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Search visitor name" aria-label="Search visitor name" /><label className="kimu-date-filter">Day<input type="date" value={date} onChange={(event) => setDate(event.target.value)} /></label></div>{report && <div className="kimu-resource__table-wrap"><table><thead><tr><th>Visitor name</th><th>Phone</th><th>Reason</th><th>Check-in</th><th>Check-out</th><th>Status</th></tr></thead><tbody>{report.visitors.length ? report.visitors.map((visitor) => <tr key={visitor._id}><td className="kimu-name-cell">{visitor.fullName}</td><td>{visitor.phone || '-'}</td><td>{visitor.reason}</td><td>{formatDateTime(visitor.checkIn || visitor.createdAt)}</td><td>{formatDateTime(visitor.checkOut)}</td><td>{visitor.status}</td></tr>) : <tr><td colSpan="6">No visitor records for this day and search.</td></tr>}</tbody></table></div>}</section>;
+function localDateKey(value) {
+  const date = new Date(value);
+  const parts = new Intl.DateTimeFormat('en-CA', { timeZone: 'Africa/Kigali', year: 'numeric', month: '2-digit', day: '2-digit' }).formatToParts(date);
+  const dateParts = Object.fromEntries(parts.filter((part) => part.type !== 'literal').map((part) => [part.type, part.value]));
+  return `${dateParts.year}-${dateParts.month}-${dateParts.day}`;
 }
-
-async function buildAttendancePdf(records, period, search) {
-  const document = new jsPDF();
-  const tableStart = await addReportHeader(document, 'Attendance Report', `Period: ${period}${search.trim() ? ` | Employee: ${search.trim()}` : ''}`);
-  autoTable(document, { startY: tableStart, margin: { bottom: 30 }, head: [['Employee', 'Date', 'Arrival time', 'Status']], body: records.map((record) => [record.employeeName, formatDate(record.date), formatTime(record.checkIn), record.status]), didDrawPage: () => addReportFooter(document) });
-  return document;
-}
-
-function AttendanceReport({ attendance, month, day, search, setMonth, setDay, setSearch, onDownload, onEmail, emailSending, present }) {
-  const personLabel = search.trim() || 'all employees';
-  return <><div className="kimu-report-cards"><div className="kimu-panel"><span>Present</span><strong>{present}</strong></div><div className="kimu-panel"><span>Absent</span><strong>{Math.max(attendance.length - present, 0)}</strong></div><div className="kimu-panel"><span>Records</span><strong>{attendance.length}</strong></div></div><section className="kimu-panel kimu-report-section"><div className="kimu-report-section__header"><div><p className="kimu-eyebrow">EMPLOYEE REPORT</p><h3>{day ? 'Daily attendance' : 'Monthly attendance'} for {personLabel}</h3><span>{day || month}</span></div><div className="kimu-report-section__actions"><button className="kimu-btn kimu-btn--primary" onClick={onDownload}>Download {search.trim() ? `${search.trim()}'s` : 'attendance'} PDF</button><button className="kimu-btn kimu-btn--secondary" onClick={onEmail} disabled={emailSending}>{emailSending ? 'Emailing...' : 'Email report'}</button></div></div><div className="kimu-list-toolbar"><input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Search employee name" aria-label="Search employee name" /><label className="kimu-date-filter">Month<input type="month" value={month} onChange={(event) => { setMonth(event.target.value); setDay(''); }} /></label><label className="kimu-date-filter">Day<input type="date" value={day} onChange={(event) => setDay(event.target.value)} /></label></div><div className="kimu-resource__table-wrap"><table><thead><tr><th>Employee</th><th>Date</th><th>Arrival time</th><th>Status</th></tr></thead><tbody>{attendance.length ? attendance.map((record) => <tr key={record._id}><td className="kimu-name-cell">{record.employeeName}</td><td>{formatDate(record.date)}</td><td>{formatTime(record.checkIn)}</td><td>{record.status}</td></tr>) : <tr><td colSpan="4">No attendance records for this period and employee search.</td></tr>}</tbody></table></div></section></>;
-}
-
-function currentMonth() { return new Date().toISOString().slice(0, 7); }
-function localDateKey(value) { const date = new Date(value); if (Number.isNaN(date.getTime())) return ''; const parts = new Intl.DateTimeFormat('en-US', { year: 'numeric', month: '2-digit', day: '2-digit' }).formatToParts(date); const dateParts = Object.fromEntries(parts.filter((part) => part.type !== 'literal').map((part) => [part.type, part.value])); return `${dateParts.year}-${dateParts.month}-${dateParts.day}`; }
-function formatTime(value) { const date = new Date(value); return Number.isNaN(date.getTime()) ? '-' : date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }); }
-function formatDate(value) { const date = new Date(value); return Number.isNaN(date.getTime()) ? '-' : date.toLocaleDateString(); }
-function formatDateTime(value) { const date = new Date(value); return Number.isNaN(date.getTime()) ? '-' : date.toLocaleString(); }
 
 async function addReportHeader(document, title, subtitle) {
   const logo = await loadLogo();
@@ -107,17 +128,27 @@ async function addReportHeader(document, title, subtitle) {
   const logoHeight = logo.naturalWidth ? (logoWidth * logo.naturalHeight) / logo.naturalWidth : 16;
   document.addImage(logo, 'PNG', 14, 10, logoWidth, logoHeight);
   const titleY = 10 + logoHeight + 9;
-  document.setFontSize(18); document.setTextColor(31, 45, 38); document.text(`Kimu Transport - ${title}`, 14, titleY);
-  document.setFontSize(10); document.setTextColor(91, 105, 98); document.text(subtitle, 14, titleY + 7);
-  return titleY + 14;
+  document.setFont('helvetica', 'bold');
+  document.setFontSize(18);
+  document.setTextColor(0, 0, 0);
+  const titleWidth = document.getTextWidth(title);
+  const titleX = (pageWidth - titleWidth) / 2;
+  document.text(title, titleX, titleY);
+  document.setDrawColor(0, 0, 0);
+  document.setLineWidth(0.35);
+  document.line(titleX, titleY + 1.5, titleX + titleWidth, titleY + 1.5);
+  document.setFont('helvetica', 'normal');
+  document.setFontSize(10);
+  document.text(subtitle, 14, titleY + 8);
+  return titleY + 15;
 }
 
 function addReportFooter(document) {
   const pageHeight = document.internal.pageSize.getHeight();
-  document.setDrawColor(196, 207, 200); document.line(14, pageHeight - 22, 196, pageHeight - 22);
-  document.setFontSize(8); document.setTextColor(91, 105, 98);
-  document.text('Email: kimutransport6@gmail.com  |  Website: www.kimutransport.co.rw  |  Location: Gisozi, KG 780 St', 14, pageHeight - 16);
-  document.text('TIN: 121516875  |  Tel: (+250) 792 958 752  |  TOLLFREE: 6364', 14, pageHeight - 10);
+  document.setDrawColor(0, 0, 0); document.line(14, pageHeight - 25, 196, pageHeight - 25);
+  document.setFontSize(8); document.setTextColor(0, 0, 0);
+  document.text('Email: kimutransport6@gmail.com  |  Website: www.kimutransport.co.rw  |  Location: Gisozi, KG 780 St', 14, pageHeight - 17);
+  document.text('TIN: 121516875  |  Tel: (+250) 792 958 752  |  TOLLFREE: 6364', 14, pageHeight - 11);
 }
 
 function loadLogo() {

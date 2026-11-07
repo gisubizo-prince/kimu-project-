@@ -23,7 +23,6 @@ const userSchema = new mongoose.Schema(
       type: String,
       trim: true,
     },
-    profilePhoto: { type: String, trim: true },
     password: {
       type: String,
       required: [true, 'Password is required'],
@@ -42,14 +41,6 @@ const userSchema = new mongoose.Schema(
     },
     lastLoginAt: {
       type: Date,
-    },
-    preferences: {
-      emailAlerts: { type: Boolean, default: true },
-      absenceAlerts: { type: Boolean, default: true },
-      visitorAlerts: { type: Boolean, default: true },
-      dailyReport: { type: Boolean, default: true },
-      timezone: { type: String, default: 'Africa/Kigali' },
-      attendanceCutoff: { type: String, default: '09:00' },
     },
   },
   { timestamps: true }

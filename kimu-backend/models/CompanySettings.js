@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const companySettingsSchema = new mongoose.Schema(
   {
     key: { type: String, default: 'default', unique: true },
-    companyName: { type: String, default: 'Kimu Transport' },
+    companyName: { type: String, default: 'METRIZE' },
     logo: String,
     phone: String,
     email: String,

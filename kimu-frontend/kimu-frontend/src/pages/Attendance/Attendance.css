@@ -1,1 +1,14 @@
-.kimu-link-button { border: 0; background: none; color: var(--kimu-green); padding: 0; }
+.kimu-link-button { border: 0; background: none; color: var(--kimu-green); padding: 0; font-weight: 600; }
+.kimu-training-form { padding: 22px; margin-bottom: 20px; }
+.kimu-training-form h3, .kimu-attendance-list__heading h3 { font-size: 16px; }
+.kimu-training-form__grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin-top: 18px; }
+.kimu-training-form label, .kimu-attendance-filters label { display: grid; gap: 7px; color: var(--kimu-text-secondary); font-size: 12px; font-weight: 600; }
+.kimu-training-form input, .kimu-training-form select, .kimu-attendance-filters select, .kimu-attendance-filters input { width: 100%; min-width: 0; min-height: 42px; border: 1px solid var(--kimu-border); border-radius: var(--radius-control); padding: 9px 11px; background: var(--kimu-surface); color: var(--kimu-text); font: inherit; }
+.kimu-training-form input[readonly] { background: var(--kimu-bg); }
+.kimu-training-form__actions { display: flex; gap: 9px; margin-top: 18px; }
+.kimu-attendance-list__heading { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+.kimu-attendance-list__heading span { display: block; margin-top: 5px; color: var(--kimu-text-secondary); font-size: 12px; }
+.kimu-attendance-filters { display: grid; grid-template-columns: repeat(4, minmax(130px, 1fr)); align-items: end; gap: 12px; }
+.kimu-attendance-list table { min-width: 680px; }
+@media (max-width: 800px) { .kimu-training-form__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .kimu-attendance-filters { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 520px) { .kimu-training-form__grid, .kimu-attendance-filters { grid-template-columns: 1fr; } .kimu-training-form__actions { flex-direction: column; } }

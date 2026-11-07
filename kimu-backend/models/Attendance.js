@@ -1,8 +1,16 @@
 const mongoose = require('mongoose');
 
+const SHIFTS = ['09:00 - 11:30', '11:30 - 14:00', '14:30 - 16:00', '16:00 - 18:30'];
+const LESSONS = ['GPS', 'PARKING', 'CIRCULATION'];
+
 const attendanceSchema = new mongoose.Schema(
   {
-    employeeName: { type: String, required: true, trim: true },
+    studentId: { type: mongoose.Schema.Types.ObjectId, ref: 'Student' },
+    studentName: { type: String, trim: true },
+    telephone: { type: String, trim: true },
+    shift: { type: String, enum: SHIFTS },
+    lesson: { type: String, enum: LESSONS },
+    employeeName: { type: String, trim: true },
     date: { type: Date, required: true, default: Date.now },
     checkIn: Date,
     checkOut: Date,
@@ -11,5 +19,11 @@ const attendanceSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
-attendanceSchema.index({ employeeName: 1, date: 1 }, { unique: true });
-module.exports = mongoose.model('Attendance', attendanceSchema);
+attendanceSchema.index(
+  { studentId: 1, date: 1, shift: 1, lesson: 1 },
+  { unique: true, partialFilterExpression: { studentId: { $type: 'objectId' } } }
+);
+const Attendance = mongoose.model('Attendance', attendanceSchema);
+module.exports = Attendance;
+module.exports.SHIFTS = SHIFTS;
+module.exports.LESSONS = LESSONS;

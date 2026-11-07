@@ -20,7 +20,7 @@ async function emailReport(req, res, next) {
     await transporter.sendMail({
       from: process.env.MAIL_FROM || process.env.MAIL_USER,
       to: process.env.REPORT_RECIPIENT_EMAIL,
-      subject: `Kimu Transport ${reportType} report - ${period}`,
+      subject: `METRIZE ${reportType} report - ${period}`,
       text: `Attached is the ${reportType} report for ${period}, sent by ${req.user.fullName}.`,
       attachments: [{ filename: fileName, content: pdf, contentType: 'application/pdf' }],
     });

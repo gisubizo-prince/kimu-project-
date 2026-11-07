@@ -46,11 +46,11 @@ export default function Login() {
       <div className="kimu-login__card">
         <div className="kimu-login__brand">
           <img src={kimuMark} alt="" className="kimu-login__mark" />
-          <span className="kimu-login__brand-name">Kimu Transport</span>
+          <span className="kimu-login__brand-name">METRIZE</span>
         </div>
 
         <h1 className="kimu-login__title">Welcome back</h1>
-        <p className="kimu-login__subtitle">Sign in to manage today's operations.</p>
+        <p className="kimu-login__subtitle">Sign in to manage students and training attendance.</p>
 
         <form onSubmit={handleSubmit} noValidate>
           <div className="kimu-field">
@@ -59,7 +59,7 @@ export default function Login() {
               id="email"
               type="email"
               autoComplete="username"
-              placeholder="you@kimutransport.rw"
+              placeholder="you@example.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               disabled={submitting}

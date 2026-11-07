@@ -8,7 +8,7 @@ async function start() {
   await connectDB();
 
   const server = app.listen(PORT, () => {
-    console.log(`[server] Kimu Transport API running on http://localhost:${PORT}`);
+    console.log(`[server] METRIZE Training API running on http://localhost:${PORT}`);
     console.log(`[server] Environment: ${process.env.NODE_ENV || 'development'}`);
   });
 
