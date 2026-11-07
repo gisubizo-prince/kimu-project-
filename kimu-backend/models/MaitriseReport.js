@@ -48,11 +48,11 @@ const reportSchema = new mongoose.Schema({
     approved_by: { type: String, default: 'CEO NKUNZIRYAYO JEAN PIERRE' },
   },
   createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
-}, { timestamps: true });
+}, { timestamps: true, collection: 'maitizereports' });
 
 reportSchema.index({ date: -1, createdAt: -1 });
 
-module.exports = mongoose.model('MaitizeReport', reportSchema);
+module.exports = mongoose.model('MaitriseReport', reportSchema);
 module.exports.CAR_NAMES = CAR_NAMES;
 module.exports.CAR_PLATES = CAR_PLATES;
 module.exports.CONDITIONS = CONDITIONS;

@@ -12,7 +12,7 @@ import Notifications from './pages/Notifications/Notifications';
 import Settings, { AdminControls } from './pages/Settings/Settings';
 import Students from './pages/Students/Students';
 import VisitorList from './pages/Visitors/VisitorList';
-import MaitizeReport from './pages/MaitizeReport/MaitizeReport';
+import MaitriseReport from './pages/MaitriseReport/MaitriseReport';
 
 export default function App() {
   return (
@@ -36,7 +36,7 @@ export default function App() {
             <Route path="/visitors" element={<Visitors />} />
             <Route path="/visitors/list" element={<VisitorList />} />
             <Route path="/reports" element={<Reports />} />
-            <Route path="/maitize-report" element={<MaitizeReport />} />
+            <Route path="/maitrise-report" element={<MaitriseReport />} />
             <Route path="/notifications" element={<Notifications />} />
             <Route path="/settings" element={<Settings />} />
             <Route path="/settings/admin" element={<ProtectedRoute roles={['super_admin', 'admin']}><AdminControls /></ProtectedRoute>} />

@@ -1,6 +1,6 @@
 const express = require('express');
 const { protect, authorize } = require('../middleware/auth');
-const controller = require('../controllers/maitizeReportController');
+const controller = require('../controllers/maitriseReportController');
 
 const router = express.Router();
 router.use(protect);

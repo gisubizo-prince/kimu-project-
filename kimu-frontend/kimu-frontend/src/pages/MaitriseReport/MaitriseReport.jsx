@@ -3,7 +3,7 @@ import { jsPDF } from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import api from '../../services/api';
 import kimuLogo from '../../assets/kimu.png';
-import './MaitizeReport.css';
+import './MaitriseReport.css';
 
 const CARS = [
   { car: 'Levin 1', plate: 'RAI631P' },
@@ -38,7 +38,7 @@ function emptyReport() {
   };
 }
 
-export default function MaitizeReport() {
+export default function MaitriseReport() {
   const [form, setForm] = useState(emptyReport);
   const [step, setStep] = useState(0);
   const [carIndex, setCarIndex] = useState(0);
@@ -50,7 +50,7 @@ export default function MaitizeReport() {
 
   useEffect(() => {
     if (view !== 'history') return;
-    api.get('/maitize-reports').then((response) => setHistory(response.data.data || [])).catch((requestError) => setError(requestError.message));
+    api.get('/maitrise-reports').then((response) => setHistory(response.data.data || [])).catch((requestError) => setError(requestError.message));
   }, [view]);
 
   const currentCar = form.cars[carIndex];
@@ -127,7 +127,7 @@ export default function MaitizeReport() {
     setSaving(true);
     setError('');
     try {
-      const response = await api.post('/maitize-reports', completedPayload);
+      const response = await api.post('/maitrise-reports', completedPayload);
       setSavedReport(response.data.data);
       setStep(6);
       setView('new');
@@ -138,7 +138,7 @@ export default function MaitizeReport() {
   async function openSavedReport(id) {
     setError('');
     try {
-      const response = await api.get(`/maitize-reports/${id}`);
+      const response = await api.get(`/maitrise-reports/${id}`);
       setSavedReport(response.data.data);
       setStep(6);
       setView('new');
@@ -156,7 +156,7 @@ export default function MaitizeReport() {
 
   function downloadJson(report) {
     const data = exportableReport(report);
-    downloadBlob(JSON.stringify(data, null, 2), `maitize-report-${report.date}.json`, 'application/json');
+    downloadBlob(JSON.stringify(data, null, 2), `maitrise-report-${report.date}.json`, 'application/json');
   }
 
   async function downloadExcel(report) {
@@ -180,69 +180,69 @@ export default function MaitizeReport() {
     ];
     XLSX.utils.book_append_sheet(workbook, XLSX.utils.aoa_to_sheet(summary), 'Class Summary');
     XLSX.utils.book_append_sheet(workbook, XLSX.utils.json_to_sheet(data.cars), 'Vehicle Utilization');
-    XLSX.writeFile(workbook, `maitize-report-${report.date}.xlsx`);
+    XLSX.writeFile(workbook, `maitrise-report-${report.date}.xlsx`);
   }
 
   async function downloadPdf(report) {
     const document = await buildPdf(report);
-    document.save(`maitize-report-${report.date}.pdf`);
+    document.save(`maitrise-report-${report.date}.pdf`);
   }
 
   const title = step < stepNames.length ? stepNames[step] : 'Report generated';
 
-  return <main className="maitize-report">
-    <header className="maitize-report__header">
-      <div><p className="kimu-eyebrow">METRIZE DRIVING SCHOOL</p><h1>MAITIZE REPORT</h1><p>Create and archive a daily class and vehicle report.</p></div>
-      <div className="maitize-report__tabs" role="tablist" aria-label="Report views">
+  return <main className="maitrise-report">
+    <header className="maitrise-report__header">
+      <div><p className="kimu-eyebrow">METRIZE DRIVING SCHOOL</p><h1>MAITRISE REPORT</h1><p>Create and archive a daily class and vehicle report.</p></div>
+      <div className="maitrise-report__tabs" role="tablist" aria-label="Report views">
         <button className={view === 'new' ? 'is-active' : ''} onClick={() => { setView('new'); setError(''); }} role="tab" aria-selected={view === 'new'}>New report</button>
         <button className={view === 'history' ? 'is-active' : ''} onClick={() => { setView('history'); setError(''); }} role="tab" aria-selected={view === 'history'}>Saved reports</button>
       </div>
     </header>
 
-    {error && <p className="maitize-report__error" role="alert">{error}</p>}
+    {error && <p className="maitrise-report__error" role="alert">{error}</p>}
 
-    {view === 'history' ? <section className="maitize-report__panel">
-      <div className="maitize-report__section-heading"><div><h2>Saved daily reports</h2><p>Latest 100 reports</p></div><button className="kimu-btn kimu-btn--primary" onClick={startNewReport}>New report</button></div>
-      <div className="maitize-report__table-wrap"><table><thead><tr><th>Date</th><th>Class/group</th><th>Attended</th><th>Missed</th><th>Registered</th><th>KM used</th><th>Hours</th><th>Reported by</th><th></th></tr></thead><tbody>
-        {history.length === 0 ? <tr><td colSpan="9">No saved reports yet.</td></tr> : history.map((report) => <tr key={report._id}><td>{report.date}</td><td>{report.class_group}</td><td>{report.students.attended}</td><td>{report.students.missed}</td><td>{report.students.total_registered}</td><td>{report.totals.km_used}</td><td>{Number(report.totals.hours_worked).toFixed(2)}</td><td>{report.reported_by}</td><td><button className="maitize-report__text-button" onClick={() => openSavedReport(report._id)}>Open</button></td></tr>)}
+    {view === 'history' ? <section className="maitrise-report__panel">
+      <div className="maitrise-report__section-heading"><div><h2>Saved daily reports</h2><p>Latest 100 reports</p></div><button className="kimu-btn kimu-btn--primary" onClick={startNewReport}>New report</button></div>
+      <div className="maitrise-report__table-wrap"><table><thead><tr><th>Date</th><th>Class/group</th><th>Attended</th><th>Missed</th><th>Registered</th><th>KM used</th><th>Hours</th><th>Reported by</th><th></th></tr></thead><tbody>
+        {history.length === 0 ? <tr><td colSpan="9">No saved reports yet.</td></tr> : history.map((report) => <tr key={report._id}><td>{report.date}</td><td>{report.class_group}</td><td>{report.students.attended}</td><td>{report.students.missed}</td><td>{report.students.total_registered}</td><td>{report.totals.km_used}</td><td>{Number(report.totals.hours_worked).toFixed(2)}</td><td>{report.reported_by}</td><td><button className="maitrise-report__text-button" onClick={() => openSavedReport(report._id)}>Open</button></td></tr>)}
       </tbody></table></div>
     </section> : step === 6 && savedReport ? <GeneratedReport report={savedReport} onNew={startNewReport} onPdf={() => downloadPdf(savedReport)} onJson={() => downloadJson(savedReport)} onExcel={() => downloadExcel(savedReport)} /> : <>
-      <nav className="maitize-report__progress" aria-label="Report steps">{stepNames.map((name, index) => <div key={name} className={index === step ? 'is-current' : index < step ? 'is-complete' : ''}><span>{index + 1}</span>{name}</div>)}</nav>
-      <section className="maitize-report__panel">
-        <div className="maitize-report__section-heading"><div><p className="kimu-eyebrow">STEP {step + 1} OF 6</p><h2>{step === 2 ? `Vehicle ${carIndex + 1} of ${CAR_NAMES.length}: ${currentCar.car} (${currentCar.plate})` : title}</h2></div></div>
-        {step === 0 && <div className="maitize-report__form-grid">
+      <nav className="maitrise-report__progress" aria-label="Report steps">{stepNames.map((name, index) => <div key={name} className={index === step ? 'is-current' : index < step ? 'is-complete' : ''}><span>{index + 1}</span>{name}</div>)}</nav>
+      <section className="maitrise-report__panel">
+        <div className="maitrise-report__section-heading"><div><p className="kimu-eyebrow">STEP {step + 1} OF 6</p><h2>{step === 2 ? `Vehicle ${carIndex + 1} of ${CAR_NAMES.length}: ${currentCar.car} (${currentCar.plate})` : title}</h2></div></div>
+        {step === 0 && <div className="maitrise-report__form-grid">
           <label>Training date<input type="date" value={form.date} onChange={(event) => updateForm('date', event.target.value)} /></label>
           <label>Class or group<input value={form.class_group} onChange={(event) => updateForm('class_group', event.target.value)} placeholder="e.g. MAITRISE GROUP A" /></label>
         </div>}
 
-        {step === 1 && <div className="maitize-report__form-grid">
+        {step === 1 && <div className="maitrise-report__form-grid">
           <label>Students attended<input type="number" min="0" step="1" value={form.students.attended} onChange={(event) => updateStudents('attended', event.target.value)} /></label>
           <label>Students missed<input type="number" min="0" step="1" value={form.students.missed} onChange={(event) => updateStudents('missed', event.target.value)} /></label>
-          <div className="maitize-report__computed"><span>Total registered</span><strong>{(wholeNumber(form.students.attended) || 0) + (wholeNumber(form.students.missed) || 0)}</strong></div>
+          <div className="maitrise-report__computed"><span>Total registered</span><strong>{(wholeNumber(form.students.attended) || 0) + (wholeNumber(form.students.missed) || 0)}</strong></div>
         </div>}
 
         {step === 2 && <VehicleStep car={currentCar} updateCar={updateCar} />}
 
-        {step === 3 && <div className="maitize-report__incident">
+        {step === 3 && <div className="maitrise-report__incident">
           <p>Did anything serious or unusual happen during today&apos;s training? For example, an accident, vehicle breakdown, student injury, teacher issue, or delay.</p>
-          <div className="maitize-report__choice-row"><label><input type="radio" name="incident" checked={form.incident_answer === 'yes'} onChange={() => { updateForm('incident_answer', 'yes'); updateForm('incident_details', ''); }} /> Yes</label><label><input type="radio" name="incident" checked={form.incident_answer === 'no'} onChange={() => { updateForm('incident_answer', 'no'); updateForm('incident_details', ''); }} /> No</label></div>
+          <div className="maitrise-report__choice-row"><label><input type="radio" name="incident" checked={form.incident_answer === 'yes'} onChange={() => { updateForm('incident_answer', 'yes'); updateForm('incident_details', ''); }} /> Yes</label><label><input type="radio" name="incident" checked={form.incident_answer === 'no'} onChange={() => { updateForm('incident_answer', 'no'); updateForm('incident_details', ''); }} /> No</label></div>
           {form.incident_answer === 'yes' && <label>Describe what happened<textarea rows="4" value={form.incident_details} onChange={(event) => updateForm('incident_details', event.target.value)} /></label>}
-          {form.incident_answer === 'no' && <p className="maitize-report__note-preview">The report will say: “Nothing unusual to report.”</p>}
+          {form.incident_answer === 'no' && <p className="maitrise-report__note-preview">The report will say: “Nothing unusual to report.”</p>}
         </div>}
 
-        {step === 4 && <div className="maitize-report__form-grid"><label>Full name of person preparing the report<input value={form.reported_by} onChange={(event) => updateForm('reported_by', event.target.value)} /></label></div>}
+        {step === 4 && <div className="maitrise-report__form-grid"><label>Full name of person preparing the report<input value={form.reported_by} onChange={(event) => updateForm('reported_by', event.target.value)} /></label></div>}
 
         {step === 5 && <ReviewSummary data={completedPayload} onEdit={editStep} />}
 
-        {step < 5 && <div className="maitize-report__actions">
+        {step < 5 && <div className="maitrise-report__actions">
           {step > 0 && <button className="kimu-btn kimu-btn--secondary" onClick={previousStep}>Back</button>}
           <button className="kimu-btn kimu-btn--primary" onClick={nextStep}>{step === 5 ? 'Review report' : 'Continue'}</button>
         </div>}
-        {step === 5 && <div className="maitize-report__actions">
+        {step === 5 && <div className="maitrise-report__actions">
           <button className="kimu-btn kimu-btn--secondary" onClick={previousStep}>Back</button>
           <button className="kimu-btn kimu-btn--primary" onClick={generateReport} disabled={saving}>{saving ? 'Saving report...' : 'YES, generate the report'}</button>
         </div>}
-        {step === 5 && <p className="maitize-report__confirm-hint">Confirm that all details are correct before generating and saving this report.</p>}
+        {step === 5 && <p className="maitrise-report__confirm-hint">Confirm that all details are correct before generating and saving this report.</p>}
       </section>
     </>}
   </main>;
@@ -254,13 +254,13 @@ function VehicleStep({ car, updateCar }) {
   const kmUsed = numeric(car.km_end) !== null && numeric(car.km_start) !== null ? numeric(car.km_end) - numeric(car.km_start) : 0;
   const hours = start && end && end.minutes > start.minutes ? (end.minutes - start.minutes) / 60 : 0;
   const unusual = kmUsed > 300 || hours > 12;
-  return <div className="maitize-report__vehicle-step">
-    <div className="maitize-report__choice-row">
-      <button type="button" className={`maitize-report__choice ${car.status === 'Used' ? 'is-selected' : ''}`} onClick={() => updateCar('status', 'Used')}>Used today</button>
-      <button type="button" className={`maitize-report__choice ${car.status === 'Not used' ? 'is-selected' : ''}`} onClick={() => updateCar('status', 'Not used')}>Not used</button>
+  return <div className="maitrise-report__vehicle-step">
+    <div className="maitrise-report__choice-row">
+      <button type="button" className={`maitrise-report__choice ${car.status === 'Used' ? 'is-selected' : ''}`} onClick={() => updateCar('status', 'Used')}>Used today</button>
+      <button type="button" className={`maitrise-report__choice ${car.status === 'Not used' ? 'is-selected' : ''}`} onClick={() => updateCar('status', 'Not used')}>Not used</button>
     </div>
     {car.status === 'Used' && <>
-      <div className="maitize-report__form-grid">
+      <div className="maitrise-report__form-grid">
         <label>Teacher / instructor<input value={car.teacher} onChange={(event) => updateCar('teacher', event.target.value)} /></label>
         <label>KM at start<input type="number" min="0" step="any" value={car.km_start} onChange={(event) => updateCar('km_start', event.target.value)} /></label>
         <label>KM at end<input type="number" min="0" step="any" value={car.km_end} onChange={(event) => updateCar('km_end', event.target.value)} /></label>
@@ -269,44 +269,44 @@ function VehicleStep({ car, updateCar }) {
         <label>Class start time<input value={car.start_time} onChange={(event) => updateCar('start_time', event.target.value)} placeholder="8am, 08:00, saa mbiri" /></label>
         <label>Class end time<input value={car.end_time} onChange={(event) => updateCar('end_time', event.target.value)} placeholder="11:30am, 11:30" /></label>
       </div>
-      {(car.condition_start === 'Problem' || car.condition_end === 'Problem') && <label className="maitize-report__full-field">Describe the vehicle problem<textarea rows="3" value={car.problem_details} onChange={(event) => updateCar('problem_details', event.target.value)} /></label>}
-      <div className="maitize-report__vehicle-calculation"><span>KM used so far: <strong>{Math.max(kmUsed, 0)}</strong></span><span>Hours so far: <strong>{hours.toFixed(2)}</strong></span></div>
-      {unusual && <label className="maitize-report__unusual"><input type="checkbox" checked={car.confirm_unusual} onChange={(event) => updateCar('confirm_unusual', event.target.checked)} /><span>Is this correct? I verified the mileage or class duration.</span></label>}
+      {(car.condition_start === 'Problem' || car.condition_end === 'Problem') && <label className="maitrise-report__full-field">Describe the vehicle problem<textarea rows="3" value={car.problem_details} onChange={(event) => updateCar('problem_details', event.target.value)} /></label>}
+      <div className="maitrise-report__vehicle-calculation"><span>KM used so far: <strong>{Math.max(kmUsed, 0)}</strong></span><span>Hours so far: <strong>{hours.toFixed(2)}</strong></span></div>
+      {unusual && <label className="maitrise-report__unusual"><input type="checkbox" checked={car.confirm_unusual} onChange={(event) => updateCar('confirm_unusual', event.target.checked)} /><span>Is this correct? I verified the mileage or class duration.</span></label>}
     </>}
-    {car.status === 'Not used' && <p className="maitize-report__note-preview">This vehicle will appear as NOT USED and will not be included in totals.</p>}
+    {car.status === 'Not used' && <p className="maitrise-report__note-preview">This vehicle will appear as NOT USED and will not be included in totals.</p>}
   </div>;
 }
 
 function ReviewSummary({ data, onEdit }) {
-  return <div className="maitize-report__review">
-    <section><div className="maitize-report__review-heading"><h3>Class details</h3><button onClick={() => onEdit(0)}>Edit</button></div><p>Date: {data.date} · Class/group: {data.class_group}</p></section>
-    <section><div className="maitize-report__review-heading"><h3>Student attendance</h3><button onClick={() => onEdit(1)}>Edit</button></div><p>Attended {data.students.attended} · Missed {data.students.missed} · Total registered {data.students.total_registered}</p></section>
-    <section><div className="maitize-report__review-heading"><h3>Vehicle utilization</h3><button onClick={() => onEdit(2, 0)}>Edit</button></div><div className="maitize-report__table-wrap"><table><thead><tr><th>Car</th><th>Plate</th><th>Teacher</th><th>KM start</th><th>KM end</th><th>KM used</th><th>Condition</th><th>Start</th><th>End</th><th>Hours</th></tr></thead><tbody>{data.cars.map((car) => <tr key={car.car}><td>{car.car}</td><td>{car.plate}</td>{car.status === 'Not used' ? <td colSpan="8">NOT USED</td> : <><td>{car.teacher}</td><td>{car.km_start}</td><td>{car.km_end}</td><td>{car.km_used}</td><td>{car.condition_start} / {car.condition_end}</td><td>{car.start_time}</td><td>{car.end_time}</td><td>{car.hours_worked.toFixed(2)}</td></>}</tr>)}<tr className="maitize-report__total-row"><td colSpan="5">TOTAL</td><td>{data.totals.km_used}</td><td colSpan="3"></td><td>{data.totals.hours_worked.toFixed(2)}</td></tr></tbody></table></div></section>
-    <section><div className="maitize-report__review-heading"><h3>Ikitonderwa</h3><button onClick={() => onEdit(3)}>Edit</button></div><p className="maitize-report__preserve-lines">{data.ikitonderwa}</p></section>
-    <section><div className="maitize-report__review-heading"><h3>Reported by</h3><button onClick={() => onEdit(4)}>Edit</button></div><p>{data.reported_by}</p></section>
+  return <div className="maitrise-report__review">
+    <section><div className="maitrise-report__review-heading"><h3>Class details</h3><button onClick={() => onEdit(0)}>Edit</button></div><p>Date: {data.date} · Class/group: {data.class_group}</p></section>
+    <section><div className="maitrise-report__review-heading"><h3>Student attendance</h3><button onClick={() => onEdit(1)}>Edit</button></div><p>Attended {data.students.attended} · Missed {data.students.missed} · Total registered {data.students.total_registered}</p></section>
+    <section><div className="maitrise-report__review-heading"><h3>Vehicle utilization</h3><button onClick={() => onEdit(2, 0)}>Edit</button></div><div className="maitrise-report__table-wrap"><table><thead><tr><th>Car</th><th>Plate</th><th>Teacher</th><th>KM start</th><th>KM end</th><th>KM used</th><th>Condition</th><th>Start</th><th>End</th><th>Hours</th></tr></thead><tbody>{data.cars.map((car) => <tr key={car.car}><td>{car.car}</td><td>{car.plate}</td>{car.status === 'Not used' ? <td colSpan="8">NOT USED</td> : <><td>{car.teacher}</td><td>{car.km_start}</td><td>{car.km_end}</td><td>{car.km_used}</td><td>{car.condition_start} / {car.condition_end}</td><td>{car.start_time}</td><td>{car.end_time}</td><td>{car.hours_worked.toFixed(2)}</td></>}</tr>)}<tr className="maitrise-report__total-row"><td colSpan="5">TOTAL</td><td>{data.totals.km_used}</td><td colSpan="3"></td><td>{data.totals.hours_worked.toFixed(2)}</td></tr></tbody></table></div></section>
+    <section><div className="maitrise-report__review-heading"><h3>Ikitonderwa</h3><button onClick={() => onEdit(3)}>Edit</button></div><p className="maitrise-report__preserve-lines">{data.ikitonderwa}</p></section>
+    <section><div className="maitrise-report__review-heading"><h3>Reported by</h3><button onClick={() => onEdit(4)}>Edit</button></div><p>{data.reported_by}</p></section>
   </div>;
 }
 
 function GeneratedReport({ report, onNew, onPdf, onJson, onExcel }) {
   const data = exportableReport(report);
-  return <section className="maitize-report__panel">
-    <div className="maitize-report__section-heading"><div><p className="kimu-eyebrow">REPORT SAVED</p><h2>Daily class report generated</h2><p>{report.date} · {report.class_group}</p></div><button className="kimu-btn kimu-btn--secondary" onClick={onNew}>Start another report</button></div>
+  return <section className="maitrise-report__panel">
+    <div className="maitrise-report__section-heading"><div><p className="kimu-eyebrow">REPORT SAVED</p><h2>Daily class report generated</h2><p>{report.date} · {report.class_group}</p></div><button className="kimu-btn kimu-btn--secondary" onClick={onNew}>Start another report</button></div>
     <ReportDocument report={data} />
-    <div className="maitize-report__export-actions"><button className="kimu-btn kimu-btn--primary" onClick={onPdf}>Download PDF</button><button className="kimu-btn kimu-btn--secondary" onClick={onExcel}>Export Excel</button><button className="kimu-btn kimu-btn--secondary" onClick={onJson}>Download JSON</button></div>
-    <details className="maitize-report__json"><summary>Saved report JSON</summary><pre>{JSON.stringify(data, null, 2)}</pre></details>
+    <div className="maitrise-report__export-actions"><button className="kimu-btn kimu-btn--primary" onClick={onPdf}>Download PDF</button><button className="kimu-btn kimu-btn--secondary" onClick={onExcel}>Export Excel</button><button className="kimu-btn kimu-btn--secondary" onClick={onJson}>Download JSON</button></div>
+    <details className="maitrise-report__json"><summary>Saved report JSON</summary><pre>{JSON.stringify(data, null, 2)}</pre></details>
   </section>;
 }
 
 function ReportDocument({ report }) {
-  return <article className="maitize-report__document">
-    <img className="maitize-report__document-logo" src={kimuLogo} alt="Kimu Transport logo" />
+  return <article className="maitrise-report__document">
+    <img className="maitrise-report__document-logo" src={kimuLogo} alt="Kimu Transport logo" />
     <h2>METRIZE</h2><h3>DAILY CLASS REPORT</h3>
     <p><strong>Date:</strong> {report.date} <strong>Class/Group:</strong> {report.class_group}</p>
     <table><thead><tr><th colSpan="2">ATTENDANCE PARTICULARS</th></tr></thead><tbody><tr><td>Students attended</td><td>{report.students.attended}</td></tr><tr><td>Students missed</td><td>{report.students.missed}</td></tr><tr><th>TOTAL REGISTERED</th><th>{report.students.total_registered}</th></tr></tbody></table>
-    <div className="maitize-report__table-wrap"><table><thead><tr><th rowSpan="2">NO.</th><th colSpan="3">VEHICLE INFORMATION</th><th colSpan="3">VEHICLE MILEAGE</th><th colSpan="2">VEHICLE CONDITION</th><th colSpan="3">TRAINING HOURS</th></tr><tr><th>VEHICLE</th><th>PLATE</th><th>TEACHER</th><th>KM START</th><th>KM END</th><th>KM USED</th><th>START</th><th>END</th><th>START TIME</th><th>END TIME</th><th>HOURS</th></tr></thead><tbody>{report.cars.map((car, index) => <tr key={car.car}><td>{index + 1}</td><td>{car.car}</td><td>{car.plate || '-'}</td>{car.status === 'Not used' ? <td colSpan="9">NOT USED</td> : <><td>{car.teacher}</td><td>{car.km_start}</td><td>{car.km_end}</td><td>{car.km_used}</td><td>{car.condition_start}</td><td>{car.condition_end}</td><td>{car.start_time}</td><td>{car.end_time}</td><td>{car.hours_worked.toFixed(2)}</td></>}</tr>)}<tr className="maitize-report__total-row"><td colSpan="6">TOTAL</td><td>{report.totals.km_used}</td><td colSpan="4"></td><td>{report.totals.hours_worked.toFixed(2)}</td></tr></tbody></table></div>
-    <h4>ICYITONDERWA</h4><p className="maitize-report__preserve-lines">{report.ikitonderwa}</p>
-    <div className="maitize-report__signature-grid"><div><strong>PREPARED BY</strong><span>JEAN</span><i /><small>Signature</small><span>Date: __________________</span></div><div><strong>VERIFIED BY</strong><span>AGNES</span><i /><small>Signature</small><span>Date: __________________</span></div><div><strong>APPROVED BY</strong><span>CEO NKUNZIRYAYO JEAN PIERRE</span><span>CEO - KIMU TRANSPORT AND MULTISERVICE</span><i /><small>Signature</small><span>Date: __________________</span></div></div>
-    <p className="maitize-report__reported-by">Reported by: {report.reported_by}</p>
+    <div className="maitrise-report__table-wrap"><table><thead><tr><th rowSpan="2">NO.</th><th colSpan="3">VEHICLE INFORMATION</th><th colSpan="3">VEHICLE MILEAGE</th><th colSpan="2">VEHICLE CONDITION</th><th colSpan="3">TRAINING HOURS</th></tr><tr><th>VEHICLE</th><th>PLATE</th><th>TEACHER</th><th>KM START</th><th>KM END</th><th>KM USED</th><th>START</th><th>END</th><th>START TIME</th><th>END TIME</th><th>HOURS</th></tr></thead><tbody>{report.cars.map((car, index) => <tr key={car.car}><td>{index + 1}</td><td>{car.car}</td><td>{car.plate || '-'}</td>{car.status === 'Not used' ? <td colSpan="9">NOT USED</td> : <><td>{car.teacher}</td><td>{car.km_start}</td><td>{car.km_end}</td><td>{car.km_used}</td><td>{car.condition_start}</td><td>{car.condition_end}</td><td>{car.start_time}</td><td>{car.end_time}</td><td>{car.hours_worked.toFixed(2)}</td></>}</tr>)}<tr className="maitrise-report__total-row"><td colSpan="6">TOTAL</td><td>{report.totals.km_used}</td><td colSpan="4"></td><td>{report.totals.hours_worked.toFixed(2)}</td></tr></tbody></table></div>
+    <h4>ICYITONDERWA</h4><p className="maitrise-report__preserve-lines">{report.ikitonderwa}</p>
+    <div className="maitrise-report__signature-grid"><div><strong>PREPARED BY</strong><span>JEAN</span><i /><small>Signature</small><span>Date: __________________</span></div><div><strong>VERIFIED BY</strong><span>AGNES</span><i /><small>Signature</small><span>Date: __________________</span></div><div><strong>APPROVED BY</strong><span>CEO NKUNZIRYAYO JEAN PIERRE</span><span>CEO - KIMU TRANSPORT AND MULTISERVICE</span><i /><small>Signature</small><span>Date: __________________</span></div></div>
+    <p className="maitrise-report__reported-by">Reported by: {report.reported_by}</p>
   </article>;
 }
 

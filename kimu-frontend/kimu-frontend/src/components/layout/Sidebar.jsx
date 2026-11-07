@@ -8,7 +8,7 @@ const NAV_ITEMS = [
   { to: '/students', label: 'Students', icon: UsersIcon },
   { to: '/attendance', label: 'Attendance', icon: ClockIcon },
   { to: '/reports', label: 'Daily Reports', icon: ChartIcon },
-  { to: '/maitize-report', label: 'MAITIZE REPORT', icon: ReportIcon },
+  { to: '/maitrise-report', label: 'MAITRISE REPORT', icon: ReportIcon },
   { to: '/settings', label: 'Settings', icon: GearIcon },
 ];
 

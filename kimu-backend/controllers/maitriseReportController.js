@@ -1,5 +1,5 @@
-const MaitizeReport = require('../models/MaitizeReport');
-const { CAR_NAMES, CAR_PLATES, CONDITIONS } = MaitizeReport;
+const MaitriseReport = require('../models/MaitriseReport');
+const { CAR_NAMES, CAR_PLATES, CONDITIONS } = MaitriseReport;
 
 async function create(req, res, next) {
   try {
@@ -43,7 +43,7 @@ async function create(req, res, next) {
     const userNote = String(ikitonderwa || '').trim();
     const note = [...(userNote ? [userNote] : []), ...incidents].join('\n');
     if (!note) return res.status(400).json({ success: false, message: 'Class notes are required. Enter an incident or confirm that nothing unusual happened.' });
-    const report = await MaitizeReport.create({
+    const report = await MaitriseReport.create({
       date,
       class_group: String(classGroup).trim(),
       students: { attended, missed, total_registered: attended + missed },
@@ -62,14 +62,14 @@ async function create(req, res, next) {
 
 async function list(req, res, next) {
   try {
-    const reports = await MaitizeReport.find().select('date class_group students totals reported_by createdAt').sort({ date: -1, createdAt: -1 }).limit(100).lean();
+    const reports = await MaitriseReport.find().select('date class_group students totals reported_by createdAt').sort({ date: -1, createdAt: -1 }).limit(100).lean();
     res.json({ success: true, data: reports });
   } catch (error) { next(error); }
 }
 
 async function getById(req, res, next) {
   try {
-    const report = await MaitizeReport.findById(req.params.id).select('-__v').lean();
+    const report = await MaitriseReport.findById(req.params.id).select('-__v').lean();
     if (!report) return res.status(404).json({ success: false, message: 'Daily report not found.' });
     res.json({ success: true, data: report });
   } catch (error) { next(error); }

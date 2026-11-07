@@ -17,7 +17,7 @@ const notificationRoutes = require('./routes/notificationRoutes');
 const adminRoutes = require('./routes/adminRoutes');
 const userRoutes = require('./routes/userRoutes');
 const reportRoutes = require('./routes/reportRoutes');
-const maitizeReportRoutes = require('./routes/maitizeReportRoutes');
+const maitriseReportRoutes = require('./routes/maitriseReportRoutes');
 
 const app = express();
 const allowedOrigins = new Set([process.env.CLIENT_URL || 'http://localhost:5173']);
@@ -51,7 +51,7 @@ app.use('/api/notifications', notificationRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/reports', reportRoutes);
-app.use('/api/maitize-reports', maitizeReportRoutes);
+app.use('/api/maitrise-reports', maitriseReportRoutes);
 app.get('/api/dashboard/summary', require('./middleware/auth').protect, async (req, res, next) => {
   try {
     const company = await CompanySettings.findOne({ key: 'default' }).select('timezone').lean();

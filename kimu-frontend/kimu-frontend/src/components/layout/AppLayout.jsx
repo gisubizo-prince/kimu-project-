@@ -11,7 +11,7 @@ const PAGE_TITLES = {
   '/attendance': 'Attendance',
   '/visitors': 'Visitor Management',
   '/reports': 'Daily Reports',
-  '/maitize-report': 'MAITIZE REPORT',
+  '/maitrise-report': 'MAITRISE REPORT',
   '/notifications': 'Notifications',
   '/settings': 'Settings',
   '/settings/admin': 'System Controls',
