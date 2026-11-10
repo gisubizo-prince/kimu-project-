@@ -90,7 +90,7 @@ async function buildAttendancePdf(records, date) {
   const approvals = [
     ['Byateguwe na:', 'NIYONZIMA JEAN PIERRE', "DRIVER'S TRAINER"],
     ['Byagenzuwe na:', 'MANIRAGUHA AGNES', 'HEAD OF TRANSPORT'],
-    ['Byemejwe na:', 'HITIMANA JEAN', 'MAITRISE DIRECTOR'],
+    ['Byagenzuwe na:', 'HITIMANA JEAN', 'MAITRISE DIRECTOR'],
     ['Byemejwe na:', 'NKUNZIRYAYO JEAN PIERRE', 'CEO KIMU TRANSPORT'],
   ];
   const lefts = [14, 61, 108, 155];

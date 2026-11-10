@@ -16,7 +16,7 @@ const REPORT_SIGNERS = [
   { label: 'Byateguwe na:', name: 'NIYONZIMA JEAN PIERRE', title: "Umutoza w'abashoferi" },
   { label: 'Byagenzuwe na:', name: 'MANIRAGUHA AGNES', title: 'Umuyobozi ushinzwe ubwikorezi' },
   { label: 'Byemejwe na:', name: 'NKUNZIRYAYO JEAN PIERRE', title: 'Umuyobozi Mukuru wa KIMU TRANSPORT' },
-  { label: 'Byemejwe na:', name: 'HITIMANA JEAN', title: 'Umuyobozi wa MAITRISE' },
+  { label: 'Byagenzuwe na:', name: 'HITIMANA JEAN', title: 'Umuyobozi wa MAITRISE' },
 ];
 
 function emptyReport() {
