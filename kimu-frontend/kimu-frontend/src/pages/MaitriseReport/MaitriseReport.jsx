@@ -6,9 +6,9 @@ import kimuLogo from '../../assets/kimu.png';
 import './MaitriseReport.css';
 
 const CARS = [
-  { car: 'Levin ', plate: 'Levin (RAI631P)' },
-  { car: 'Levin ', plate: 'Levin (RAK165B)' },
-  { car: 'Dongfeng', plate: 'Dongfeng(RAJ016W)' },
+  { car: 'Levin 1', plate: 'RAI631P' },
+  { car: 'Levin 2', plate: 'RAK165B' },
+  { car: 'Dongfeng', plate: 'RAJ016W' },
 ];
 const CAR_NAMES = CARS.map((vehicle) => vehicle.car);
 const CONDITIONS = ['Good', 'Fair', 'Problem'];
