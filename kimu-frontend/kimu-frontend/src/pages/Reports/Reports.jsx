@@ -72,7 +72,7 @@ async function buildAttendancePdf(records, date) {
     theme: 'grid',
     startY: tableStart,
     margin: { left: 14, right: 14, bottom: 32 },
-    head: [['NO.', 'NAME', 'TEL', 'SHIFT', 'LESSON']],
+    head: [['NO.', 'AMAZINA', 'TEL', 'AMASAHA', 'ISOMO']],
     body: records.map((record, index) => [index + 1, record.studentName, record.telephone || '-', record.shift, record.lesson]),
     styles: { fontSize: 8, cellPadding: 2, overflow: 'linebreak', valign: 'middle', textColor: [0, 0, 0], fillColor: [255, 255, 255], lineColor: [0, 0, 0], lineWidth: 0.1 },
     headStyles: { fillColor: [255, 255, 255], textColor: [0, 0, 0], lineColor: [0, 0, 0], fontStyle: 'bold' },
@@ -88,9 +88,9 @@ async function buildAttendancePdf(records, date) {
   }
   document.setTextColor(0, 0, 0);
   const approvals = [
-    ['Byateguwe na:', 'NIYONZIMA JEAN PIERRE', "DRIVER'S TRAINER"],
-    ['Byagenzuwe na:', 'MANIRAGUHA AGNES', 'HEAD OF TRANSPORT'],
     ['Byagenzuwe na:', 'HITIMANA JEAN', 'Training Center Cordinator'],
+    ['Byagenzuwe na:', 'MANIRAGUHA AGNES', 'HEAD OF TRANSPORT'],
+    ['Byateguwe na:', 'NIYONZIMA JEAN PIERRE', "DRIVER'S TRAINER"],
     ['Byemejwe na:', 'NKUNZIRYAYO JEAN PIERRE', 'CEO KIMU TRANSPORT'],
   ];
   const lefts = [14, 61, 108, 155];
