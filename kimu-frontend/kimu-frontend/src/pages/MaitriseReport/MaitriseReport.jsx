@@ -14,9 +14,9 @@ const CAR_NAMES = CARS.map((vehicle) => vehicle.car);
 const CONDITIONS = ['Good', 'Fair', 'Problem'];
 const REPORT_SIGNERS = [
   { label: 'Byateguwe na:', name: 'NIYONZIMA JEAN PIERRE', title: "Umutoza w'abashoferi" },
+  { label: 'Byagenzuwe na:', name: 'HITIMANA JEAN', title: 'Umuyobozi wa MAITRISE' },
   { label: 'Byagenzuwe na:', name: 'MANIRAGUHA AGNES', title: 'Umuyobozi ushinzwe ubwikorezi' },
   { label: 'Byemejwe na:', name: 'NKUNZIRYAYO JEAN PIERRE', title: 'Umuyobozi Mukuru wa KIMU TRANSPORT' },
-  { label: 'Byagenzuwe na:', name: 'HITIMANA JEAN', title: 'Umuyobozi wa MAITRISE' },
 ];
 
 function emptyReport() {
@@ -320,7 +320,7 @@ function ReportDocument({ report }) {
     <h2>MAITRISE</h2><h3>RAPORO Y’UMUNSI</h3>
     <p><strong>Itariki:</strong> {report.date}</p>
     <table><thead><tr><th colSpan="2">ABASHOFERI</th></tr></thead><tbody><tr><td>Abitabiriye</td><td>{report.students.attended}</td></tr><tr><td>Abataritabiriye</td><td>{report.students.missed}</td></tr><tr><th>ABANDITSWE BOSE</th><th>{report.students.total_registered}</th></tr></tbody></table>
-    <div className="maitrise-report__table-wrap"><table><thead><tr><th rowSpan="2">NOMERO</th><th colSpan="2">AMAKURU Y'IKINYABIZIGA</th><th colSpan="3">INTERA (KM)</th><th colSpan="2">IMITERERE Y'IKINYABIZIGA</th><th colSpan="3">AMASAHA Y'AMAHUGURWA</th></tr><tr><th>IMODOKA</th><th>UMWARIMU</th><th>KM YO GUTANGIRA</th><th>KM YO KURANGIZA</th><th>KM ZAKOZWE</th><th>IGITANGIRA</th><th>IGISOZA</th><th>IGIHE CYO GUTANGIRA</th><th>IGIHE CYO KURANGIZA</th><th>AMASAHA</th></tr></thead><tbody>{report.cars.map((car, index) => <tr key={car.car}><td>{index + 1}</td><td>{formatVehicleName(car)}</td>{car.status === 'Not used' ? <td colSpan="9">NTIYAKOZESHEJWE</td> : <><td>{car.teacher}</td><td>{formatKilometers(car.km_start)}</td><td>{formatKilometers(car.km_end)}</td><td>{formatKilometers(car.km_used)}</td><td>{translateCondition(car.condition_start)}</td><td>{translateCondition(car.condition_end)}</td><td>{car.start_time}</td><td>{car.end_time}</td><td>{car.hours_worked.toFixed(2)}</td></>}</tr>)}</tbody></table></div>
+    <div className="maitrise-report__table-wrap"><table><thead><tr><th rowSpan="2">NO</th><th colSpan="2">AMAKURU Y'IKINYABIZIGA</th><th colSpan="3">INTERA (KM)</th><th colSpan="2">IMITERERE Y'IKINYABIZIGA</th><th colSpan="3">AMASAHA Y'AMAHUGURWA</th></tr><tr><th>IMODOKA</th><th>UMWARIMU</th><th>KM YO GUTANGIRA</th><th>KM YO GUSOZA</th><th>KM ZAKOZWE</th><th>GITANGIRA</th><th>GISOZA</th><th>IGIHE CYO GUTANGIRA</th><th>IGIHE CYO GUSOZA</th><th>AMASAHA</th></tr></thead><tbody>{report.cars.map((car, index) => <tr key={car.car}><td>{index + 1}</td><td>{formatVehicleName(car)}</td>{car.status === 'Not used' ? <td colSpan="9">NTIYAKOZESHEJWE</td> : <><td>{car.teacher}</td><td>{formatKilometers(car.km_start)}</td><td>{formatKilometers(car.km_end)}</td><td>{formatKilometers(car.km_used)}</td><td>{translateCondition(car.condition_start)}</td><td>{translateCondition(car.condition_end)}</td><td>{car.start_time}</td><td>{car.end_time}</td><td>{car.hours_worked.toFixed(2)}</td></>}</tr>)}</tbody></table></div>
     <h4>ICYITONDERWA</h4><p className="maitrise-report__preserve-lines">{report.ikitonderwa}</p>
     <div className="maitrise-report__signature-grid">{REPORT_SIGNERS.map((signer) => <div key={signer.name}><strong>{signer.label}</strong><span>{signer.name}</span><span>{signer.title}</span><i /><small>Aho asinya</small><span>Itariki: __________________</span></div>)}</div>
     <p className="maitrise-report__reported-by">Raporo yateguwe na: {report.reported_by}</p>
@@ -437,13 +437,13 @@ async function buildPdf(report) {
     ? [index + 1, formatVehicleName(car), { content: 'NTIYAKOZESHEJWE', colSpan: 9, styles: { halign: 'center', fontStyle: 'bold' } }]
     : [index + 1, formatVehicleName(car), car.teacher, formatKilometers(car.km_start), formatKilometers(car.km_end), formatKilometers(car.km_used), translateCondition(car.condition_start), translateCondition(car.condition_end), car.start_time, car.end_time, car.hours_worked.toFixed(2)]);
   const groupRow = [
-    { content: 'NOMERO', rowSpan: 2 },
+    { content: 'NO', rowSpan: 2 },
     { content: "AMAKURU Y'IKINYABIZIGA", colSpan: 2 },
     { content: 'INTERA (KM)', colSpan: 3 },
     { content: "IMITERERE Y'IKINYABIZIGA", colSpan: 2 },
     { content: "AMASAHA Y'AMAHUGURWA", colSpan: 3 },
   ];
-  const columnRow = ['IMODOKA', 'UMWARIMU', 'KM YO GUTANGIRA', 'KM YO KURANGIZA', 'KM ZAKOZWE', 'IGITANGIRA', 'IGISOZA', 'IGIHE CYO GUTANGIRA', 'IGIHE CYO KURANGIZA', 'AMASAHA'];
+  const columnRow = ['IMODOKA', 'UMWARIMU', 'KM YO GUTANGIRA', 'KM YO GUSOZA', 'KM ZAKOZWE', 'GITANGIRA', 'GISOZA', 'IGIHE CYO GUTANGIRA', 'IGIHE CYO GUSOZA', 'AMASAHA'];
   autoTable(doc, {
     theme: 'grid', startY: doc.lastAutoTable.finalY + 4, margin: { left: 14, right: 14, bottom: 13 },
     head: [groupRow, columnRow], body, showHead: 'everyPage',
