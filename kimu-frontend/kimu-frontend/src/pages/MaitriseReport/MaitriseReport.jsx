@@ -428,7 +428,7 @@ async function buildPdf(report) {
     theme: 'grid', startY: titleY + 10, margin: { left: 14, right: 14, bottom: 14 },
     head: [['ABASHOFERI', 'UMUBARE']],
     body: [['Abitabiriye', report.students.attended], ['Abataritabiriye', report.students.missed], [{ content: 'ABANDITSWE BOSE', styles: { fontStyle: 'bold' } }, { content: report.students.total_registered, styles: { fontStyle: 'bold' } }]],
-    styles: { fontSize: 7, cellPadding: 1.2, textColor: [0, 0, 0], fillColor: [255, 255, 255], lineColor: [0, 0, 0], lineWidth: 0.1 },
+    styles: { fontSize: 9, cellPadding: 1.8, textColor: [0, 0, 0], fillColor: [255, 255, 255], lineColor: [0, 0, 0], lineWidth: 0.1 },
     headStyles: { fillColor: [255, 255, 255], textColor: [0, 0, 0], lineColor: [0, 0, 0], fontStyle: 'bold' },
     columnStyles: { 0: { cellWidth: 56 }, 1: { cellWidth: 24, halign: 'center' } },
   });
@@ -447,7 +447,7 @@ async function buildPdf(report) {
   autoTable(doc, {
     theme: 'grid', startY: doc.lastAutoTable.finalY + 4, margin: { left: 14, right: 14, bottom: 13 },
     head: [groupRow, columnRow], body, showHead: 'everyPage',
-    styles: { fontSize: 6, cellPadding: 1.2, overflow: 'linebreak', valign: 'middle', textColor: [0, 0, 0], fillColor: [255, 255, 255], lineColor: [0, 0, 0], lineWidth: 0.1 },
+    styles: { fontSize: 7, cellPadding: 1.8, overflow: 'linebreak', valign: 'middle', textColor: [0, 0, 0], fillColor: [255, 255, 255], lineColor: [0, 0, 0], lineWidth: 0.1 },
     headStyles: { fillColor: [255, 255, 255], textColor: [0, 0, 0], lineColor: [0, 0, 0], fontStyle: 'bold', halign: 'center' },
     columnStyles: { 0: { cellWidth: 9, halign: 'center' }, 1: { cellWidth: 40 }, 2: { cellWidth: 31 }, 3: { cellWidth: 18, halign: 'right' }, 4: { cellWidth: 18, halign: 'right' }, 5: { cellWidth: 17, halign: 'right' }, 6: { cellWidth: 23 }, 7: { cellWidth: 23 }, 8: { cellWidth: 21 }, 9: { cellWidth: 21 }, 10: { cellWidth: 18, halign: 'right' } },
   });
