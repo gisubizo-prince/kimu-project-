@@ -170,9 +170,8 @@ export default function MaitriseReport() {
     const data = exportableReport(report);
     const workbook = XLSX.utils.book_new();
     const summary = [
-      ["RAPORO Y'AMASOMO Y'UMUNSI"],
+      ['RAPORO Y’UMUNSI'],
       ['Itariki', data.date],
-      ['Icyiciro/Itsinda', data.class_group],
       [],
       ["ABASHOFERI", 'UMUBARE'],
       ['Abitabiriye', data.students.attended],
@@ -184,8 +183,7 @@ export default function MaitriseReport() {
     ];
     const vehicles = data.cars.map((car, index) => ({
       'Nomero': index + 1,
-      Ikinyabiziga: car.car,
-      Icyapa: car.plate || '-',
+      Imodoka: formatVehicleName(car),
       Umwarimu: car.teacher || '-',
       'KM yo gutangira': formatKilometers(car.km_start),
       'KM yo kurangiza': formatKilometers(car.km_end),
@@ -300,7 +298,7 @@ function ReviewSummary({ data, onEdit }) {
   return <div className="maitrise-report__review">
     <section><div className="maitrise-report__review-heading"><h3>Class details</h3><button onClick={() => onEdit(0)}>Edit</button></div><p>Date: {data.date} · Class/group: {data.class_group}</p></section>
     <section><div className="maitrise-report__review-heading"><h3>Student attendance</h3><button onClick={() => onEdit(1)}>Edit</button></div><p>Attended {data.students.attended} · Missed {data.students.missed} · Total registered {data.students.total_registered}</p></section>
-    <section><div className="maitrise-report__review-heading"><h3>Vehicle utilization</h3><button onClick={() => onEdit(2, 0)}>Edit</button></div><div className="maitrise-report__table-wrap"><table><thead><tr><th>Car</th><th>Plate</th><th>Teacher</th><th>KM start</th><th>KM end</th><th>KM used</th><th>Condition</th><th>Start</th><th>End</th><th>Hours</th></tr></thead><tbody>{data.cars.map((car) => <tr key={car.car}><td>{car.car}</td><td>{car.plate}</td>{car.status === 'Not used' ? <td colSpan="8">NOT USED</td> : <><td>{car.teacher}</td><td>{formatKilometers(car.km_start)}</td><td>{formatKilometers(car.km_end)}</td><td>{formatKilometers(car.km_used)}</td><td>{translateCondition(car.condition_start)} / {translateCondition(car.condition_end)}</td><td>{car.start_time}</td><td>{car.end_time}</td><td>{car.hours_worked.toFixed(2)}</td></>}</tr>)}</tbody></table></div></section>
+    <section><div className="maitrise-report__review-heading"><h3>Vehicle utilization</h3><button onClick={() => onEdit(2, 0)}>Edit</button></div><div className="maitrise-report__table-wrap"><table><thead><tr><th>Imodoka</th><th>Teacher</th><th>KM start</th><th>KM end</th><th>KM used</th><th>Condition</th><th>Start</th><th>End</th><th>Hours</th></tr></thead><tbody>{data.cars.map((car) => <tr key={car.car}><td>{formatVehicleName(car)}</td>{car.status === 'Not used' ? <td colSpan="8">NOT USED</td> : <><td>{car.teacher}</td><td>{formatKilometers(car.km_start)}</td><td>{formatKilometers(car.km_end)}</td><td>{formatKilometers(car.km_used)}</td><td>{translateCondition(car.condition_start)} / {translateCondition(car.condition_end)}</td><td>{car.start_time}</td><td>{car.end_time}</td><td>{car.hours_worked.toFixed(2)}</td></>}</tr>)}</tbody></table></div></section>
     <section><div className="maitrise-report__review-heading"><h3>Ikitonderwa</h3><button onClick={() => onEdit(3)}>Edit</button></div><p className="maitrise-report__preserve-lines">{data.ikitonderwa}</p></section>
     <section><div className="maitrise-report__review-heading"><h3>Reported by</h3><button onClick={() => onEdit(4)}>Edit</button></div><p>{data.reported_by}</p></section>
   </div>;
@@ -319,10 +317,10 @@ function GeneratedReport({ report, onNew, onPdf, onJson, onExcel }) {
 function ReportDocument({ report }) {
   return <article className="maitrise-report__document">
     <img className="maitrise-report__document-logo" src={kimuLogo} alt="Kimu Transport logo" />
-    <h2>MAITRISE</h2><h3>RAPORO Y'AMASOMO Y'UMUNSI</h3>
-    <p><strong>Itariki:</strong> {report.date} <strong>Icyiciro/Itsinda:</strong> {report.class_group}</p>
+    <h2>MAITRISE</h2><h3>RAPORO Y’UMUNSI</h3>
+    <p><strong>Itariki:</strong> {report.date}</p>
     <table><thead><tr><th colSpan="2">ABASHOFERI</th></tr></thead><tbody><tr><td>Abitabiriye</td><td>{report.students.attended}</td></tr><tr><td>Abataritabiriye</td><td>{report.students.missed}</td></tr><tr><th>ABANDITSWE BOSE</th><th>{report.students.total_registered}</th></tr></tbody></table>
-    <div className="maitrise-report__table-wrap"><table><thead><tr><th rowSpan="2">NOMERO</th><th colSpan="3">AMAKURU Y'IKINYABIZIGA</th><th colSpan="3">INTERA (KM)</th><th colSpan="2">IMITERERE Y'IKINYABIZIGA</th><th colSpan="3">AMASAHA Y'AMAHUGURWA</th></tr><tr><th>IKINYABIZIGA</th><th>ICYAPA</th><th>UMWARIMU</th><th>KM YO GUTANGIRA</th><th>KM YO KURANGIZA</th><th>KM ZAKOZWE</th><th>IGITANGIRA</th><th>IGISOZA</th><th>IGIHE CYO GUTANGIRA</th><th>IGIHE CYO KURANGIZA</th><th>AMASAHA</th></tr></thead><tbody>{report.cars.map((car, index) => <tr key={car.car}><td>{index + 1}</td><td>{car.car}</td><td>{car.plate || '-'}</td>{car.status === 'Not used' ? <td colSpan="9">NTIYAKOZESHEJWE</td> : <><td>{car.teacher}</td><td>{formatKilometers(car.km_start)}</td><td>{formatKilometers(car.km_end)}</td><td>{formatKilometers(car.km_used)}</td><td>{translateCondition(car.condition_start)}</td><td>{translateCondition(car.condition_end)}</td><td>{car.start_time}</td><td>{car.end_time}</td><td>{car.hours_worked.toFixed(2)}</td></>}</tr>)}</tbody></table></div>
+    <div className="maitrise-report__table-wrap"><table><thead><tr><th rowSpan="2">NOMERO</th><th colSpan="2">AMAKURU Y'IKINYABIZIGA</th><th colSpan="3">INTERA (KM)</th><th colSpan="2">IMITERERE Y'IKINYABIZIGA</th><th colSpan="3">AMASAHA Y'AMAHUGURWA</th></tr><tr><th>IMODOKA</th><th>UMWARIMU</th><th>KM YO GUTANGIRA</th><th>KM YO KURANGIZA</th><th>KM ZAKOZWE</th><th>IGITANGIRA</th><th>IGISOZA</th><th>IGIHE CYO GUTANGIRA</th><th>IGIHE CYO KURANGIZA</th><th>AMASAHA</th></tr></thead><tbody>{report.cars.map((car, index) => <tr key={car.car}><td>{index + 1}</td><td>{formatVehicleName(car)}</td>{car.status === 'Not used' ? <td colSpan="9">NTIYAKOZESHEJWE</td> : <><td>{car.teacher}</td><td>{formatKilometers(car.km_start)}</td><td>{formatKilometers(car.km_end)}</td><td>{formatKilometers(car.km_used)}</td><td>{translateCondition(car.condition_start)}</td><td>{translateCondition(car.condition_end)}</td><td>{car.start_time}</td><td>{car.end_time}</td><td>{car.hours_worked.toFixed(2)}</td></>}</tr>)}</tbody></table></div>
     <h4>ICYITONDERWA</h4><p className="maitrise-report__preserve-lines">{report.ikitonderwa}</p>
     <div className="maitrise-report__signature-grid">{REPORT_SIGNERS.map((signer) => <div key={signer.name}><strong>{signer.label}</strong><span>{signer.name}</span><span>{signer.title}</span><i /><small>Aho asinya</small><span>Itariki: __________________</span></div>)}</div>
     <p className="maitrise-report__reported-by">Raporo yateguwe na: {report.reported_by}</p>
@@ -370,8 +368,7 @@ function kinyarwandaReport(report) {
     },
     ibinyabiziga: data.cars.map((car, index) => ({
       nimero: index + 1,
-      ikinyabiziga: car.car,
-      icyapa: car.plate || '-',
+      imodoka: formatVehicleName(car),
       umwarimu: car.teacher || '-',
       km_yo_gutangira: roundKilometers(car.km_start),
       km_yo_kurangiza: roundKilometers(car.km_end),
@@ -398,6 +395,10 @@ function formatKilometers(value) {
   return rounded === null ? '-' : rounded.toLocaleString('en-US', { maximumFractionDigits: 1 });
 }
 
+function formatVehicleName(car) {
+  return car.plate ? `${car.car} (${car.plate})` : car.car;
+}
+
 function translateCondition(condition) {
   return { Good: 'Byiza', Fair: 'Bisanzwe', Problem: 'Ikibazo' }[condition] || '-';
 }
@@ -414,14 +415,14 @@ async function buildPdf(report) {
   doc.setTextColor(0, 0, 0);
   doc.setFont('helvetica', 'bold');
   doc.setFontSize(13);
-  doc.text("RAPORO Y'AMASOMO Y'UMUNSI", pageWidth / 2, titleY, { align: 'center' });
+  doc.text('RAPORO Y’UMUNSI', pageWidth / 2, titleY, { align: 'center' });
   doc.setFontSize(8);
   doc.setFont('helvetica', 'normal');
-  doc.text(`Itariki: ${report.date}     Icyiciro/Itsinda: ${report.class_group}`, pageWidth / 2, titleY + 6, { align: 'center' });
+  doc.text(`Itariki: ${report.date}`, 14, titleY + 6);
 
   autoTable(doc, {
     theme: 'grid', startY: titleY + 10, margin: { left: 14, right: 14, bottom: 14 },
-    head: [["ABANYESHURI N'UKWITABIRA", 'UMUBARE']],
+    head: [['ABASHOFERI', 'UMUBARE']],
     body: [['Abitabiriye', report.students.attended], ['Abataritabiriye', report.students.missed], [{ content: 'ABANDITSWE BOSE', styles: { fontStyle: 'bold' } }, { content: report.students.total_registered, styles: { fontStyle: 'bold' } }]],
     styles: { fontSize: 7, cellPadding: 1.2, textColor: [0, 0, 0], fillColor: [255, 255, 255], lineColor: [0, 0, 0], lineWidth: 0.1 },
     headStyles: { fillColor: [255, 255, 255], textColor: [0, 0, 0], lineColor: [0, 0, 0], fontStyle: 'bold' },
@@ -429,22 +430,22 @@ async function buildPdf(report) {
   });
 
   const body = report.cars.map((car, index) => car.status === 'Not used'
-    ? [index + 1, car.car, car.plate || '-', { content: 'NTIYAKOZESHEJWE', colSpan: 9, styles: { halign: 'center', fontStyle: 'bold' } }]
-    : [index + 1, car.car, car.plate || '-', car.teacher, formatKilometers(car.km_start), formatKilometers(car.km_end), formatKilometers(car.km_used), translateCondition(car.condition_start), translateCondition(car.condition_end), car.start_time, car.end_time, car.hours_worked.toFixed(2)]);
+    ? [index + 1, formatVehicleName(car), { content: 'NTIYAKOZESHEJWE', colSpan: 9, styles: { halign: 'center', fontStyle: 'bold' } }]
+    : [index + 1, formatVehicleName(car), car.teacher, formatKilometers(car.km_start), formatKilometers(car.km_end), formatKilometers(car.km_used), translateCondition(car.condition_start), translateCondition(car.condition_end), car.start_time, car.end_time, car.hours_worked.toFixed(2)]);
   const groupRow = [
     { content: 'NOMERO', rowSpan: 2 },
-    { content: "AMAKURU Y'IKINYABIZIGA", colSpan: 3 },
+    { content: "AMAKURU Y'IKINYABIZIGA", colSpan: 2 },
     { content: 'INTERA (KM)', colSpan: 3 },
     { content: "IMITERERE Y'IKINYABIZIGA", colSpan: 2 },
     { content: "AMASAHA Y'AMAHUGURWA", colSpan: 3 },
   ];
-  const columnRow = ['IKINYABIZIGA', 'ICYAPA', 'UMWARIMU', 'KM YO GUTANGIRA', 'KM YO KURANGIZA', 'KM ZAKOZWE', 'IGITANGIRA', 'IGISOZA', 'IGIHE CYO GUTANGIRA', 'IGIHE CYO KURANGIZA', 'AMASAHA'];
+  const columnRow = ['IMODOKA', 'UMWARIMU', 'KM YO GUTANGIRA', 'KM YO KURANGIZA', 'KM ZAKOZWE', 'IGITANGIRA', 'IGISOZA', 'IGIHE CYO GUTANGIRA', 'IGIHE CYO KURANGIZA', 'AMASAHA'];
   autoTable(doc, {
     theme: 'grid', startY: doc.lastAutoTable.finalY + 4, margin: { left: 14, right: 14, bottom: 13 },
     head: [groupRow, columnRow], body, showHead: 'everyPage',
     styles: { fontSize: 6, cellPadding: 1.2, overflow: 'linebreak', valign: 'middle', textColor: [0, 0, 0], fillColor: [255, 255, 255], lineColor: [0, 0, 0], lineWidth: 0.1 },
     headStyles: { fillColor: [255, 255, 255], textColor: [0, 0, 0], lineColor: [0, 0, 0], fontStyle: 'bold', halign: 'center' },
-    columnStyles: { 0: { cellWidth: 9, halign: 'center' }, 1: { cellWidth: 20 }, 2: { cellWidth: 20 }, 3: { cellWidth: 31 }, 4: { cellWidth: 18, halign: 'right' }, 5: { cellWidth: 18, halign: 'right' }, 6: { cellWidth: 17, halign: 'right' }, 7: { cellWidth: 23 }, 8: { cellWidth: 23 }, 9: { cellWidth: 21 }, 10: { cellWidth: 21 }, 11: { cellWidth: 18, halign: 'right' } },
+    columnStyles: { 0: { cellWidth: 9, halign: 'center' }, 1: { cellWidth: 40 }, 2: { cellWidth: 31 }, 3: { cellWidth: 18, halign: 'right' }, 4: { cellWidth: 18, halign: 'right' }, 5: { cellWidth: 17, halign: 'right' }, 6: { cellWidth: 23 }, 7: { cellWidth: 23 }, 8: { cellWidth: 21 }, 9: { cellWidth: 21 }, 10: { cellWidth: 18, halign: 'right' } },
   });
 
   let cursorY = doc.lastAutoTable.finalY + 7;
