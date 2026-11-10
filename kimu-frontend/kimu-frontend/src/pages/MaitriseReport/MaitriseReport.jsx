@@ -6,9 +6,9 @@ import kimuLogo from '../../assets/kimu.png';
 import './MaitriseReport.css';
 
 const CARS = [
-  { car: 'Levin 1', plate: 'RAI631P' },
-  { car: 'Levin 2', plate: 'RAK165B' },
-  { car: 'Dongfeng', plate: 'RAJ016W' },
+  { car: 'Levin ', plate: 'Levin (RAI631P)' },
+  { car: 'Levin ', plate: 'Levin (RAK165B)' },
+  { car: 'Dongfeng', plate: 'Dongfeng(RAJ016W)' },
 ];
 const CAR_NAMES = CARS.map((vehicle) => vehicle.car);
 const CONDITIONS = ['Good', 'Fair', 'Problem'];
@@ -174,9 +174,9 @@ export default function MaitriseReport() {
       ['Itariki', data.date],
       ['Icyiciro/Itsinda', data.class_group],
       [],
-      ["ABANYESHURI N'UKWITABIRA", 'UMUBARE'],
+      ["ABASHOFERI", 'UMUBARE'],
       ['Abitabiriye', data.students.attended],
-      ['Abataritabiriye', data.students.missed],
+      ['Abasibye', data.students.missed],
       ['Abiyandikishije bose', data.students.total_registered],
       [],
       ['Icyitonderwa', data.ikitonderwa],
@@ -211,7 +211,7 @@ export default function MaitriseReport() {
 
   return <main className="maitrise-report">
     <header className="maitrise-report__header">
-      <div><p className="kimu-eyebrow">METRIZE DRIVING SCHOOL</p><h1>MAITRISE REPORT</h1><p>Create and archive a daily class and vehicle report.</p></div>
+      <div><p className="kimu-eyebrow">MAITRISE DRIVING SCHOOL</p><h1>MAITRISE REPORT</h1><p>Create and archive a daily class and vehicle report.</p></div>
       <div className="maitrise-report__tabs" role="tablist" aria-label="Report views">
         <button className={view === 'new' ? 'is-active' : ''} onClick={() => { setView('new'); setError(''); }} role="tab" aria-selected={view === 'new'}>New report</button>
         <button className={view === 'history' ? 'is-active' : ''} onClick={() => { setView('history'); setError(''); }} role="tab" aria-selected={view === 'history'}>Saved reports</button>
@@ -321,7 +321,7 @@ function ReportDocument({ report }) {
     <img className="maitrise-report__document-logo" src={kimuLogo} alt="Kimu Transport logo" />
     <h2>MAITRISE</h2><h3>RAPORO Y'AMASOMO Y'UMUNSI</h3>
     <p><strong>Itariki:</strong> {report.date} <strong>Icyiciro/Itsinda:</strong> {report.class_group}</p>
-    <table><thead><tr><th colSpan="2">ABANYESHURI N'UKWITABIRA</th></tr></thead><tbody><tr><td>Abitabiriye</td><td>{report.students.attended}</td></tr><tr><td>Abataritabiriye</td><td>{report.students.missed}</td></tr><tr><th>ABANDITSWE BOSE</th><th>{report.students.total_registered}</th></tr></tbody></table>
+    <table><thead><tr><th colSpan="2">ABASHOFERI</th></tr></thead><tbody><tr><td>Abitabiriye</td><td>{report.students.attended}</td></tr><tr><td>Abataritabiriye</td><td>{report.students.missed}</td></tr><tr><th>ABANDITSWE BOSE</th><th>{report.students.total_registered}</th></tr></tbody></table>
     <div className="maitrise-report__table-wrap"><table><thead><tr><th rowSpan="2">NOMERO</th><th colSpan="3">AMAKURU Y'IKINYABIZIGA</th><th colSpan="3">INTERA (KM)</th><th colSpan="2">IMITERERE Y'IKINYABIZIGA</th><th colSpan="3">AMASAHA Y'AMAHUGURWA</th></tr><tr><th>IKINYABIZIGA</th><th>ICYAPA</th><th>UMWARIMU</th><th>KM YO GUTANGIRA</th><th>KM YO KURANGIZA</th><th>KM ZAKOZWE</th><th>IGITANGIRA</th><th>IGISOZA</th><th>IGIHE CYO GUTANGIRA</th><th>IGIHE CYO KURANGIZA</th><th>AMASAHA</th></tr></thead><tbody>{report.cars.map((car, index) => <tr key={car.car}><td>{index + 1}</td><td>{car.car}</td><td>{car.plate || '-'}</td>{car.status === 'Not used' ? <td colSpan="9">NTIYAKOZESHEJWE</td> : <><td>{car.teacher}</td><td>{formatKilometers(car.km_start)}</td><td>{formatKilometers(car.km_end)}</td><td>{formatKilometers(car.km_used)}</td><td>{translateCondition(car.condition_start)}</td><td>{translateCondition(car.condition_end)}</td><td>{car.start_time}</td><td>{car.end_time}</td><td>{car.hours_worked.toFixed(2)}</td></>}</tr>)}</tbody></table></div>
     <h4>ICYITONDERWA</h4><p className="maitrise-report__preserve-lines">{report.ikitonderwa}</p>
     <div className="maitrise-report__signature-grid">{REPORT_SIGNERS.map((signer) => <div key={signer.name}><strong>{signer.label}</strong><span>{signer.name}</span><span>{signer.title}</span><i /><small>Aho asinya</small><span>Itariki: __________________</span></div>)}</div>
