@@ -66,8 +66,8 @@ export default function Reports() {
 
 async function buildAttendancePdf(records, date) {
   const document = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
-  const title = 'REPORT YA MAITRISE';
-  const tableStart = await addReportHeader(document, title, `date: ${date}`);
+  const title = 'URUTONDE RWABITABIRIYE MAITRISE';
+  const tableStart = await addReportHeader(document, title, `Tariki: ${date}`);
   autoTable(document, {
     theme: 'grid',
     startY: tableStart,
@@ -83,18 +83,19 @@ async function buildAttendancePdf(records, date) {
   const pageHeight = document.internal.pageSize.getHeight();
   if (signatureTop + 39 > pageHeight - 30) {
     document.addPage();
-    signatureTop = await addReportHeader(document, title, `date: ${date}`) + 5;
+    signatureTop = await addReportHeader(document, title, `Tariki: ${date}`) + 5;
     addReportFooter(document);
   }
   document.setTextColor(0, 0, 0);
   const approvals = [
     ['Byateguwe na:', 'NIYONZIMA JEAN PIERRE', "DRIVER'S TRAINER"],
     ['Byagenzuwe na:', 'MANIRAGUHA AGNES', 'HEAD OF TRANSPORT'],
+    ['Byemejwe na:', 'HITIMANA JEAN', 'MAITRISE DIRECTOR'],
     ['Byemejwe na:', 'NKUNZIRYAYO JEAN PIERRE', 'CEO KIMU TRANSPORT'],
   ];
-  const lefts = [14, 77, 140];
+  const lefts = [14, 61, 108, 155];
   approvals.forEach((approval, index) => {
-    const blockWidth = 54;
+    const blockWidth = 42;
     const blockX = lefts[index];
     const blockY = signatureTop;
     document.setFont('helvetica', 'normal');
