@@ -60,7 +60,7 @@
 .maitrise-report__document .maitrise-report__table-wrap { margin-top: 10px; }
 .maitrise-report__document th, .maitrise-report__document td { padding: 6px; border-color: #000; font-size: 9px; color: #000; }
 .maitrise-report__document th { background: #fff; }
-.maitrise-report__signature-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 26px; margin-top: 22px; }
+.maitrise-report__signature-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; margin-top: 22px; }
 .maitrise-report__signature-grid > div { display: grid; align-content: start; gap: 7px; min-width: 0; font-size: 10px; }
 .maitrise-report__signature-grid strong { font-size: 10px; }
 .maitrise-report__signature-grid span { overflow-wrap: anywhere; }

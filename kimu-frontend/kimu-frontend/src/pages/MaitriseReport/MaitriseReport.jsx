@@ -12,6 +12,12 @@ const CARS = [
 ];
 const CAR_NAMES = CARS.map((vehicle) => vehicle.car);
 const CONDITIONS = ['Good', 'Fair', 'Problem'];
+const REPORT_SIGNERS = [
+  { label: 'Byateguwe na:', name: 'NIYONZIMA JEAN PIERRE', title: "Umutoza w'abashoferi" },
+  { label: 'Byagenzuwe na:', name: 'MANIRAGUHA AGNES', title: 'Umuyobozi ushinzwe ubwikorezi' },
+  { label: 'Byemejwe na:', name: 'NKUNZIRYAYO JEAN PIERRE', title: 'Umuyobozi Mukuru wa KIMU TRANSPORT' },
+  { label: 'Byemejwe na:', name: 'HITIMANA JEAN', title: 'Umuyobozi wa MAITRISE' },
+];
 
 function emptyReport() {
   return {
@@ -155,8 +161,8 @@ export default function MaitriseReport() {
   }
 
   function downloadJson(report) {
-    const data = exportableReport(report);
-    downloadBlob(JSON.stringify(data, null, 2), `maitrise-report-${report.date}.json`, 'application/json');
+    const data = kinyarwandaReport(report);
+    downloadBlob(JSON.stringify(data, null, 2), `raporo-maitrise-${report.date}.json`, 'application/json');
   }
 
   async function downloadExcel(report) {
@@ -164,28 +170,41 @@ export default function MaitriseReport() {
     const data = exportableReport(report);
     const workbook = XLSX.utils.book_new();
     const summary = [
-      ['DAILY CLASS REPORT'],
-      ['Date', data.date],
-      ['Class/Group', data.class_group],
+      ["RAPORO Y'AMASOMO Y'UMUNSI"],
+      ['Itariki', data.date],
+      ['Icyiciro/Itsinda', data.class_group],
       [],
-      ['ATTENDANCE PARTICULARS', 'TOTAL'],
-      ['Students attended', data.students.attended],
-      ['Students missed', data.students.missed],
-      ['Total registered', data.students.total_registered],
+      ["ABANYESHURI N'UKWITABIRA", 'UMUBARE'],
+      ['Abitabiriye', data.students.attended],
+      ['Abataritabiriye', data.students.missed],
+      ['Abiyandikishije bose', data.students.total_registered],
       [],
-      ['Total KM used', data.totals.km_used],
-      ['Total hours worked', data.totals.hours_worked],
-      ['Ikitonderwa', data.ikitonderwa],
-      ['Reported by', data.reported_by],
+      ['Icyitonderwa', data.ikitonderwa],
+      ['Raporo yateguwe na', data.reported_by],
     ];
-    XLSX.utils.book_append_sheet(workbook, XLSX.utils.aoa_to_sheet(summary), 'Class Summary');
-    XLSX.utils.book_append_sheet(workbook, XLSX.utils.json_to_sheet(data.cars), 'Vehicle Utilization');
-    XLSX.writeFile(workbook, `maitrise-report-${report.date}.xlsx`);
+    const vehicles = data.cars.map((car, index) => ({
+      'Nomero': index + 1,
+      Ikinyabiziga: car.car,
+      Icyapa: car.plate || '-',
+      Umwarimu: car.teacher || '-',
+      'KM yo gutangira': formatKilometers(car.km_start),
+      'KM yo kurangiza': formatKilometers(car.km_end),
+      'KM zakozwe': formatKilometers(car.km_used),
+      'Imiterere yo gutangira': translateCondition(car.condition_start),
+      'Imiterere yo kurangiza': translateCondition(car.condition_end),
+      'Igihe cyo gutangira': car.start_time || '-',
+      'Igihe cyo kurangiza': car.end_time || '-',
+      'Amasaha yakoreshejwe': Number(car.hours_worked).toFixed(2),
+      'Imikoreshereze': car.status === 'Not used' ? 'Ntiyakoreshejwe' : 'Yarakoreshejwe',
+    }));
+    XLSX.utils.book_append_sheet(workbook, XLSX.utils.aoa_to_sheet(summary), 'Incamake');
+    XLSX.utils.book_append_sheet(workbook, XLSX.utils.json_to_sheet(vehicles), 'Ibinyabiziga');
+    XLSX.writeFile(workbook, `raporo-maitrise-${report.date}.xlsx`);
   }
 
   async function downloadPdf(report) {
     const document = await buildPdf(report);
-    document.save(`maitrise-report-${report.date}.pdf`);
+    document.save(`raporo-maitrise-${report.date}.pdf`);
   }
 
   const title = step < stepNames.length ? stepNames[step] : 'Report generated';
@@ -204,7 +223,7 @@ export default function MaitriseReport() {
     {view === 'history' ? <section className="maitrise-report__panel">
       <div className="maitrise-report__section-heading"><div><h2>Saved daily reports</h2><p>Latest 100 reports</p></div><button className="kimu-btn kimu-btn--primary" onClick={startNewReport}>New report</button></div>
       <div className="maitrise-report__table-wrap"><table><thead><tr><th>Date</th><th>Class/group</th><th>Attended</th><th>Missed</th><th>Registered</th><th>KM used</th><th>Hours</th><th>Reported by</th><th></th></tr></thead><tbody>
-        {history.length === 0 ? <tr><td colSpan="9">No saved reports yet.</td></tr> : history.map((report) => <tr key={report._id}><td>{report.date}</td><td>{report.class_group}</td><td>{report.students.attended}</td><td>{report.students.missed}</td><td>{report.students.total_registered}</td><td>{report.totals.km_used}</td><td>{Number(report.totals.hours_worked).toFixed(2)}</td><td>{report.reported_by}</td><td><button className="maitrise-report__text-button" onClick={() => openSavedReport(report._id)}>Open</button></td></tr>)}
+        {history.length === 0 ? <tr><td colSpan="9">No saved reports yet.</td></tr> : history.map((report) => <tr key={report._id}><td>{report.date}</td><td>{report.class_group}</td><td>{report.students.attended}</td><td>{report.students.missed}</td><td>{report.students.total_registered}</td><td>{formatKilometers(report.totals.km_used)}</td><td>{Number(report.totals.hours_worked).toFixed(2)}</td><td>{report.reported_by}</td><td><button className="maitrise-report__text-button" onClick={() => openSavedReport(report._id)}>Open</button></td></tr>)}
       </tbody></table></div>
     </section> : step === 6 && savedReport ? <GeneratedReport report={savedReport} onNew={startNewReport} onPdf={() => downloadPdf(savedReport)} onJson={() => downloadJson(savedReport)} onExcel={() => downloadExcel(savedReport)} /> : <>
       <nav className="maitrise-report__progress" aria-label="Report steps">{stepNames.map((name, index) => <div key={name} className={index === step ? 'is-current' : index < step ? 'is-complete' : ''}><span>{index + 1}</span>{name}</div>)}</nav>
@@ -281,7 +300,7 @@ function ReviewSummary({ data, onEdit }) {
   return <div className="maitrise-report__review">
     <section><div className="maitrise-report__review-heading"><h3>Class details</h3><button onClick={() => onEdit(0)}>Edit</button></div><p>Date: {data.date} · Class/group: {data.class_group}</p></section>
     <section><div className="maitrise-report__review-heading"><h3>Student attendance</h3><button onClick={() => onEdit(1)}>Edit</button></div><p>Attended {data.students.attended} · Missed {data.students.missed} · Total registered {data.students.total_registered}</p></section>
-    <section><div className="maitrise-report__review-heading"><h3>Vehicle utilization</h3><button onClick={() => onEdit(2, 0)}>Edit</button></div><div className="maitrise-report__table-wrap"><table><thead><tr><th>Car</th><th>Plate</th><th>Teacher</th><th>KM start</th><th>KM end</th><th>KM used</th><th>Condition</th><th>Start</th><th>End</th><th>Hours</th></tr></thead><tbody>{data.cars.map((car) => <tr key={car.car}><td>{car.car}</td><td>{car.plate}</td>{car.status === 'Not used' ? <td colSpan="8">NOT USED</td> : <><td>{car.teacher}</td><td>{car.km_start}</td><td>{car.km_end}</td><td>{car.km_used}</td><td>{car.condition_start} / {car.condition_end}</td><td>{car.start_time}</td><td>{car.end_time}</td><td>{car.hours_worked.toFixed(2)}</td></>}</tr>)}<tr className="maitrise-report__total-row"><td colSpan="5">TOTAL</td><td>{data.totals.km_used}</td><td colSpan="3"></td><td>{data.totals.hours_worked.toFixed(2)}</td></tr></tbody></table></div></section>
+    <section><div className="maitrise-report__review-heading"><h3>Vehicle utilization</h3><button onClick={() => onEdit(2, 0)}>Edit</button></div><div className="maitrise-report__table-wrap"><table><thead><tr><th>Car</th><th>Plate</th><th>Teacher</th><th>KM start</th><th>KM end</th><th>KM used</th><th>Condition</th><th>Start</th><th>End</th><th>Hours</th></tr></thead><tbody>{data.cars.map((car) => <tr key={car.car}><td>{car.car}</td><td>{car.plate}</td>{car.status === 'Not used' ? <td colSpan="8">NOT USED</td> : <><td>{car.teacher}</td><td>{formatKilometers(car.km_start)}</td><td>{formatKilometers(car.km_end)}</td><td>{formatKilometers(car.km_used)}</td><td>{translateCondition(car.condition_start)} / {translateCondition(car.condition_end)}</td><td>{car.start_time}</td><td>{car.end_time}</td><td>{car.hours_worked.toFixed(2)}</td></>}</tr>)}</tbody></table></div></section>
     <section><div className="maitrise-report__review-heading"><h3>Ikitonderwa</h3><button onClick={() => onEdit(3)}>Edit</button></div><p className="maitrise-report__preserve-lines">{data.ikitonderwa}</p></section>
     <section><div className="maitrise-report__review-heading"><h3>Reported by</h3><button onClick={() => onEdit(4)}>Edit</button></div><p>{data.reported_by}</p></section>
   </div>;
@@ -290,23 +309,23 @@ function ReviewSummary({ data, onEdit }) {
 function GeneratedReport({ report, onNew, onPdf, onJson, onExcel }) {
   const data = exportableReport(report);
   return <section className="maitrise-report__panel">
-    <div className="maitrise-report__section-heading"><div><p className="kimu-eyebrow">REPORT SAVED</p><h2>Daily class report generated</h2><p>{report.date} · {report.class_group}</p></div><button className="kimu-btn kimu-btn--secondary" onClick={onNew}>Start another report</button></div>
+    <div className="maitrise-report__section-heading"><div><p className="kimu-eyebrow">RAPORO YABITSWE</p><h2>Raporo y'amasomo y'umunsi yarakozwe</h2><p>{report.date} · {report.class_group}</p></div><button className="kimu-btn kimu-btn--secondary" onClick={onNew}>Tangira indi raporo</button></div>
     <ReportDocument report={data} />
-    <div className="maitrise-report__export-actions"><button className="kimu-btn kimu-btn--primary" onClick={onPdf}>Download PDF</button><button className="kimu-btn kimu-btn--secondary" onClick={onExcel}>Export Excel</button><button className="kimu-btn kimu-btn--secondary" onClick={onJson}>Download JSON</button></div>
-    <details className="maitrise-report__json"><summary>Saved report JSON</summary><pre>{JSON.stringify(data, null, 2)}</pre></details>
+    <div className="maitrise-report__export-actions"><button className="kimu-btn kimu-btn--primary" onClick={onPdf}>Kuramo PDF</button><button className="kimu-btn kimu-btn--secondary" onClick={onExcel}>Ohereza muri Excel</button><button className="kimu-btn kimu-btn--secondary" onClick={onJson}>Kuramo JSON</button></div>
+    <details className="maitrise-report__json"><summary>Reba raporo mu miterere ya JSON</summary><pre>{JSON.stringify(kinyarwandaReport(data), null, 2)}</pre></details>
   </section>;
 }
 
 function ReportDocument({ report }) {
   return <article className="maitrise-report__document">
     <img className="maitrise-report__document-logo" src={kimuLogo} alt="Kimu Transport logo" />
-    <h2>METRIZE</h2><h3>DAILY CLASS REPORT</h3>
-    <p><strong>Date:</strong> {report.date} <strong>Class/Group:</strong> {report.class_group}</p>
-    <table><thead><tr><th colSpan="2">ATTENDANCE PARTICULARS</th></tr></thead><tbody><tr><td>Students attended</td><td>{report.students.attended}</td></tr><tr><td>Students missed</td><td>{report.students.missed}</td></tr><tr><th>TOTAL REGISTERED</th><th>{report.students.total_registered}</th></tr></tbody></table>
-    <div className="maitrise-report__table-wrap"><table><thead><tr><th rowSpan="2">NO.</th><th colSpan="3">VEHICLE INFORMATION</th><th colSpan="3">VEHICLE MILEAGE</th><th colSpan="2">VEHICLE CONDITION</th><th colSpan="3">TRAINING HOURS</th></tr><tr><th>VEHICLE</th><th>PLATE</th><th>TEACHER</th><th>KM START</th><th>KM END</th><th>KM USED</th><th>START</th><th>END</th><th>START TIME</th><th>END TIME</th><th>HOURS</th></tr></thead><tbody>{report.cars.map((car, index) => <tr key={car.car}><td>{index + 1}</td><td>{car.car}</td><td>{car.plate || '-'}</td>{car.status === 'Not used' ? <td colSpan="9">NOT USED</td> : <><td>{car.teacher}</td><td>{car.km_start}</td><td>{car.km_end}</td><td>{car.km_used}</td><td>{car.condition_start}</td><td>{car.condition_end}</td><td>{car.start_time}</td><td>{car.end_time}</td><td>{car.hours_worked.toFixed(2)}</td></>}</tr>)}<tr className="maitrise-report__total-row"><td colSpan="6">TOTAL</td><td>{report.totals.km_used}</td><td colSpan="4"></td><td>{report.totals.hours_worked.toFixed(2)}</td></tr></tbody></table></div>
+    <h2>MAITRISE</h2><h3>RAPORO Y'AMASOMO Y'UMUNSI</h3>
+    <p><strong>Itariki:</strong> {report.date} <strong>Icyiciro/Itsinda:</strong> {report.class_group}</p>
+    <table><thead><tr><th colSpan="2">ABANYESHURI N'UKWITABIRA</th></tr></thead><tbody><tr><td>Abitabiriye</td><td>{report.students.attended}</td></tr><tr><td>Abataritabiriye</td><td>{report.students.missed}</td></tr><tr><th>ABANDITSWE BOSE</th><th>{report.students.total_registered}</th></tr></tbody></table>
+    <div className="maitrise-report__table-wrap"><table><thead><tr><th rowSpan="2">NOMERO</th><th colSpan="3">AMAKURU Y'IKINYABIZIGA</th><th colSpan="3">INTERA (KM)</th><th colSpan="2">IMITERERE Y'IKINYABIZIGA</th><th colSpan="3">AMASAHA Y'AMAHUGURWA</th></tr><tr><th>IKINYABIZIGA</th><th>ICYAPA</th><th>UMWARIMU</th><th>KM YO GUTANGIRA</th><th>KM YO KURANGIZA</th><th>KM ZAKOZWE</th><th>IGITANGIRA</th><th>IGISOZA</th><th>IGIHE CYO GUTANGIRA</th><th>IGIHE CYO KURANGIZA</th><th>AMASAHA</th></tr></thead><tbody>{report.cars.map((car, index) => <tr key={car.car}><td>{index + 1}</td><td>{car.car}</td><td>{car.plate || '-'}</td>{car.status === 'Not used' ? <td colSpan="9">NTIYAKOZESHEJWE</td> : <><td>{car.teacher}</td><td>{formatKilometers(car.km_start)}</td><td>{formatKilometers(car.km_end)}</td><td>{formatKilometers(car.km_used)}</td><td>{translateCondition(car.condition_start)}</td><td>{translateCondition(car.condition_end)}</td><td>{car.start_time}</td><td>{car.end_time}</td><td>{car.hours_worked.toFixed(2)}</td></>}</tr>)}</tbody></table></div>
     <h4>ICYITONDERWA</h4><p className="maitrise-report__preserve-lines">{report.ikitonderwa}</p>
-    <div className="maitrise-report__signature-grid"><div><strong>PREPARED BY</strong><span>JEAN</span><i /><small>Signature</small><span>Date: __________________</span></div><div><strong>VERIFIED BY</strong><span>AGNES</span><i /><small>Signature</small><span>Date: __________________</span></div><div><strong>APPROVED BY</strong><span>CEO NKUNZIRYAYO JEAN PIERRE</span><span>CEO - KIMU TRANSPORT AND MULTISERVICE</span><i /><small>Signature</small><span>Date: __________________</span></div></div>
-    <p className="maitrise-report__reported-by">Reported by: {report.reported_by}</p>
+    <div className="maitrise-report__signature-grid">{REPORT_SIGNERS.map((signer) => <div key={signer.name}><strong>{signer.label}</strong><span>{signer.name}</span><span>{signer.title}</span><i /><small>Aho asinya</small><span>Itariki: __________________</span></div>)}</div>
+    <p className="maitrise-report__reported-by">Raporo yateguwe na: {report.reported_by}</p>
   </article>;
 }
 
@@ -335,8 +354,52 @@ function exportableReport(report) {
     totals: report.totals,
     ikitonderwa: report.ikitonderwa,
     reported_by: report.reported_by,
-    signatures: report.signatures || { prepared_by: 'JEAN', verified_by: 'AGNES', approved_by: 'CEO NKUNZIRYAYO JEAN PIERRE' },
+    signatures: report.signatures || { prepared_by: 'JEAN', verified_by: 'AGNES', approved_by: 'CEO NKUNZIRYAYO JEAN PIERRE', maitrise_director: 'HITIMANA JEAN' },
   };
+}
+
+function kinyarwandaReport(report) {
+  const data = exportableReport(report);
+  return {
+    itariki: data.date,
+    icyiciro_cyangwa_itsinda: data.class_group,
+    abanyeshuri: {
+      bitabiriye: data.students.attended,
+      abataritabiriye: data.students.missed,
+      abanditswe_bose: data.students.total_registered,
+    },
+    ibinyabiziga: data.cars.map((car, index) => ({
+      nimero: index + 1,
+      ikinyabiziga: car.car,
+      icyapa: car.plate || '-',
+      umwarimu: car.teacher || '-',
+      km_yo_gutangira: roundKilometers(car.km_start),
+      km_yo_kurangiza: roundKilometers(car.km_end),
+      km_zakozwe: roundKilometers(car.km_used),
+      imiterere_yo_gutangira: translateCondition(car.condition_start),
+      imiterere_yo_kurangiza: translateCondition(car.condition_end),
+      igihe_cyo_gutangira: car.start_time || '-',
+      igihe_cyo_kurangiza: car.end_time || '-',
+      amasaha_yakoreshejwe: Number(car.hours_worked).toFixed(2),
+      uko_ikinyabiziga_cyakoreshejwe: car.status === 'Not used' ? 'Ntiyakoreshejwe' : 'Cyakoreshejwe',
+    })),
+    icyitonderwa: data.ikitonderwa,
+    raporo_yateguwe_na: data.reported_by,
+    abasinya: REPORT_SIGNERS.map(({ label, name, title }) => ({ uwasinye: name, inshingano: title, igikorwa: label })),
+  };
+}
+
+function roundKilometers(value) {
+  return value === null || value === undefined ? null : Number(Number(value).toFixed(1));
+}
+
+function formatKilometers(value) {
+  const rounded = roundKilometers(value);
+  return rounded === null ? '-' : rounded.toLocaleString('en-US', { maximumFractionDigits: 1 });
+}
+
+function translateCondition(condition) {
+  return { Good: 'Byiza', Fair: 'Bisanzwe', Problem: 'Ikibazo' }[condition] || '-';
 }
 
 async function buildPdf(report) {
@@ -351,32 +414,31 @@ async function buildPdf(report) {
   doc.setTextColor(0, 0, 0);
   doc.setFont('helvetica', 'bold');
   doc.setFontSize(13);
-  doc.text('METRIZE DAILY CLASS REPORT', pageWidth / 2, titleY, { align: 'center' });
+  doc.text("RAPORO Y'AMASOMO Y'UMUNSI", pageWidth / 2, titleY, { align: 'center' });
   doc.setFontSize(8);
   doc.setFont('helvetica', 'normal');
-  doc.text(`Date: ${report.date}     Class/Group: ${report.class_group}`, pageWidth / 2, titleY + 6, { align: 'center' });
+  doc.text(`Itariki: ${report.date}     Icyiciro/Itsinda: ${report.class_group}`, pageWidth / 2, titleY + 6, { align: 'center' });
 
   autoTable(doc, {
     theme: 'grid', startY: titleY + 10, margin: { left: 14, right: 14, bottom: 14 },
-    head: [['ATTENDANCE PARTICULARS', 'TOTAL']],
-    body: [['Students attended', report.students.attended], ['Students missed', report.students.missed], [{ content: 'TOTAL REGISTERED', styles: { fontStyle: 'bold' } }, { content: report.students.total_registered, styles: { fontStyle: 'bold' } }]],
+    head: [["ABANYESHURI N'UKWITABIRA", 'UMUBARE']],
+    body: [['Abitabiriye', report.students.attended], ['Abataritabiriye', report.students.missed], [{ content: 'ABANDITSWE BOSE', styles: { fontStyle: 'bold' } }, { content: report.students.total_registered, styles: { fontStyle: 'bold' } }]],
     styles: { fontSize: 7, cellPadding: 1.2, textColor: [0, 0, 0], fillColor: [255, 255, 255], lineColor: [0, 0, 0], lineWidth: 0.1 },
     headStyles: { fillColor: [255, 255, 255], textColor: [0, 0, 0], lineColor: [0, 0, 0], fontStyle: 'bold' },
     columnStyles: { 0: { cellWidth: 56 }, 1: { cellWidth: 24, halign: 'center' } },
   });
 
   const body = report.cars.map((car, index) => car.status === 'Not used'
-    ? [index + 1, car.car, car.plate || '-', { content: 'NOT USED', colSpan: 9, styles: { halign: 'center', fontStyle: 'bold' } }]
-    : [index + 1, car.car, car.plate || '-', car.teacher, car.km_start, car.km_end, car.km_used, car.condition_start, car.condition_end, car.start_time, car.end_time, car.hours_worked.toFixed(2)]);
-  body.push([{ content: 'TOTAL', colSpan: 6, styles: { fontStyle: 'bold', halign: 'right' } }, { content: report.totals.km_used, styles: { fontStyle: 'bold', halign: 'center' } }, '', '', '', '', { content: report.totals.hours_worked.toFixed(2), styles: { fontStyle: 'bold', halign: 'center' } }]);
+    ? [index + 1, car.car, car.plate || '-', { content: 'NTIYAKOZESHEJWE', colSpan: 9, styles: { halign: 'center', fontStyle: 'bold' } }]
+    : [index + 1, car.car, car.plate || '-', car.teacher, formatKilometers(car.km_start), formatKilometers(car.km_end), formatKilometers(car.km_used), translateCondition(car.condition_start), translateCondition(car.condition_end), car.start_time, car.end_time, car.hours_worked.toFixed(2)]);
   const groupRow = [
-    { content: 'NO.', rowSpan: 2 },
-    { content: 'VEHICLE INFORMATION', colSpan: 3 },
-    { content: 'VEHICLE MILEAGE', colSpan: 3 },
-    { content: 'VEHICLE CONDITION', colSpan: 2 },
-    { content: 'TRAINING HOURS', colSpan: 3 },
+    { content: 'NOMERO', rowSpan: 2 },
+    { content: "AMAKURU Y'IKINYABIZIGA", colSpan: 3 },
+    { content: 'INTERA (KM)', colSpan: 3 },
+    { content: "IMITERERE Y'IKINYABIZIGA", colSpan: 2 },
+    { content: "AMASAHA Y'AMAHUGURWA", colSpan: 3 },
   ];
-  const columnRow = ['VEHICLE', 'PLATE', 'TEACHER', 'KM AT START', 'KM AT END', 'KM USED', 'CONDITION AT START', 'CONDITION AT END', 'START TIME', 'END TIME', 'HOURS WORKED'];
+  const columnRow = ['IKINYABIZIGA', 'ICYAPA', 'UMWARIMU', 'KM YO GUTANGIRA', 'KM YO KURANGIZA', 'KM ZAKOZWE', 'IGITANGIRA', 'IGISOZA', 'IGIHE CYO GUTANGIRA', 'IGIHE CYO KURANGIZA', 'AMASAHA'];
   autoTable(doc, {
     theme: 'grid', startY: doc.lastAutoTable.finalY + 4, margin: { left: 14, right: 14, bottom: 13 },
     head: [groupRow, columnRow], body, showHead: 'everyPage',
@@ -395,19 +457,14 @@ async function buildPdf(report) {
   doc.text(noteLines, 14, cursorY + 6);
   cursorY += noteHeight;
   if (cursorY + 31 > pageHeight - 12) { doc.addPage(); cursorY = 14; }
-  const signatureBlocks = [
-    ['Byateguwe na:', 'NIYONZIMA JEAN PIERRE', "DRIVER'S TRAINER"],
-    ['Byagenzuwe na:', 'MANIRAGUHA AGNES', 'HEAD OF TRANSPORT'],
-    ['Byemejwe na:', 'NKUNZIRYAYO JEAN PIERRE', 'CEO KIMU TRANSPORT'],
-  ];
-  const signatureXs = [14, 107, 200];
-  signatureBlocks.forEach((block, index) => {
+  const signatureXs = [14, 84, 154, 224];
+  REPORT_SIGNERS.forEach((signer, index) => {
     const x = signatureXs[index];
     doc.setTextColor(0, 0, 0);
-    doc.setFont('helvetica', 'normal'); doc.setFontSize(8); doc.text(block[0], x, cursorY);
-    doc.setFont('helvetica', 'bold'); doc.setFontSize(8); doc.text(doc.splitTextToSize(block[1], 82), x, cursorY + 5);
-    doc.setFont('helvetica', 'normal'); doc.setFontSize(7.5); doc.text(doc.splitTextToSize(block[2], 82), x, cursorY + 10);
-    doc.setDrawColor(0, 0, 0); doc.setLineWidth(0.25); doc.line(x, cursorY + 23, x + 78, cursorY + 23);
+    doc.setFont('helvetica', 'normal'); doc.setFontSize(7); doc.text(signer.label, x, cursorY);
+    doc.setFont('helvetica', 'bold'); doc.setFontSize(7); doc.text(doc.splitTextToSize(signer.name, 58), x, cursorY + 5);
+    doc.setFont('helvetica', 'normal'); doc.setFontSize(6.5); doc.text(doc.splitTextToSize(signer.title, 58), x, cursorY + 10);
+    doc.setDrawColor(0, 0, 0); doc.setLineWidth(0.25); doc.line(x, cursorY + 23, x + 58, cursorY + 23);
   });
 
   const generatedDate = new Date().toLocaleDateString('en-GB');
@@ -417,8 +474,8 @@ async function buildPdf(report) {
     doc.setDrawColor(0, 0, 0);
     doc.line(14, pageHeight - 9, pageWidth - 14, pageHeight - 9);
     doc.setFont('helvetica', 'normal'); doc.setFontSize(7); doc.setTextColor(0, 0, 0);
-    doc.text(`Generated: ${generatedDate}`, 14, pageHeight - 4);
-    doc.text(`Page ${page} of ${pageCount}`, pageWidth - 14, pageHeight - 4, { align: 'right' });
+    doc.text(`Byakozwe: ${generatedDate}`, 14, pageHeight - 4);
+    doc.text(`Urupapuro ${page} kuri ${pageCount}`, pageWidth - 14, pageHeight - 4, { align: 'right' });
   }
   return doc;
 }
