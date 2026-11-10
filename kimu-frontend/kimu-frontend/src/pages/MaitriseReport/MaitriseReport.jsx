@@ -415,7 +415,11 @@ async function buildPdf(report) {
   doc.setTextColor(0, 0, 0);
   doc.setFont('helvetica', 'bold');
   doc.setFontSize(13);
-  doc.text('RAPORO Y’UMUNSI', pageWidth / 2, titleY, { align: 'center' });
+  const reportTitle = 'RAPORO Y’UMUNSI';
+  doc.text(reportTitle, pageWidth / 2, titleY, { align: 'center' });
+  const reportTitleWidth = doc.getTextWidth(reportTitle);
+  doc.setLineWidth(0.3);
+  doc.line((pageWidth - reportTitleWidth) / 2, titleY + 1, (pageWidth + reportTitleWidth) / 2, titleY + 1);
   doc.setFontSize(8);
   doc.setFont('helvetica', 'normal');
   doc.text(`Itariki: ${report.date}`, 14, titleY + 6);

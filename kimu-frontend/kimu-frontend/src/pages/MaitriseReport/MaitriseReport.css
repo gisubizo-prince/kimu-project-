@@ -53,7 +53,7 @@
 .maitrise-report__document { padding: 20px; border: 1px solid var(--kimu-border); color: #000; }
 .maitrise-report__document-logo { display: block; width: 100%; height: auto; margin-bottom: 12px; }
 .maitrise-report__document h2 { color: #000; font-size: 18px; }
-.maitrise-report__document h3 { margin-top: 4px; font-size: 15px; }
+.maitrise-report__document h3 { margin-top: 4px; font-size: 15px; text-decoration: underline; }
 .maitrise-report__document > p { margin: 5px 0 12px; font-size: 12px; }
 .maitrise-report__document > h4 { margin: 16px 0 6px; font-size: 11px; }
 .maitrise-report__document table { margin: 12px 0; }
