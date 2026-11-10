@@ -66,7 +66,7 @@ export default function Reports() {
 
 async function buildAttendancePdf(records, date) {
   const document = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
-  const title = 'URUTONDE RWABITABIRIYE AMAHUGURWA';
+  const title = 'URUTONDE RWABITABIRIYE AMAHUGURWA (MAITRIZE)';
   const tableStart = await addReportHeader(document, title, `Tariki: ${date}`);
   autoTable(document, {
     theme: 'grid',
@@ -88,11 +88,9 @@ async function buildAttendancePdf(records, date) {
   }
   document.setTextColor(0, 0, 0);
   const approvals = [
-      ['Byateguwe na:', 'NIYONZIMA JEAN PIERRE', "DRIVER'S TRAINER"],
+    ['Byateguwe na:', 'NIYONZIMA JEAN PIERRE', "DRIVER'S TRAINER"],
     ['Byagenzuwe na:', 'HITIMANA JEAN', 'Training Center Cordinator'],
-  
-  
-      ['Byagenzuwe na:', 'MANIRAGUHA AGNES', 'HEAD OF TRANSPORT'],
+    ['Byagenzuwe na:', 'MANIRAGUHA AGNES', 'HEAD OF TRANSPORT'],
     ['Byemejwe na:', 'NKUNZIRYAYO JEAN PIERRE', 'CEO KIMU TRANSPORT'],
   ];
   const lefts = [14, 61, 108, 155];
