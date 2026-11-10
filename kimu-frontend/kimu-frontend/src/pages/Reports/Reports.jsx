@@ -88,9 +88,11 @@ async function buildAttendancePdf(records, date) {
   }
   document.setTextColor(0, 0, 0);
   const approvals = [
+      ['Byateguwe na:', 'NIYONZIMA JEAN PIERRE', "DRIVER'S TRAINER"],
     ['Byagenzuwe na:', 'HITIMANA JEAN', 'Training Center Cordinator'],
-    ['Byagenzuwe na:', 'MANIRAGUHA AGNES', 'HEAD OF TRANSPORT'],
-    ['Byateguwe na:', 'NIYONZIMA JEAN PIERRE', "DRIVER'S TRAINER"],
+  
+  
+      ['Byagenzuwe na:', 'MANIRAGUHA AGNES', 'HEAD OF TRANSPORT'],
     ['Byemejwe na:', 'NKUNZIRYAYO JEAN PIERRE', 'CEO KIMU TRANSPORT'],
   ];
   const lefts = [14, 61, 108, 155];
