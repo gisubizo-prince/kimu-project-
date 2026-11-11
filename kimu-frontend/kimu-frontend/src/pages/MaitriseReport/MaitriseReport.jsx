@@ -14,7 +14,7 @@ const CAR_NAMES = CARS.map((vehicle) => vehicle.car);
 const CONDITIONS = ['Good', 'Fair', 'Problem'];
 const REPORT_SIGNERS = [
   { label: 'Byateguwe na:', name: 'NIYONZIMA JEAN PIERRE', title: "DRIVER'S TRAINER" },
-  { label: 'Byagenzuwe na:', name: 'HITIMANA JEAN', title: 'HEAD OF TRANSPORT' },
+  { label: 'Byagenzuwe na:', name: 'HITIMANA JEAN', title: 'TRAINING CENTER COORDINATOR' },
   { label: 'Byagenzuwe na:', name: 'MANIRAGUHA AGNES', title: 'HEAD OF TRANSPORT' },
   { label: 'Byemejwe na:', name: 'NKUNZIRYAYO JEAN PIERRE', title: 'CEO KIMU TRANSPORT' },
 ];

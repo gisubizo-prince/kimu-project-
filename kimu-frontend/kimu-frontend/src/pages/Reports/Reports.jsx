@@ -89,7 +89,7 @@ async function buildAttendancePdf(records, date) {
   document.setTextColor(0, 0, 0);
   const approvals = [
     ['Byateguwe na:', 'NIYONZIMA JEAN PIERRE', "DRIVER'S TRAINER"],
-    ['Byagenzuwe na:', 'HITIMANA JEAN', 'HEAD OF TRANSPORT'],
+    ['Byagenzuwe na:', 'HITIMANA JEAN', 'TRAINING CENTER COORDINATOR'],
     ['Byagenzuwe na:', 'MANIRAGUHA AGNES', 'HEAD OF TRANSPORT'],
     ['Byemejwe na:', 'NKUNZIRYAYO JEAN PIERRE', 'CEO KIMU TRANSPORT'],
   ];
