@@ -14,7 +14,9 @@ async function list(req, res, next) {
     }
     if (req.query.active === 'true') filter.isActive = true;
     if (req.query.active === 'false') filter.isActive = false;
-    const students = await Student.find(filter).sort({ registrationDate: -1, fullName: 1 });
+    const students = await Student.find(filter)
+      .sort({ fullName: 1 })
+      .collation({ locale: 'en', strength: 2 });
     res.json({ success: true, data: students });
   } catch (error) { next(error); }
 }

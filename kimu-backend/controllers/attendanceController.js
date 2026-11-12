@@ -30,7 +30,9 @@ async function list(req, res, next) {
       end.setUTCMonth(end.getUTCMonth() + 1);
       filter.date = { $gte: start, $lt: end };
     }
-    const records = await Attendance.find(filter).sort({ date: -1, studentName: 1, shift: 1, lesson: 1 });
+    const records = await Attendance.find(filter)
+      .sort({ date: -1, studentName: 1, shift: 1, lesson: 1 })
+      .collation({ locale: 'en', strength: 2 });
     res.json({ success: true, data: records });
   }
   catch (error) { next(error); }
@@ -48,6 +50,8 @@ async function record(req, res, next) {
     if (!day) return res.status(400).json({ success: false, message: 'Invalid attendance date.' });
     const student = await Student.findOne({ _id: studentId, isActive: true }).lean();
     if (!student) return res.status(404).json({ success: false, message: 'Active student not found.' });
+    const duplicate = await Attendance.exists({ studentId: student._id, date: day, shift, lesson });
+    if (duplicate) return res.status(409).json({ success: false, message: 'This student already has attendance for that date, shift, and lesson.' });
     const record = await Attendance.create({
       studentId: student._id,
       studentName: student.fullName,
@@ -78,6 +82,14 @@ async function update(req, res, next) {
     if (!SHIFTS.includes(shift)) return res.status(400).json({ success: false, message: 'Select a valid shift.' });
     if (!LESSONS.includes(lesson)) return res.status(400).json({ success: false, message: 'Select a valid lesson.' });
     if (!day) return res.status(400).json({ success: false, message: 'Invalid attendance date.' });
+    const duplicate = await Attendance.exists({
+      studentId: student._id,
+      date: day,
+      shift,
+      lesson,
+      _id: { $ne: record._id },
+    });
+    if (duplicate) return res.status(409).json({ success: false, message: 'This student already has attendance for that date, shift, and lesson.' });
     Object.assign(record, {
       studentId: student._id,
       studentName: student.fullName,
@@ -85,6 +97,7 @@ async function update(req, res, next) {
       shift,
       lesson,
       date: day,
+      editedAt: new Date(),
     });
     await record.save();
     res.json({ success: true, data: record });

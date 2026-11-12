@@ -91,7 +91,7 @@ export default function Attendance() {
         <label>Lesson<select value={lessonFilter} onChange={(event) => setLessonFilter(event.target.value)}><option value="">All lessons</option>{LESSONS.map((lesson) => <option key={lesson} value={lesson}>{lesson}</option>)}</select></label>
       </div>
       <div className="kimu-resource__table-wrap"><table><thead><tr><th>NO.</th><th>NAME</th><th>TEL</th><th>SHIFT</th><th>LESSON</th><th>Actions</th></tr></thead><tbody>
-        {records.length === 0 ? <tr><td colSpan="6">No attendance records for the selected filters.</td></tr> : records.map((record, index) => <tr key={record._id}><td>{index + 1}</td><td className="kimu-name-cell">{record.studentName}</td><td>{record.telephone || '-'}</td><td>{record.shift}</td><td>{record.lesson}</td><td>{students.some((student) => student._id === record.studentId && student.isActive) && <button className="kimu-link-button" type="button" onClick={() => editRecord(record)}>Edit</button>}</td></tr>)}
+        {records.length === 0 ? <tr><td colSpan="6">No attendance records for the selected filters.</td></tr> : records.map((record, index) => <tr key={record._id}><td>{index + 1}</td><td className="kimu-name-cell">{record.studentName}{(record.editedAt || (record.updatedAt && record.createdAt && new Date(record.updatedAt) > new Date(record.createdAt))) && <span className="kimu-attendance-edited">This record is edited</span>}</td><td>{record.telephone || '-'}</td><td>{record.shift}</td><td>{record.lesson}</td><td>{students.some((student) => student._id === record.studentId && student.isActive) && <button className="kimu-link-button" type="button" onClick={() => editRecord(record)}>Edit</button>}</td></tr>)}
       </tbody></table></div>
     </section>
   </div>;

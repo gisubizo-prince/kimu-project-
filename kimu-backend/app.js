@@ -106,7 +106,9 @@ app.get('/api/reports/daily', require('./middleware/auth').protect, async (req, 
     if (Number.isNaN(day.getTime()) || day.toISOString().slice(0, 10) !== reportDate || !/^\d{4}-\d{2}-\d{2}$/.test(reportDate)) {
       return res.status(400).json({ success: false, message: 'Invalid report date.' });
     }
-    const attendance = await Attendance.find({ date: day, studentId: { $exists: true } }).sort({ studentName: 1, shift: 1, lesson: 1 });
+    const attendance = await Attendance.find({ date: day, studentId: { $exists: true } })
+      .sort({ studentName: 1, shift: 1, lesson: 1 })
+      .collation({ locale: 'en', strength: 2 });
     res.json({ success: true, data: { date: reportDate, attendance } });
   } catch (error) { next(error); }
 });

@@ -1,7 +1,7 @@
 const User = require('../models/User');
 const { ROLES } = require('../models/User');
 
-async function list(req, res, next) { try { const users = await User.find().sort({ fullName: 1 }); res.json({ success: true, data: users.map((user) => user.toSafeObject()) }); } catch (error) { next(error); } }
+async function list(req, res, next) { try { const users = await User.find().sort({ fullName: 1 }).collation({ locale: 'en', strength: 2 }); res.json({ success: true, data: users.map((user) => user.toSafeObject()) }); } catch (error) { next(error); } }
 async function create(req, res, next) { try { const { fullName, email, password, phone, role } = req.body; if (!fullName || !email || !password) return res.status(400).json({ success: false, message: 'Name, email, and password are required.' }); const user = await User.create({ fullName, email, password, phone, role: ROLES.includes(role) ? role : 'manager' }); res.status(201).json({ success: true, data: { user: user.toSafeObject() } }); } catch (error) { next(error); } }
 async function update(req, res, next) { try { const { fullName, phone, role, isActive } = req.body; const user = await User.findByIdAndUpdate(req.params.id, { fullName, phone, role, isActive }, { new: true, runValidators: true }); if (!user) return res.status(404).json({ success: false, message: 'User not found.' }); res.json({ success: true, data: { user: user.toSafeObject() } }); } catch (error) { next(error); } }
 module.exports = { list, create, update };

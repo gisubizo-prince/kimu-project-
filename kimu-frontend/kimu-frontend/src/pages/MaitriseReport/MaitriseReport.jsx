@@ -408,29 +408,27 @@ async function buildPdf(report) {
   const logo = await loadLogo();
   const pageWidth = doc.internal.pageSize.getWidth();
   const pageHeight = doc.internal.pageSize.getHeight();
-  const headerLogoWidth = pageWidth - 28;
+  const margin = 9;
+  const contentWidth = pageWidth - margin * 2;
+  const headerLogoWidth = 112;
   const headerLogoHeight = headerLogoWidth * logo.naturalHeight / logo.naturalWidth;
-  doc.addImage(logo, 'PNG', 14, 5, headerLogoWidth, headerLogoHeight);
-  const titleY = 5 + headerLogoHeight + 8;
+  doc.addImage(logo, 'PNG', margin, 7, headerLogoWidth, headerLogoHeight);
   doc.setTextColor(0, 0, 0);
   doc.setFont('helvetica', 'bold');
-  doc.setFontSize(13);
-  const reportTitle = 'RAPORO Y’UMUNSI';
-  doc.text(reportTitle, pageWidth / 2, titleY, { align: 'center' });
-  const reportTitleWidth = doc.getTextWidth(reportTitle);
-  doc.setLineWidth(0.3);
-  doc.line((pageWidth - reportTitleWidth) / 2, titleY + 1, (pageWidth + reportTitleWidth) / 2, titleY + 1);
-  doc.setFontSize(8);
+  doc.setFontSize(12);
+  doc.text('RAPORO Y’UMUNSI', pageWidth - margin, 15, { align: 'right' });
   doc.setFont('helvetica', 'normal');
-  doc.text(`Itariki: ${report.date}`, 14, titleY + 6);
+  doc.setFontSize(8);
+  doc.text(`Itsinda: ${report.class_group || '-'}`, pageWidth - margin, 21, { align: 'right' });
+  doc.text(`Itariki: ${report.date}`, pageWidth - margin, 26, { align: 'right' });
 
   autoTable(doc, {
-    theme: 'grid', startY: titleY + 10, margin: { left: 14, right: 14, bottom: 14 },
-    head: [['ABASHOFERI', 'UMUBARE']],
-    body: [['Abitabiriye', report.students.attended], ['Abataritabiriye', report.students.missed], [{ content: 'ABANDITSWE BOSE', styles: { fontStyle: 'bold' } }, { content: report.students.total_registered, styles: { fontStyle: 'bold' } }]],
-    styles: { fontSize: 9, cellPadding: 1.8, textColor: [0, 0, 0], fillColor: [255, 255, 255], lineColor: [0, 0, 0], lineWidth: 0.1 },
+    theme: 'grid', startY: 37, margin: { left: margin, right: margin, bottom: 35 },
+    head: [['ABASHOFERI', 'ABITABIRIYE', 'ABATARITABIRIYE', 'ABANDITSWE BOSE']],
+    body: [[report.students.attended, report.students.missed, report.students.total_registered]],
+    styles: { fontSize: 7, cellPadding: 1, textColor: [0, 0, 0], fillColor: [255, 255, 255], lineColor: [0, 0, 0], lineWidth: 0.1, halign: 'center' },
     headStyles: { fillColor: [255, 255, 255], textColor: [0, 0, 0], lineColor: [0, 0, 0], fontStyle: 'bold' },
-    columnStyles: { 0: { cellWidth: 56 }, 1: { cellWidth: 24, halign: 'center' } },
+    columnStyles: { 0: { cellWidth: 68 }, 1: { cellWidth: 68 }, 2: { cellWidth: 68 }, 3: { cellWidth: 68 } },
   });
 
   const body = report.cars.map((car, index) => car.status === 'Not used'
@@ -445,43 +443,54 @@ async function buildPdf(report) {
   ];
   const columnRow = ['IMODOKA', 'UMWARIMU', 'KM YO GUTANGIRA', 'KM YO GUSOZA', 'KM ZAKOZWE', 'GITANGIRA', 'GISOZA', 'IGIHE CYO GUTANGIRA', 'IGIHE CYO GUSOZA', 'AMASAHA'];
   autoTable(doc, {
-    theme: 'grid', startY: doc.lastAutoTable.finalY + 4, margin: { left: 14, right: 14, bottom: 13 },
+    theme: 'grid', startY: doc.lastAutoTable.finalY + 3, margin: { left: margin, right: margin, bottom: 35 },
     head: [groupRow, columnRow], body, showHead: 'everyPage',
-    styles: { fontSize: 7, cellPadding: 1.8, overflow: 'linebreak', valign: 'middle', textColor: [0, 0, 0], fillColor: [255, 255, 255], lineColor: [0, 0, 0], lineWidth: 0.1 },
+    styles: { fontSize: 6, cellPadding: 1, overflow: 'ellipsize', valign: 'middle', textColor: [0, 0, 0], fillColor: [255, 255, 255], lineColor: [0, 0, 0], lineWidth: 0.1 },
     headStyles: { fillColor: [255, 255, 255], textColor: [0, 0, 0], lineColor: [0, 0, 0], fontStyle: 'bold', halign: 'center' },
-    columnStyles: { 0: { cellWidth: 9, halign: 'center' }, 1: { cellWidth: 40 }, 2: { cellWidth: 31 }, 3: { cellWidth: 18, halign: 'right' }, 4: { cellWidth: 18, halign: 'right' }, 5: { cellWidth: 17, halign: 'right' }, 6: { cellWidth: 23 }, 7: { cellWidth: 23 }, 8: { cellWidth: 21 }, 9: { cellWidth: 21 }, 10: { cellWidth: 18, halign: 'right' } },
+    columnStyles: { 0: { cellWidth: 9, halign: 'center' }, 1: { cellWidth: 42 }, 2: { cellWidth: 39 }, 3: { cellWidth: 22, halign: 'right' }, 4: { cellWidth: 22, halign: 'right' }, 5: { cellWidth: 20, halign: 'right' }, 6: { cellWidth: 24 }, 7: { cellWidth: 24 }, 8: { cellWidth: 22 }, 9: { cellWidth: 22 }, 10: { cellWidth: 20, halign: 'right' } },
   });
 
-  let cursorY = doc.lastAutoTable.finalY + 7;
-  const noteLines = doc.splitTextToSize(report.ikitonderwa || 'Nta kintu kidasanzwe cyabaye.', pageWidth - 28);
-  const noteHeight = 11 + noteLines.length * 3.5;
-  if (cursorY + noteHeight + 38 > pageHeight - 12) { doc.addPage(); cursorY = 14; }
-  doc.setFont('helvetica', 'bold'); doc.setFontSize(9); doc.setTextColor(0, 0, 0);
-  doc.text('ICYITONDERWA', 14, cursorY);
-  doc.setFont('helvetica', 'normal'); doc.setFontSize(8);
-  doc.text(noteLines, 14, cursorY + 6);
-  cursorY += noteHeight;
-  if (cursorY + 31 > pageHeight - 12) { doc.addPage(); cursorY = 14; }
-  const signatureXs = [14, 84, 154, 224];
+  const signatureY = pageHeight - 34;
+  const noteY = doc.lastAutoTable.finalY + 4;
+  const noteTextY = noteY + 5;
+  const note = report.ikitonderwa || 'Nta kintu kidasanzwe cyabaye.';
+  let noteFontSize = 7;
+  let noteLines;
+  let noteLineHeight;
+  const noteAvailableHeight = Math.max(signatureY - noteTextY - 5, 4);
+  do {
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(noteFontSize);
+    noteLines = doc.splitTextToSize(note, contentWidth);
+    noteLineHeight = noteFontSize * 0.45;
+    if (noteLines.length * noteLineHeight <= noteAvailableHeight || noteFontSize <= 4) break;
+    noteFontSize -= 0.5;
+  } while (noteFontSize > 3.5);
+
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(7);
+  doc.text('ICYITONDERWA', margin, noteY);
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(noteFontSize);
+  doc.text(noteLines, margin, noteTextY, { lineHeightFactor: 0.9 });
+
+  const signatureXs = [margin, 79, 149, 219];
   REPORT_SIGNERS.forEach((signer, index) => {
     const x = signatureXs[index];
     doc.setTextColor(0, 0, 0);
-    doc.setFont('helvetica', 'normal'); doc.setFontSize(7); doc.text(signer.label, x, cursorY);
-    doc.setFont('helvetica', 'bold'); doc.setFontSize(7); doc.text(doc.splitTextToSize(signer.name, 58), x, cursorY + 5);
-    doc.setFont('helvetica', 'normal'); doc.setFontSize(6.5); doc.text(doc.splitTextToSize(signer.title, 58), x, cursorY + 10);
-    doc.setDrawColor(0, 0, 0); doc.setLineWidth(0.25); doc.line(x, cursorY + 23, x + 58, cursorY + 23);
+    doc.setFont('helvetica', 'normal'); doc.setFontSize(6.5); doc.text(signer.label, x, signatureY);
+    doc.setFont('helvetica', 'bold'); doc.setFontSize(6.5); doc.text(doc.splitTextToSize(signer.name, 64), x, signatureY + 4);
+    doc.setFont('helvetica', 'normal'); doc.setFontSize(6); doc.text(doc.splitTextToSize(signer.title, 64), x, signatureY + 8);
+    doc.setDrawColor(0, 0, 0); doc.setLineWidth(0.25); doc.line(x, signatureY + 17, x + 64, signatureY + 17);
+    doc.setFontSize(5.5); doc.text('Aho asinya: __________________', x, signatureY + 21);
   });
 
   const generatedDate = new Date().toLocaleDateString('en-GB');
-  const pageCount = doc.getNumberOfPages();
-  for (let page = 1; page <= pageCount; page += 1) {
-    doc.setPage(page);
-    doc.setDrawColor(0, 0, 0);
-    doc.line(14, pageHeight - 9, pageWidth - 14, pageHeight - 9);
-    doc.setFont('helvetica', 'normal'); doc.setFontSize(7); doc.setTextColor(0, 0, 0);
-    doc.text(`Byakozwe: ${generatedDate}`, 14, pageHeight - 4);
-    doc.text(`Urupapuro ${page} kuri ${pageCount}`, pageWidth - 14, pageHeight - 4, { align: 'right' });
-  }
+  doc.setDrawColor(0, 0, 0);
+  doc.line(margin, pageHeight - 8, pageWidth - margin, pageHeight - 8);
+  doc.setFont('helvetica', 'normal'); doc.setFontSize(6); doc.setTextColor(0, 0, 0);
+  doc.text(`Byakozwe: ${generatedDate}`, margin, pageHeight - 4);
+  doc.text('MAITRISE', pageWidth - margin, pageHeight - 4, { align: 'right' });
   return doc;
 }
 

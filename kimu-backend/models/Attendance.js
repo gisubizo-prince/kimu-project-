@@ -8,6 +8,7 @@ const attendanceSchema = new mongoose.Schema(
     studentId: { type: mongoose.Schema.Types.ObjectId, ref: 'Student' },
     studentName: { type: String, trim: true },
     telephone: { type: String, trim: true },
+    editedAt: Date,
     shift: { type: String, enum: SHIFTS },
     lesson: { type: String, enum: LESSONS },
     employeeName: { type: String, trim: true },

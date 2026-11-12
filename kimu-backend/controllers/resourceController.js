@@ -12,7 +12,10 @@ function createResourceController(Model, options = {}) {
           filter.$or = searchable.map((field) => ({ [field]: { $regex: req.query.search, $options: 'i' } }));
         }
         if (req.query.status) filter.status = req.query.status;
-        const items = await Model.find(filter).sort({ createdAt: -1 }).populate(options.populate || []);
+        const items = await Model.find(filter)
+          .sort({ fullName: 1, createdAt: -1 })
+          .collation({ locale: 'en', strength: 2 })
+          .populate(options.populate || []);
         res.json({ success: true, data: items });
       } catch (error) { next(error); }
     },
