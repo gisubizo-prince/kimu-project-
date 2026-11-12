@@ -50,11 +50,15 @@ async function record(req, res, next) {
     if (!day) return res.status(400).json({ success: false, message: 'Invalid attendance date.' });
     const student = await Student.findOne({ _id: studentId, isActive: true }).lean();
     if (!student) return res.status(404).json({ success: false, message: 'Active student not found.' });
-    const duplicate = await Attendance.exists({ studentId: student._id, date: day, shift, lesson });
-    if (duplicate) return res.status(409).json({ success: false, message: 'This student already has attendance for that date, shift, and lesson.' });
+    const duplicate = await Attendance.findOne({
+      date: day,
+      $or: [{ studentId: student._id }, { studentName: student.fullName }],
+    }).collation({ locale: 'en', strength: 2 });
+    if (duplicate) return res.status(409).json({ success: false, message: `Attendance already recorded for ${student.fullName} on this date.` });
     const record = await Attendance.create({
       studentId: student._id,
       studentName: student.fullName,
+      attendanceKey: makeAttendanceKey(student._id, day),
       telephone: student.phone,
       shift,
       lesson,
@@ -64,7 +68,7 @@ async function record(req, res, next) {
     });
     res.status(201).json({ success: true, data: record });
   } catch (error) {
-    if (error.code === 11000) return res.status(409).json({ success: false, message: 'This student already has attendance for that date, shift, and lesson.' });
+    if (error.code === 11000) return res.status(409).json({ success: false, message: 'Attendance already recorded for this student on this date.' });
     next(error);
   }
 }
@@ -82,17 +86,16 @@ async function update(req, res, next) {
     if (!SHIFTS.includes(shift)) return res.status(400).json({ success: false, message: 'Select a valid shift.' });
     if (!LESSONS.includes(lesson)) return res.status(400).json({ success: false, message: 'Select a valid lesson.' });
     if (!day) return res.status(400).json({ success: false, message: 'Invalid attendance date.' });
-    const duplicate = await Attendance.exists({
-      studentId: student._id,
+    const duplicate = await Attendance.findOne({
       date: day,
-      shift,
-      lesson,
+      $or: [{ studentId: student._id }, { studentName: student.fullName }],
       _id: { $ne: record._id },
-    });
-    if (duplicate) return res.status(409).json({ success: false, message: 'This student already has attendance for that date, shift, and lesson.' });
+    }).collation({ locale: 'en', strength: 2 });
+    if (duplicate) return res.status(409).json({ success: false, message: `Attendance already recorded for ${student.fullName} on this date.` });
     Object.assign(record, {
       studentId: student._id,
       studentName: student.fullName,
+      attendanceKey: makeAttendanceKey(student._id, day),
       telephone: student.phone,
       shift,
       lesson,
@@ -102,7 +105,7 @@ async function update(req, res, next) {
     await record.save();
     res.json({ success: true, data: record });
   } catch (error) {
-    if (error.code === 11000) return res.status(409).json({ success: false, message: 'This student already has attendance for that date, shift, and lesson.' });
+    if (error.code === 11000) return res.status(409).json({ success: false, message: 'Attendance already recorded for this student on this date.' });
     next(error);
   }
 }
@@ -111,6 +114,10 @@ function parseDateKey(value) {
   if (!/^\d{4}-\d{2}-\d{2}$/.test(value || '')) return null;
   const day = dateKeyAsUtcDate(value);
   return Number.isNaN(day.getTime()) || day.toISOString().slice(0, 10) !== value ? null : day;
+}
+
+function makeAttendanceKey(studentId, day) {
+  return `${studentId}:${day.toISOString().slice(0, 10)}`;
 }
 
 function escapeRegex(value) {

@@ -7,6 +7,7 @@ const attendanceSchema = new mongoose.Schema(
   {
     studentId: { type: mongoose.Schema.Types.ObjectId, ref: 'Student' },
     studentName: { type: String, trim: true },
+    attendanceKey: { type: String },
     telephone: { type: String, trim: true },
     editedAt: Date,
     shift: { type: String, enum: SHIFTS },
@@ -21,8 +22,8 @@ const attendanceSchema = new mongoose.Schema(
   { timestamps: true }
 );
 attendanceSchema.index(
-  { studentId: 1, date: 1, shift: 1, lesson: 1 },
-  { unique: true, partialFilterExpression: { studentId: { $type: 'objectId' } } }
+  { attendanceKey: 1 },
+  { unique: true, partialFilterExpression: { attendanceKey: { $type: 'string' } } }
 );
 const Attendance = mongoose.model('Attendance', attendanceSchema);
 module.exports = Attendance;
