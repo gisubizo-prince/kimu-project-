@@ -23,7 +23,7 @@ export default function Sidebar({ collapsed, mobileOpen, onNavigate }) {
         <img src={kimuMark} alt="" className="kimu-sidebar__mark" />
         {!collapsed && (
           <div className="kimu-sidebar__brand-text">
-            <span className="kimu-sidebar__brand-name">METRIZE</span>
+            <span className="kimu-sidebar__brand-name">MAITRISE</span>
             <span className="kimu-sidebar__brand-sub">Training Management</span>
           </div>
         )}
