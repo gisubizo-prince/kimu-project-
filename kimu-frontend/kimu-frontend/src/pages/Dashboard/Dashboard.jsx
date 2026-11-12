@@ -31,7 +31,7 @@ export default function Dashboard() {
 
   return <div className="kimu-dashboard">
     <header className="kimu-dashboard__intro">
-      <div><p className="kimu-eyebrow">METRIZE / OPERATIONS</p><h2>{greeting()}, {firstName(user?.fullName)}</h2><p>{today}</p></div>
+      <div><p className="kimu-eyebrow">MAITRISE / OPERATIONS</p><h2>{greeting()}, {firstName(user?.fullName)}</h2><p>{today}</p></div>
       <Link className="kimu-btn kimu-btn--primary" to="/attendance">Record attendance</Link>
     </header>
 
