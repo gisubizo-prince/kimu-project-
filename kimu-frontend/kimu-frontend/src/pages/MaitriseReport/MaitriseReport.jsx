@@ -316,14 +316,22 @@ function GeneratedReport({ report, onNew, onPdf, onJson, onExcel }) {
 
 function ReportDocument({ report }) {
   return <article className="maitrise-report__document">
-    <img className="maitrise-report__document-logo" src={kimuLogo} alt="Kimu Transport logo" />
-    <h2>MAITRISE</h2><h3>RAPORO Y’UMUNSI</h3>
-    <p><strong>Itariki:</strong> {report.date}</p>
-    <table><thead><tr><th colSpan="2">ABASHOFERI</th></tr></thead><tbody><tr><td>Abitabiriye</td><td>{report.students.attended}</td></tr><tr><td>Abataritabiriye</td><td>{report.students.missed}</td></tr><tr><th>ABANDITSWE BOSE</th><th>{report.students.total_registered}</th></tr></tbody></table>
-    <div className="maitrise-report__table-wrap"><table><thead><tr><th rowSpan="2">NO</th><th colSpan="2">AMAKURU Y'IKINYABIZIGA</th><th colSpan="3">INTERA (KM)</th><th colSpan="2">IMITERERE Y'IKINYABIZIGA</th><th colSpan="3">AMASAHA Y'AMAHUGURWA</th></tr><tr><th>IMODOKA</th><th>UMWARIMU</th><th>KM YO GUTANGIRA</th><th>KM YO GUSOZA</th><th>KM ZAKOZWE</th><th>GITANGIRA</th><th>GISOZA</th><th>IGIHE CYO GUTANGIRA</th><th>IGIHE CYO GUSOZA</th><th>AMASAHA</th></tr></thead><tbody>{report.cars.map((car, index) => <tr key={car.car}><td>{index + 1}</td><td>{formatVehicleName(car)}</td>{car.status === 'Not used' ? <td colSpan="9">NTIYAKOZESHEJWE</td> : <><td>{car.teacher}</td><td>{formatKilometers(car.km_start)}</td><td>{formatKilometers(car.km_end)}</td><td>{formatKilometers(car.km_used)}</td><td>{translateCondition(car.condition_start)}</td><td>{translateCondition(car.condition_end)}</td><td>{car.start_time}</td><td>{car.end_time}</td><td>{car.hours_worked.toFixed(2)}</td></>}</tr>)}</tbody></table></div>
-    <h4>ICYITONDERWA</h4><p className="maitrise-report__preserve-lines">{report.ikitonderwa}</p>
-    <div className="maitrise-report__signature-grid">{REPORT_SIGNERS.map((signer) => <div key={signer.name}><strong>{signer.label}</strong><span>{signer.name}</span><span>{signer.title}</span><i /><small>Aho asinya</small><span>Itariki: __________________</span></div>)}</div>
-    <p className="maitrise-report__reported-by">Raporo yateguwe na: {report.reported_by}</p>
+    <section className="maitrise-report__document-page">
+      <img className="maitrise-report__document-logo" src={kimuLogo} alt="Kimu Transport logo" />
+      <h2>MAITRISE</h2><h3>RAPORO Y’UMUNSI</h3>
+      <p><strong>Itariki:</strong> {report.date} <span className="maitrise-report__document-class"><strong>Itsinda:</strong> {report.class_group}</span></p>
+      <table className="maitrise-report__student-table"><thead><tr><th colSpan="2">ABASHOFERI</th></tr></thead><tbody><tr><td>Abitabiriye</td><td>{report.students.attended}</td></tr><tr><td>Abataritabiriye</td><td>{report.students.missed}</td></tr><tr><th>ABANDITSWE BOSE</th><th>{report.students.total_registered}</th></tr></tbody></table>
+      <h4>IMIKORESHEREZE Y'IBINYABIZIGA</h4>
+      <div className="maitrise-report__table-wrap"><table><thead><tr><th rowSpan="2">NO</th><th colSpan="2">AMAKURU Y'IKINYABIZIGA</th><th colSpan="3">INTERA (KM)</th><th colSpan="2">IMITERERE Y'IKINYABIZIGA</th><th colSpan="3">AMASAHA Y'AMAHUGURWA</th></tr><tr><th>IMODOKA</th><th>UMWARIMU</th><th>KM YO GUTANGIRA</th><th>KM YO GUSOZA</th><th>KM ZAKOZWE</th><th>GITANGIRA</th><th>GISOZA</th><th>IGIHE CYO GUTANGIRA</th><th>IGIHE CYO GUSOZA</th><th>AMASAHA</th></tr></thead><tbody>{report.cars.map((car, index) => <tr key={car.car}><td>{index + 1}</td><td>{formatVehicleName(car)}</td>{car.status === 'Not used' ? <td colSpan="9">NTIYAKOZESHEJWE</td> : <><td>{car.teacher}</td><td>{formatKilometers(car.km_start)}</td><td>{formatKilometers(car.km_end)}</td><td>{formatKilometers(car.km_used)}</td><td>{translateCondition(car.condition_start)}</td><td>{translateCondition(car.condition_end)}</td><td>{car.start_time}</td><td>{car.end_time}</td><td>{car.hours_worked.toFixed(2)}</td></>}</tr>)}</tbody></table></div>
+    </section>
+    <section className="maitrise-report__document-page maitrise-report__document-page--notes">
+      <img className="maitrise-report__document-logo" src={kimuLogo} alt="Kimu Transport logo" />
+      <h2>MAITRISE</h2><h3>ICYITONDERWA N'IBYEMEZO</h3>
+      <p><strong>Itariki:</strong> {report.date} <span className="maitrise-report__document-class"><strong>Itsinda:</strong> {report.class_group}</span></p>
+      <h4>ICYITONDERWA</h4><p className="maitrise-report__preserve-lines">{report.ikitonderwa || 'Nta kindi cyanditswe.'}</p>
+      <div className="maitrise-report__signature-grid">{REPORT_SIGNERS.map((signer) => <div key={signer.name}><strong>{signer.label}</strong><span>{signer.name}</span><span>{signer.title}</span><i /><small>Aho asinya</small><span>Itariki: __________________</span></div>)}</div>
+      <p className="maitrise-report__reported-by">Raporo yateguwe na: {report.reported_by}</p>
+    </section>
   </article>;
 }
 
@@ -340,7 +348,7 @@ function buildPayload(form) {
   const note = form.incident_answer === 'yes' ? form.incident_details.trim() : problemNotes.length ? '' : 'Nothing unusual to report.';
   const attended = wholeNumber(form.students.attended) || 0;
   const missed = wholeNumber(form.students.missed) || 0;
-  return { date: form.date, class_group: form.class_group.trim(), students: { attended, missed, total_registered: attended + missed }, cars, totals: { km_used: cars.reduce((total, car) => total + car.km_used, 0), hours_worked: Number(cars.reduce((total, car) => total + car.hours_worked, 0).toFixed(2)) }, ikitonderwa: [note, ...problemNotes].join('\n'), reported_by: form.reported_by.trim() };
+  return { date: form.date, class_group: form.class_group.trim(), students: { attended, missed, total_registered: attended + missed }, cars, totals: { km_used: cars.reduce((total, car) => total + car.km_used, 0), hours_worked: Number(cars.reduce((total, car) => total + car.hours_worked, 0).toFixed(2)) }, ikitonderwa: cleanReportNote([note, ...problemNotes].join('\n')) || 'No additional notes.', reported_by: form.reported_by.trim() };
 }
 
 function exportableReport(report) {
@@ -350,7 +358,7 @@ function exportableReport(report) {
     students: report.students,
     cars: report.cars,
     totals: report.totals,
-    ikitonderwa: report.ikitonderwa,
+    ikitonderwa: cleanReportNote(report.ikitonderwa),
     reported_by: report.reported_by,
     signatures: report.signatures || { prepared_by: 'JEAN', verified_by: 'AGNES', approved_by: 'CEO NKUNZIRYAYO JEAN PIERRE', maitrise_director: 'HITIMANA JEAN' },
   };
@@ -403,32 +411,38 @@ function translateCondition(condition) {
   return { Good: 'Byiza', Fair: 'Bisanzwe', Problem: 'Ikibazo' }[condition] || '-';
 }
 
-async function buildPdf(report) {
+function cleanReportNote(value) {
+  return String(value || '')
+    .replace(/Muri\s+Maitrise\s+dukeneye\s+umushoferi\s+usimbura\s+uwagiye\s+kugira\s+ngo\s+amahugurwa\s+akomeze\s+kugenda\s+neza[.,]?\s+ariko\s+mugihe\s+ataraboneka\s+twari\s+turikwifashisha\s+GISUBIZO\s+PRINCE\s+mumahugurwa[.!]?/gi, '')
+    .replace(/[ \t]+\n/g, '\n')
+    .replace(/\n{3,}/g, '\n\n')
+    .trim();
+}
+
+async function buildPdf(sourceReport) {
+  const report = exportableReport(sourceReport);
   const doc = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
   const logo = await loadLogo();
   const pageWidth = doc.internal.pageSize.getWidth();
   const pageHeight = doc.internal.pageSize.getHeight();
   const margin = 9;
   const contentWidth = pageWidth - margin * 2;
-  const headerLogoWidth = 112;
-  const headerLogoHeight = headerLogoWidth * logo.naturalHeight / logo.naturalWidth;
-  doc.addImage(logo, 'PNG', margin, 7, headerLogoWidth, headerLogoHeight);
+  const logoHeight = contentWidth * logo.naturalHeight / logo.naturalWidth;
+  doc.addImage(logo, 'PNG', margin, 7, contentWidth, logoHeight);
   doc.setTextColor(0, 0, 0);
   doc.setFont('helvetica', 'bold');
-  doc.setFontSize(12);
-  doc.text('RAPORO Y’UMUNSI', pageWidth - margin, 15, { align: 'right' });
+  doc.setFontSize(14);
+  doc.text('RAPORO Y’UMUNSI', pageWidth / 2, 77, { align: 'center' });
   doc.setFont('helvetica', 'normal');
-  doc.setFontSize(8);
-  doc.text(`Itsinda: ${report.class_group || '-'}`, pageWidth - margin, 21, { align: 'right' });
-  doc.text(`Itariki: ${report.date}`, pageWidth - margin, 26, { align: 'right' });
+  doc.setFontSize(10);
+  doc.text(`Itsinda: ${report.class_group || '-'}     Itariki: ${report.date}`, pageWidth / 2, 84, { align: 'center' });
 
   autoTable(doc, {
-    theme: 'grid', startY: 37, margin: { left: margin, right: margin, bottom: 35 },
+    theme: 'grid', startY: 90, margin: { left: margin, right: margin, bottom: 12 },
     head: [['ABASHOFERI', 'ABITABIRIYE', 'ABATARITABIRIYE', 'ABANDITSWE BOSE']],
     body: [[report.students.attended, report.students.missed, report.students.total_registered]],
-    styles: { fontSize: 7, cellPadding: 1, textColor: [0, 0, 0], fillColor: [255, 255, 255], lineColor: [0, 0, 0], lineWidth: 0.1, halign: 'center' },
+    styles: { fontSize: 10, cellPadding: 2, textColor: [0, 0, 0], fillColor: [255, 255, 255], lineColor: [0, 0, 0], lineWidth: 0.2, halign: 'center' },
     headStyles: { fillColor: [255, 255, 255], textColor: [0, 0, 0], lineColor: [0, 0, 0], fontStyle: 'bold' },
-    columnStyles: { 0: { cellWidth: 68 }, 1: { cellWidth: 68 }, 2: { cellWidth: 68 }, 3: { cellWidth: 68 } },
   });
 
   const body = report.cars.map((car, index) => car.status === 'Not used'
@@ -443,54 +457,66 @@ async function buildPdf(report) {
   ];
   const columnRow = ['IMODOKA', 'UMWARIMU', 'KM YO GUTANGIRA', 'KM YO GUSOZA', 'KM ZAKOZWE', 'GITANGIRA', 'GISOZA', 'IGIHE CYO GUTANGIRA', 'IGIHE CYO GUSOZA', 'AMASAHA'];
   autoTable(doc, {
-    theme: 'grid', startY: doc.lastAutoTable.finalY + 3, margin: { left: margin, right: margin, bottom: 35 },
-    head: [groupRow, columnRow], body, showHead: 'everyPage',
-    styles: { fontSize: 6, cellPadding: 1, overflow: 'ellipsize', valign: 'middle', textColor: [0, 0, 0], fillColor: [255, 255, 255], lineColor: [0, 0, 0], lineWidth: 0.1 },
-    headStyles: { fillColor: [255, 255, 255], textColor: [0, 0, 0], lineColor: [0, 0, 0], fontStyle: 'bold', halign: 'center' },
-    columnStyles: { 0: { cellWidth: 9, halign: 'center' }, 1: { cellWidth: 42 }, 2: { cellWidth: 39 }, 3: { cellWidth: 22, halign: 'right' }, 4: { cellWidth: 22, halign: 'right' }, 5: { cellWidth: 20, halign: 'right' }, 6: { cellWidth: 24 }, 7: { cellWidth: 24 }, 8: { cellWidth: 22 }, 9: { cellWidth: 22 }, 10: { cellWidth: 20, halign: 'right' } },
+    theme: 'grid', startY: doc.lastAutoTable.finalY + 5, margin: { left: margin, right: margin, bottom: 12 },
+    head: [groupRow, columnRow], body,
+    styles: { fontSize: 9, cellPadding: 2, overflow: 'linebreak', valign: 'middle', textColor: [0, 0, 0], fillColor: [255, 255, 255], lineColor: [0, 0, 0], lineWidth: 0.2 },
+    headStyles: { fontSize: 8, fillColor: [255, 255, 255], textColor: [0, 0, 0], lineColor: [0, 0, 0], fontStyle: 'bold', halign: 'center' },
+    columnStyles: { 0: { cellWidth: 9, halign: 'center' }, 1: { cellWidth: 40 }, 2: { cellWidth: 34 }, 3: { cellWidth: 25, halign: 'right' }, 4: { cellWidth: 25, halign: 'right' }, 5: { cellWidth: 24, halign: 'right' }, 6: { cellWidth: 24 }, 7: { cellWidth: 24 }, 8: { cellWidth: 25 }, 9: { cellWidth: 25 }, 10: { cellWidth: 24, halign: 'right' } },
   });
 
-  const signatureY = pageHeight - 34;
-  const noteY = doc.lastAutoTable.finalY + 4;
-  const noteTextY = noteY + 5;
-  const note = report.ikitonderwa || 'Nta kintu kidasanzwe cyabaye.';
-  let noteFontSize = 7;
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(8);
+  doc.setTextColor(0, 0, 0);
+  doc.text(`Byakozwe: ${new Date().toLocaleDateString('en-GB')}`, margin, pageHeight - 8);
+  doc.text('Urupapuro rwa 1 kuri 2', pageWidth - margin, pageHeight - 8, { align: 'right' });
+
+  doc.addPage();
+  doc.addImage(logo, 'PNG', margin, 7, contentWidth, logoHeight);
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(14);
+  doc.text("ICYITONDERWA N'IBYEMEZO", pageWidth / 2, 77, { align: 'center' });
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(10);
+  doc.text(`Itsinda: ${report.class_group || '-'}     Itariki: ${report.date}`, pageWidth / 2, 84, { align: 'center' });
+
+  const noteY = 94;
+  const note = report.ikitonderwa || 'Nta kindi cyanditswe.';
+  let noteFontSize = 11;
   let noteLines;
-  let noteLineHeight;
-  const noteAvailableHeight = Math.max(signatureY - noteTextY - 5, 4);
+  const signatureY = pageHeight - 48;
   do {
     doc.setFont('helvetica', 'normal');
     doc.setFontSize(noteFontSize);
     noteLines = doc.splitTextToSize(note, contentWidth);
-    noteLineHeight = noteFontSize * 0.45;
-    if (noteLines.length * noteLineHeight <= noteAvailableHeight || noteFontSize <= 4) break;
+    if (noteLines.length * noteFontSize * 0.5 <= signatureY - noteY - 12 || noteFontSize <= 9) break;
     noteFontSize -= 0.5;
-  } while (noteFontSize > 3.5);
+  } while (noteFontSize > 8.5);
 
   doc.setFont('helvetica', 'bold');
-  doc.setFontSize(7);
-  doc.text('ICYITONDERWA', margin, noteY);
+  doc.setFontSize(11);
+  doc.text('ICYITONDERWA', margin, noteY - 5);
   doc.setFont('helvetica', 'normal');
   doc.setFontSize(noteFontSize);
-  doc.text(noteLines, margin, noteTextY, { lineHeightFactor: 0.9 });
+  doc.text(noteLines, margin, noteY, { lineHeightFactor: 1 });
 
   const signatureXs = [margin, 79, 149, 219];
   REPORT_SIGNERS.forEach((signer, index) => {
     const x = signatureXs[index];
     doc.setTextColor(0, 0, 0);
-    doc.setFont('helvetica', 'normal'); doc.setFontSize(6.5); doc.text(signer.label, x, signatureY);
-    doc.setFont('helvetica', 'bold'); doc.setFontSize(6.5); doc.text(doc.splitTextToSize(signer.name, 64), x, signatureY + 4);
-    doc.setFont('helvetica', 'normal'); doc.setFontSize(6); doc.text(doc.splitTextToSize(signer.title, 64), x, signatureY + 8);
-    doc.setDrawColor(0, 0, 0); doc.setLineWidth(0.25); doc.line(x, signatureY + 17, x + 64, signatureY + 17);
-    doc.setFontSize(5.5); doc.text('Aho asinya: __________________', x, signatureY + 21);
+    doc.setFont('helvetica', 'normal'); doc.setFontSize(9); doc.text(signer.label, x, signatureY);
+    doc.setFont('helvetica', 'bold'); doc.setFontSize(9); doc.text(doc.splitTextToSize(signer.name, 64), x, signatureY + 5);
+    doc.setFont('helvetica', 'normal'); doc.setFontSize(8); doc.text(doc.splitTextToSize(signer.title, 64), x, signatureY + 11);
+    doc.setDrawColor(0, 0, 0); doc.setLineWidth(0.25); doc.line(x, signatureY + 22, x + 64, signatureY + 22);
+    doc.setFontSize(8); doc.text('Aho asinya: __________________', x, signatureY + 27);
+    doc.text('Itariki: __________________', x, signatureY + 33);
   });
 
   const generatedDate = new Date().toLocaleDateString('en-GB');
   doc.setDrawColor(0, 0, 0);
   doc.line(margin, pageHeight - 8, pageWidth - margin, pageHeight - 8);
-  doc.setFont('helvetica', 'normal'); doc.setFontSize(6); doc.setTextColor(0, 0, 0);
+  doc.setFont('helvetica', 'normal'); doc.setFontSize(8); doc.setTextColor(0, 0, 0);
   doc.text(`Byakozwe: ${generatedDate}`, margin, pageHeight - 4);
-  doc.text('MAITRISE', pageWidth - margin, pageHeight - 4, { align: 'right' });
+  doc.text('Urupapuro rwa 2 kuri 2', pageWidth - margin, pageHeight - 4, { align: 'right' });
   return doc;
 }
 

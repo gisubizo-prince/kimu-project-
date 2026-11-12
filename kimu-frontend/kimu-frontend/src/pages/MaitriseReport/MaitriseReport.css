@@ -46,29 +46,47 @@
 .maitrise-report__review-heading button, .maitrise-report__text-button { border: 0; background: transparent; color: var(--kimu-green-dark); font: 600 12px var(--font-body); text-decoration: underline; cursor: pointer; }
 .maitrise-report__table-wrap { width: 100%; overflow-x: auto; }
 .maitrise-report table { width: 100%; border-collapse: collapse; }
-.maitrise-report th, .maitrise-report td { border: 1px solid var(--kimu-border); padding: 9px 10px; text-align: left; vertical-align: top; font-size: 12px; }
-.maitrise-report th { background: var(--kimu-green-light); color: var(--kimu-charcoal); font-size: 10px; font-weight: 700; }
+.maitrise-report th, .maitrise-report td { border: 1px solid var(--kimu-border); padding: 10px 12px; text-align: left; vertical-align: top; font-size: 14px; }
+.maitrise-report th { background: var(--kimu-green-light); color: var(--kimu-charcoal); font-size: 13px; font-weight: 700; }
 .maitrise-report__total-row td { background: var(--kimu-bg); font-weight: 700; }
 .maitrise-report__preserve-lines { white-space: pre-line; }
-.maitrise-report__document { padding: 20px; border: 1px solid var(--kimu-border); color: #000; }
-.maitrise-report__document-logo { display: block; width: 100%; height: auto; margin-bottom: 12px; }
+.maitrise-report__document { display: grid; gap: 18px; color: #000; }
+.maitrise-report__document-page { min-height: 190mm; padding: 20px; border: 1px solid var(--kimu-border); background: #fff; color: #000; }
+.maitrise-report__document-logo { display: block; width: 100%; max-width: 100%; height: auto; margin-bottom: 12px; }
 .maitrise-report__document h2 { color: #000; font-size: 18px; }
 .maitrise-report__document h3 { margin-top: 4px; font-size: 15px; text-decoration: underline; }
-.maitrise-report__document > p { margin: 5px 0 12px; font-size: 12px; }
-.maitrise-report__document > h4 { margin: 16px 0 6px; font-size: 11px; }
+.maitrise-report__document-page > p { margin: 5px 0 12px; font-size: 14px; }
+.maitrise-report__document-page > h4 { margin: 16px 0 6px; font-size: 14px; }
 .maitrise-report__document table { margin: 12px 0; }
 .maitrise-report__document .maitrise-report__table-wrap { margin-top: 10px; }
-.maitrise-report__document th, .maitrise-report__document td { padding: 8px; border-color: #000; font-size: 11px; color: #000; }
-.maitrise-report__document th { background: #f1f3f2; }
-.maitrise-report__signature-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; margin-top: 22px; }
-.maitrise-report__signature-grid > div { display: grid; align-content: start; gap: 7px; min-width: 0; font-size: 10px; }
-.maitrise-report__signature-grid strong { font-size: 10px; }
+.maitrise-report__document table { min-width: 100%; }
+.maitrise-report__document .maitrise-report__table-wrap table { min-width: 1120px; }
+.maitrise-report__document th, .maitrise-report__document td { padding: 10px; border-color: #000; font-size: 14px; line-height: 1.35; color: #000; }
+.maitrise-report__document th { background: #f1f3f2; font-size: 13px; }
+.maitrise-report__document-class { margin-left: 24px; }
+.maitrise-report__student-table { max-width: 560px; }
+.maitrise-report__signature-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; margin-top: 28px; }
+.maitrise-report__signature-grid > div { display: grid; align-content: start; gap: 9px; min-width: 0; font-size: 13px; }
+.maitrise-report__signature-grid strong { font-size: 13px; }
 .maitrise-report__signature-grid span { overflow-wrap: anywhere; }
 .maitrise-report__signature-grid i { display: block; height: 22px; border-bottom: 1px solid #000; }
-.maitrise-report__signature-grid small { font-size: 9px; }
-.maitrise-report__reported-by { margin-top: 16px !important; }
+.maitrise-report__signature-grid small { font-size: 12px; }
+.maitrise-report__document-page .maitrise-report__reported-by { margin-top: 24px !important; font-size: 14px; }
 .maitrise-report__json { margin-top: 14px; color: var(--kimu-text-secondary); font-size: 12px; }
 .maitrise-report__json summary { cursor: pointer; }
 .maitrise-report__json pre { max-height: 360px; overflow: auto; margin-top: 10px; padding: 14px; background: var(--kimu-bg); color: var(--kimu-text); font-size: 11px; }
 @media (max-width: 800px) { .maitrise-report__header { align-items: flex-start; flex-direction: column; } .maitrise-report__progress { grid-template-columns: repeat(3, minmax(0, 1fr)); row-gap: 12px; } .maitrise-report__form-grid { grid-template-columns: 1fr; } .maitrise-report__section-heading { align-items: flex-start; flex-direction: column; } }
-@media (max-width: 600px) { .maitrise-report__panel { padding: 16px; } .maitrise-report__progress > div { font-size: 10px; } .maitrise-report__progress span { flex: 0 0 23px; } .maitrise-report__actions, .maitrise-report__export-actions { flex-direction: column; } .maitrise-report__actions .kimu-btn, .maitrise-report__export-actions .kimu-btn { width: 100%; } .maitrise-report__signature-grid { grid-template-columns: 1fr; gap: 16px; } .maitrise-report__document { padding: 12px; } }
+@media (max-width: 600px) { .maitrise-report__panel { padding: 16px; } .maitrise-report__progress > div { font-size: 10px; } .maitrise-report__progress span { flex: 0 0 23px; } .maitrise-report__actions, .maitrise-report__export-actions { flex-direction: column; } .maitrise-report__actions .kimu-btn, .maitrise-report__export-actions .kimu-btn { width: 100%; } .maitrise-report__signature-grid { grid-template-columns: 1fr; gap: 16px; } .maitrise-report__document-page { min-height: 0; padding: 12px; } }
+@media print {
+  @page { size: A4 landscape; margin: 8mm; }
+  body * { visibility: hidden; }
+  .maitrise-report__document, .maitrise-report__document * { visibility: visible; }
+  .maitrise-report__document { display: block; position: absolute; inset: 0; gap: 0; }
+  .maitrise-report__document-page { box-sizing: border-box; width: 100%; min-height: 190mm; padding: 0; border: 0; break-after: page; page-break-after: always; }
+  .maitrise-report__document-page:last-child { break-after: auto; page-break-after: auto; }
+  .maitrise-report__document-logo { width: 100%; }
+  .maitrise-report__document .maitrise-report__table-wrap { overflow: visible; }
+  .maitrise-report__document .maitrise-report__table-wrap table { min-width: 0; table-layout: fixed; }
+  .maitrise-report__document th, .maitrise-report__document td { padding: 6px; font-size: 11px; }
+  .maitrise-report__document th { font-size: 10px; }
+}
