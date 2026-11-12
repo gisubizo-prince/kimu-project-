@@ -11,5 +11,7 @@
 .kimu-attendance-filters { display: grid; grid-template-columns: repeat(4, minmax(130px, 1fr)); align-items: end; gap: 12px; }
 .kimu-attendance-list table { min-width: 680px; }
 .kimu-attendance-edited { display: block; margin-top: 4px; color: var(--kimu-text-secondary); font-size: 11px; font-weight: 400; }
+.kimu-attendance-actions { display: flex; gap: 12px; }
+.kimu-attendance-delete { color: #b42318; }
 @media (max-width: 800px) { .kimu-training-form__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .kimu-attendance-filters { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (max-width: 520px) { .kimu-training-form__grid, .kimu-attendance-filters { grid-template-columns: 1fr; } .kimu-training-form__actions { flex-direction: column; } }

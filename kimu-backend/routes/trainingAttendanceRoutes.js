@@ -7,5 +7,6 @@ router.use(protect);
 router.get('/', controller.list);
 router.post('/', authorize('super_admin', 'admin', 'hr_staff', 'security', 'manager'), controller.record);
 router.put('/:id', authorize('super_admin', 'admin', 'hr_staff', 'security', 'manager'), controller.update);
+router.delete('/:id', authorize('super_admin', 'admin', 'hr_staff', 'security', 'manager'), controller.remove);
 
 module.exports = router;

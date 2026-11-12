@@ -110,6 +110,19 @@ async function update(req, res, next) {
   }
 }
 
+async function remove(req, res, next) {
+  try {
+    const record = await Attendance.findOneAndDelete({
+      _id: req.params.id,
+      studentId: { $exists: true },
+    });
+    if (!record) return res.status(404).json({ success: false, message: 'Attendance record not found.' });
+    res.json({ success: true, message: 'Attendance record deleted.' });
+  } catch (error) {
+    next(error);
+  }
+}
+
 function parseDateKey(value) {
   if (!/^\d{4}-\d{2}-\d{2}$/.test(value || '')) return null;
   const day = dateKeyAsUtcDate(value);
@@ -124,4 +137,4 @@ function escapeRegex(value) {
   return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
-module.exports = { list, record, update };
+module.exports = { list, record, update, remove };
