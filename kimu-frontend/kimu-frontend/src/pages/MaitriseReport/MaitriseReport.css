@@ -52,7 +52,7 @@
 .maitrise-report__preserve-lines { white-space: pre-line; }
 .maitrise-report__document { color: #000; }
 .maitrise-report__document-page { min-height: 190mm; padding: 20px; border: 1px solid var(--kimu-border); background: #fff; color: #000; }
-.maitrise-report__document-logo { display: block; width: 100%; max-width: 100%; height: auto; margin-bottom: 12px; }
+.maitrise-report__document-logo { display: block; width: calc(100% - 10vh); max-width: 100%; height: auto; margin: 0 auto 12px; }
 .maitrise-report__document-heading { display: flex; justify-content: space-between; align-items: end; gap: 16px; margin: 0 0 14px; padding-bottom: 10px; border-bottom: 2px solid var(--kimu-green); }
 .maitrise-report__document-heading p { margin-bottom: 4px; color: var(--kimu-green-dark); font-size: 12px; font-weight: 700; letter-spacing: .08em; }
 .maitrise-report__document-heading h2 { color: #14251d; font-size: 23px; }
@@ -92,7 +92,7 @@
   .maitrise-report__document, .maitrise-report__document * { visibility: visible; }
   .maitrise-report__document { display: block; position: absolute; inset: 0; }
   .maitrise-report__document-page { box-sizing: border-box; width: 100%; min-height: 190mm; padding: 0; border: 0; break-after: auto; page-break-after: auto; }
-  .maitrise-report__document-logo { width: 100%; margin-bottom: 7px; }
+  .maitrise-report__document-logo { width: calc(100% - 20mm); margin-bottom: 7px; }
   .maitrise-report__document-heading { margin-bottom: 7px; padding-bottom: 5px; }
   .maitrise-report__document-heading p { font-size: 9px; }
   .maitrise-report__document-heading h2 { font-size: 18px; }
