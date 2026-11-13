@@ -315,22 +315,33 @@ function GeneratedReport({ report, onNew, onPdf, onJson, onExcel }) {
 }
 
 function ReportDocument({ report }) {
+  const vehiclesUsed = report.cars.filter((car) => car.status === 'Used').length;
   return <article className="maitrise-report__document">
     <section className="maitrise-report__document-page">
       <img className="maitrise-report__document-logo" src={kimuLogo} alt="Kimu Transport logo" />
-      <h2>MAITRISE</h2><h3>RAPORO Y’UMUNSI</h3>
-      <p><strong>Itariki:</strong> {report.date} <span className="maitrise-report__document-class"><strong>Itsinda:</strong> {report.class_group}</span></p>
-      <table className="maitrise-report__student-table"><thead><tr><th colSpan="2">ABASHOFERI</th></tr></thead><tbody><tr><td>Abitabiriye</td><td>{report.students.attended}</td></tr><tr><td>Abataritabiriye</td><td>{report.students.missed}</td></tr><tr><th>ABANDITSWE BOSE</th><th>{report.students.total_registered}</th></tr></tbody></table>
-      <h4>IMIKORESHEREZE Y'IBINYABIZIGA</h4>
-      <div className="maitrise-report__table-wrap"><table><thead><tr><th rowSpan="2">NO</th><th colSpan="2">AMAKURU Y'IKINYABIZIGA</th><th colSpan="3">INTERA (KM)</th><th colSpan="2">IMITERERE Y'IKINYABIZIGA</th><th colSpan="3">AMASAHA Y'AMAHUGURWA</th></tr><tr><th>IMODOKA</th><th>UMWARIMU</th><th>KM YO GUTANGIRA</th><th>KM YO GUSOZA</th><th>KM ZAKOZWE</th><th>GITANGIRA</th><th>GISOZA</th><th>IGIHE CYO GUTANGIRA</th><th>IGIHE CYO GUSOZA</th><th>AMASAHA</th></tr></thead><tbody>{report.cars.map((car, index) => <tr key={car.car}><td>{index + 1}</td><td>{formatVehicleName(car)}</td>{car.status === 'Not used' ? <td colSpan="9">NTIYAKOZESHEJWE</td> : <><td>{car.teacher}</td><td>{formatKilometers(car.km_start)}</td><td>{formatKilometers(car.km_end)}</td><td>{formatKilometers(car.km_used)}</td><td>{translateCondition(car.condition_start)}</td><td>{translateCondition(car.condition_end)}</td><td>{car.start_time}</td><td>{car.end_time}</td><td>{car.hours_worked.toFixed(2)}</td></>}</tr>)}</tbody></table></div>
-    </section>
-    <section className="maitrise-report__document-page maitrise-report__document-page--notes">
-      <img className="maitrise-report__document-logo" src={kimuLogo} alt="Kimu Transport logo" />
-      <h2>MAITRISE</h2><h3>ICYITONDERWA N'IBYEMEZO</h3>
-      <p><strong>Itariki:</strong> {report.date} <span className="maitrise-report__document-class"><strong>Itsinda:</strong> {report.class_group}</span></p>
-      <h4>ICYITONDERWA</h4><p className="maitrise-report__preserve-lines">{report.ikitonderwa || 'Nta kindi cyanditswe.'}</p>
-      <div className="maitrise-report__signature-grid">{REPORT_SIGNERS.map((signer) => <div key={signer.name}><strong>{signer.label}</strong><span>{signer.name}</span><span>{signer.title}</span><i /><small>Aho asinya</small><span>Itariki: __________________</span></div>)}</div>
-      <p className="maitrise-report__reported-by">Raporo yateguwe na: {report.reported_by}</p>
+      <header className="maitrise-report__document-heading">
+        <div><p>MAITRISE · DAILY TRAINING REPORT</p><h2>Raporo y'umunsi</h2></div>
+        <div><strong>{report.date}</strong><span>{report.class_group}</span></div>
+      </header>
+      <div className="maitrise-report__executive-summary">
+        <div><span>Abitabiriye</span><strong>{report.students.attended}</strong></div>
+        <div><span>Abasibye</span><strong>{report.students.missed}</strong></div>
+        <div><span>Abanyeshuri bose</span><strong>{report.students.total_registered}</strong></div>
+        <div><span>Imodoka zakoreshejwe</span><strong>{vehiclesUsed} / {report.cars.length}</strong></div>
+        <div><span>Intera yose</span><strong>{formatKilometers(report.totals.km_used)} km</strong></div>
+        <div><span>Amasaha yose</span><strong>{Number(report.totals.hours_worked).toFixed(2)}</strong></div>
+      </div>
+      <div className="maitrise-report__table-wrap">
+        <table className="maitrise-report__vehicle-table">
+          <thead><tr><th>No.</th><th>Imodoka</th><th>Umwarimu</th><th>KM gutangira</th><th>KM gusoza</th><th>KM zakozwe</th><th>Imiterere (intangiriro / isoza)</th><th>Amasaha (itangiriro - isoza)</th><th>Igiteranyo</th></tr></thead>
+          <tbody>{report.cars.map((car, index) => <tr key={car.car}><td>{index + 1}</td><td>{formatVehicleName(car)}</td>{car.status === 'Not used' ? <td colSpan="7">Ntiyakoreshejwe</td> : <><td>{car.teacher}</td><td>{formatKilometers(car.km_start)}</td><td>{formatKilometers(car.km_end)}</td><td>{formatKilometers(car.km_used)}</td><td>{translateCondition(car.condition_start)} / {translateCondition(car.condition_end)}</td><td>{car.start_time} - {car.end_time}</td><td>{Number(car.hours_worked).toFixed(2)} h</td></>}</tr>)}</tbody>
+        </table>
+      </div>
+      <section className="maitrise-report__executive-note"><h3>Icyitonderwa / Ibibazo</h3><p className="maitrise-report__preserve-lines">{report.ikitonderwa || 'Nta kindi cyanditswe.'}</p></section>
+      <footer className="maitrise-report__document-footer">
+        <p>Yateguwe na: <strong>{report.reported_by || '-'}</strong></p>
+        <div className="maitrise-report__signature-grid">{REPORT_SIGNERS.map((signer) => <div key={signer.name}><strong>{signer.label}</strong><span>{signer.name}</span><small>{signer.title}</small><i /></div>)}</div>
+      </footer>
     </section>
   </article>;
 }
@@ -431,92 +442,78 @@ async function buildPdf(sourceReport) {
   doc.addImage(logo, 'PNG', margin, 7, contentWidth, logoHeight);
   doc.setTextColor(0, 0, 0);
   doc.setFont('helvetica', 'bold');
-  doc.setFontSize(14);
-  doc.text('RAPORO Y’UMUNSI', pageWidth / 2, 77, { align: 'center' });
+  doc.setFontSize(13);
+  doc.text("MAITRISE | RAPORO Y'UMUNSI", margin, 76);
   doc.setFont('helvetica', 'normal');
-  doc.setFontSize(10);
-  doc.text(`Itsinda: ${report.class_group || '-'}     Itariki: ${report.date}`, pageWidth / 2, 84, { align: 'center' });
+  doc.setFontSize(9);
+  doc.text(`Itsinda: ${report.class_group || '-'}     Itariki: ${report.date}`, pageWidth - margin, 76, { align: 'right' });
 
   autoTable(doc, {
-    theme: 'grid', startY: 90, margin: { left: margin, right: margin, bottom: 12 },
-    head: [['ABASHOFERI', 'ABITABIRIYE', 'ABATARITABIRIYE', 'ABANDITSWE BOSE']],
-    body: [[report.students.attended, report.students.missed, report.students.total_registered]],
-    styles: { fontSize: 10, cellPadding: 2, textColor: [0, 0, 0], fillColor: [255, 255, 255], lineColor: [0, 0, 0], lineWidth: 0.2, halign: 'center' },
-    headStyles: { fillColor: [255, 255, 255], textColor: [0, 0, 0], lineColor: [0, 0, 0], fontStyle: 'bold' },
+    theme: 'grid',
+    startY: 80,
+    margin: { left: margin, right: margin, bottom: 8 },
+    head: [['ABITABIRIYE', 'ABATARITABIRIYE', 'ABANYESHURI BOSE', 'IMODOKA ZAKORESHEJWE', 'INTERA YOSE (KM)', 'AMASAHA YOSE']],
+    body: [[report.students.attended, report.students.missed, report.students.total_registered, `${report.cars.filter((car) => car.status === 'Used').length} / ${report.cars.length}`, formatKilometers(report.totals.km_used), Number(report.totals.hours_worked).toFixed(2)]],
+    styles: { fontSize: 9, cellPadding: 2, textColor: [0, 0, 0], fillColor: [255, 255, 255], lineColor: [0, 0, 0], lineWidth: 0.2, halign: 'center' },
+    headStyles: { fontSize: 8, fillColor: [235, 242, 238], textColor: [0, 0, 0], lineColor: [0, 0, 0], fontStyle: 'bold' },
   });
 
-  const body = report.cars.map((car, index) => car.status === 'Not used'
-    ? [index + 1, formatVehicleName(car), { content: 'NTIYAKOZESHEJWE', colSpan: 9, styles: { halign: 'center', fontStyle: 'bold' } }]
-    : [index + 1, formatVehicleName(car), car.teacher, formatKilometers(car.km_start), formatKilometers(car.km_end), formatKilometers(car.km_used), translateCondition(car.condition_start), translateCondition(car.condition_end), car.start_time, car.end_time, car.hours_worked.toFixed(2)]);
-  const groupRow = [
-    { content: 'NO', rowSpan: 2 },
-    { content: "AMAKURU Y'IKINYABIZIGA", colSpan: 2 },
-    { content: 'INTERA (KM)', colSpan: 3 },
-    { content: "IMITERERE Y'IKINYABIZIGA", colSpan: 2 },
-    { content: "AMASAHA Y'AMAHUGURWA", colSpan: 3 },
-  ];
-  const columnRow = ['IMODOKA', 'UMWARIMU', 'KM YO GUTANGIRA', 'KM YO GUSOZA', 'KM ZAKOZWE', 'GITANGIRA', 'GISOZA', 'IGIHE CYO GUTANGIRA', 'IGIHE CYO GUSOZA', 'AMASAHA'];
+  const body = report.cars.map((car, index) => [
+    index + 1,
+    formatVehicleName(car),
+    car.status === 'Used' ? car.teacher : 'Ntiyakoreshejwe',
+    car.status === 'Used' ? formatKilometers(car.km_start) : '-',
+    car.status === 'Used' ? formatKilometers(car.km_end) : '-',
+    car.status === 'Used' ? formatKilometers(car.km_used) : '-',
+    car.status === 'Used' ? `${translateCondition(car.condition_start)} / ${translateCondition(car.condition_end)}` : '-',
+    car.status === 'Used' ? `${car.start_time} - ${car.end_time}` : '-',
+    car.status === 'Used' ? `${Number(car.hours_worked).toFixed(2)} h` : '-',
+  ]);
   autoTable(doc, {
-    theme: 'grid', startY: doc.lastAutoTable.finalY + 5, margin: { left: margin, right: margin, bottom: 12 },
-    head: [groupRow, columnRow], body,
-    styles: { fontSize: 9, cellPadding: 2, overflow: 'linebreak', valign: 'middle', textColor: [0, 0, 0], fillColor: [255, 255, 255], lineColor: [0, 0, 0], lineWidth: 0.2 },
-    headStyles: { fontSize: 8, fillColor: [255, 255, 255], textColor: [0, 0, 0], lineColor: [0, 0, 0], fontStyle: 'bold', halign: 'center' },
-    columnStyles: { 0: { cellWidth: 9, halign: 'center' }, 1: { cellWidth: 40 }, 2: { cellWidth: 34 }, 3: { cellWidth: 25, halign: 'right' }, 4: { cellWidth: 25, halign: 'right' }, 5: { cellWidth: 24, halign: 'right' }, 6: { cellWidth: 24 }, 7: { cellWidth: 24 }, 8: { cellWidth: 25 }, 9: { cellWidth: 25 }, 10: { cellWidth: 24, halign: 'right' } },
+    theme: 'grid',
+    startY: doc.lastAutoTable.finalY + 4,
+    margin: { left: margin, right: margin, bottom: 8 },
+    head: [['NO.', 'IMODOKA', 'UMWARIMU', 'KM YO GUTANGIRA', 'KM YO GUSOZA', 'KM ZAKOZWE', 'IMITERERE (TANGIRA / SOZA)', 'AMASAHA (TANGIRA - SOZA)', 'IGITERANYO']],
+    body,
+    styles: { fontSize: 8, cellPadding: 2, overflow: 'linebreak', valign: 'middle', textColor: [0, 0, 0], fillColor: [255, 255, 255], lineColor: [0, 0, 0], lineWidth: 0.2 },
+    headStyles: { fontSize: 7, fillColor: [235, 242, 238], textColor: [0, 0, 0], lineColor: [0, 0, 0], fontStyle: 'bold', halign: 'center' },
+    columnStyles: { 0: { cellWidth: 9, halign: 'center' }, 1: { cellWidth: 31 }, 2: { cellWidth: 31 }, 3: { cellWidth: 27 }, 4: { cellWidth: 27 }, 5: { cellWidth: 23 }, 6: { cellWidth: 42 }, 7: { cellWidth: 43 }, 8: { cellWidth: 28 } },
   });
 
-  doc.setFont('helvetica', 'normal');
-  doc.setFontSize(8);
-  doc.setTextColor(0, 0, 0);
-  doc.text(`Byakozwe: ${new Date().toLocaleDateString('en-GB')}`, margin, pageHeight - 8);
-  doc.text('Urupapuro rwa 1 kuri 2', pageWidth - margin, pageHeight - 8, { align: 'right' });
-
-  doc.addPage();
-  doc.addImage(logo, 'PNG', margin, 7, contentWidth, logoHeight);
-  doc.setFont('helvetica', 'bold');
-  doc.setFontSize(14);
-  doc.text("ICYITONDERWA N'IBYEMEZO", pageWidth / 2, 77, { align: 'center' });
-  doc.setFont('helvetica', 'normal');
-  doc.setFontSize(10);
-  doc.text(`Itsinda: ${report.class_group || '-'}     Itariki: ${report.date}`, pageWidth / 2, 84, { align: 'center' });
-
-  const noteY = 94;
   const note = report.ikitonderwa || 'Nta kindi cyanditswe.';
-  let noteFontSize = 11;
+  const noteTitleY = doc.lastAutoTable.finalY + 5;
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(9);
+  doc.text('ICYITONDERWA / IBIBAZO', margin, noteTitleY);
+  const signatureY = pageHeight - 24;
+  let noteFontSize = 9;
   let noteLines;
-  const signatureY = pageHeight - 48;
   do {
     doc.setFont('helvetica', 'normal');
     doc.setFontSize(noteFontSize);
     noteLines = doc.splitTextToSize(note, contentWidth);
-    if (noteLines.length * noteFontSize * 0.5 <= signatureY - noteY - 12 || noteFontSize <= 9) break;
+    if (noteLines.length * noteFontSize * 0.42 <= signatureY - noteTitleY - 5 || noteFontSize <= 7) break;
     noteFontSize -= 0.5;
-  } while (noteFontSize > 8.5);
-
-  doc.setFont('helvetica', 'bold');
-  doc.setFontSize(11);
-  doc.text('ICYITONDERWA', margin, noteY - 5);
-  doc.setFont('helvetica', 'normal');
+  } while (noteFontSize > 6.5);
   doc.setFontSize(noteFontSize);
-  doc.text(noteLines, margin, noteY, { lineHeightFactor: 1 });
+  doc.text(noteLines, margin, noteTitleY + 5, { lineHeightFactor: 0.9 });
 
   const signatureXs = [margin, 79, 149, 219];
   REPORT_SIGNERS.forEach((signer, index) => {
     const x = signatureXs[index];
     doc.setTextColor(0, 0, 0);
-    doc.setFont('helvetica', 'normal'); doc.setFontSize(9); doc.text(signer.label, x, signatureY);
-    doc.setFont('helvetica', 'bold'); doc.setFontSize(9); doc.text(doc.splitTextToSize(signer.name, 64), x, signatureY + 5);
-    doc.setFont('helvetica', 'normal'); doc.setFontSize(8); doc.text(doc.splitTextToSize(signer.title, 64), x, signatureY + 11);
-    doc.setDrawColor(0, 0, 0); doc.setLineWidth(0.25); doc.line(x, signatureY + 22, x + 64, signatureY + 22);
-    doc.setFontSize(8); doc.text('Aho asinya: __________________', x, signatureY + 27);
-    doc.text('Itariki: __________________', x, signatureY + 33);
+    doc.setFont('helvetica', 'normal'); doc.setFontSize(7.5); doc.text(signer.label, x, signatureY);
+    doc.setFont('helvetica', 'bold'); doc.setFontSize(7.5); doc.text(doc.splitTextToSize(signer.name, 64), x, signatureY + 4);
+    doc.setFont('helvetica', 'normal'); doc.setFontSize(7); doc.text(doc.splitTextToSize(signer.title, 64), x, signatureY + 8);
+    doc.setDrawColor(0, 0, 0); doc.setLineWidth(0.25); doc.line(x, signatureY + 14, x + 64, signatureY + 14);
   });
 
   const generatedDate = new Date().toLocaleDateString('en-GB');
   doc.setDrawColor(0, 0, 0);
-  doc.line(margin, pageHeight - 8, pageWidth - margin, pageHeight - 8);
-  doc.setFont('helvetica', 'normal'); doc.setFontSize(8); doc.setTextColor(0, 0, 0);
-  doc.text(`Byakozwe: ${generatedDate}`, margin, pageHeight - 4);
-  doc.text('Urupapuro rwa 2 kuri 2', pageWidth - margin, pageHeight - 4, { align: 'right' });
+  doc.line(margin, pageHeight - 6, pageWidth - margin, pageHeight - 6);
+  doc.setFont('helvetica', 'normal'); doc.setFontSize(7); doc.setTextColor(0, 0, 0);
+  doc.text(`Byakozwe: ${generatedDate}   |   Yateguwe na: ${report.reported_by || '-'}`, margin, pageHeight - 3);
+  doc.text('MAITRISE', pageWidth - margin, pageHeight - 3, { align: 'right' });
   return doc;
 }
 
