@@ -476,7 +476,7 @@ async function buildPdf(sourceReport) {
   });
 
   const note = report.ikitonderwa || 'Nta kindi cyanditswe.';
-  const noteTitleY = doc.lastAutoTable.finalY + 4;
+  const noteTitleY = doc.lastAutoTable.finalY + 12;
   const signatureY = pageHeight - 22;
   let noteFontSize = 10;
   let noteLines;
