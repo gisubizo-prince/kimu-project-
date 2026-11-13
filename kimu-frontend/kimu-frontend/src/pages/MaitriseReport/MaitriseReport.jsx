@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { jsPDF } from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import api from '../../services/api';
-import kimuLogo from '../../assets/kimu.png';
+import kimuLogo from '../../assets/LETTER HEAD.png';
 import './MaitriseReport.css';
 
 const CARS = [
@@ -436,17 +436,18 @@ async function buildPdf(sourceReport) {
   const contentWidth = pageWidth - margin * 2;
   const logoHeight = contentWidth * logo.naturalHeight / logo.naturalWidth;
   doc.addImage(logo, 'PNG', margin, 7, contentWidth, logoHeight);
+  const headingY = Math.max(74, 7 + logoHeight + 7);
   doc.setTextColor(0, 0, 0);
   doc.setFont('helvetica', 'bold');
   doc.setFontSize(13);
-  doc.text("MAITRISE | RAPORO Y'UMUNSI", margin, 74);
+  doc.text("MAITRISE | RAPORO Y'UMUNSI", margin, headingY);
   doc.setFont('helvetica', 'normal');
   doc.setFontSize(9);
-  doc.text(`Itariki: ${report.date}`, pageWidth - margin, 74, { align: 'right' });
+  doc.text(`Itariki: ${report.date}`, pageWidth - margin, headingY, { align: 'right' });
 
   autoTable(doc, {
     theme: 'grid',
-    startY: 79,
+    startY: headingY + 5,
     margin: { left: margin, right: margin, bottom: 8 },
     head: [['ABITABIRIYE', 'ABATARITABIRIYE', 'ABANYESHURI BOSE']],
     body: [[report.students.attended, report.students.missed, report.students.total_registered]],

@@ -33,8 +33,9 @@
 }
 
 .kimu-login__mark {
-  width: 34px;
-  height: 34px;
+  width: 100%;
+  max-width: 300px;
+  height: auto;
 }
 
 .kimu-login__brand-name {

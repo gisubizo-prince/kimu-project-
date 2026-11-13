@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, useLocation, Navigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import kimuMark from '../../assets/images.jpg';
+import kimuMark from '../../assets/LETTER HEAD.png';
 import './Login.css';
 
 export default function Login() {

@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { jsPDF } from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import api from '../../services/api';
-import kimuLogo from '../../assets/kimu.png';
+import kimuLogo from '../../assets/LETTER HEAD.png';
 import '../Operations/Operations.css';
 import './Reports.css';
 

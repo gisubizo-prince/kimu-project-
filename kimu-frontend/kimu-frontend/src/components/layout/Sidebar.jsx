@@ -1,6 +1,6 @@
 import { NavLink } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import kimuMark from '../../assets/images.jpg';
+import kimuMark from '../../assets/LETTER HEAD.png';
 import './Sidebar.css';
 
 const NAV_ITEMS = [
