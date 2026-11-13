@@ -307,7 +307,7 @@ function ReviewSummary({ data, onEdit }) {
 function GeneratedReport({ report, onNew, onPdf, onJson, onExcel }) {
   const data = exportableReport(report);
   return <section className="maitrise-report__panel">
-    <div className="maitrise-report__section-heading"><div><p className="kimu-eyebrow">RAPORO YABITSWE</p><h2>Raporo y'amasomo y'umunsi yarakozwe</h2><p>{report.date} · {report.class_group}</p></div><button className="kimu-btn kimu-btn--secondary" onClick={onNew}>Tangira indi raporo</button></div>
+    <div className="maitrise-report__section-heading"><div><p className="kimu-eyebrow">RAPORO YABITSWE</p><h2>Raporo y'amasomo y'umunsi yarakozwe</h2><p>{report.date}</p></div><button className="kimu-btn kimu-btn--secondary" onClick={onNew}>Tangira indi raporo</button></div>
     <ReportDocument report={data} />
     <div className="maitrise-report__export-actions"><button className="kimu-btn kimu-btn--primary" onClick={onPdf}>Kuramo PDF</button><button className="kimu-btn kimu-btn--secondary" onClick={onExcel}>Ohereza muri Excel</button><button className="kimu-btn kimu-btn--secondary" onClick={onJson}>Kuramo JSON</button></div>
     <details className="maitrise-report__json"><summary>Reba raporo mu miterere ya JSON</summary><pre>{JSON.stringify(kinyarwandaReport(data), null, 2)}</pre></details>
@@ -315,21 +315,17 @@ function GeneratedReport({ report, onNew, onPdf, onJson, onExcel }) {
 }
 
 function ReportDocument({ report }) {
-  const vehiclesUsed = report.cars.filter((car) => car.status === 'Used').length;
   return <article className="maitrise-report__document">
     <section className="maitrise-report__document-page">
       <img className="maitrise-report__document-logo" src={kimuLogo} alt="Kimu Transport logo" />
       <header className="maitrise-report__document-heading">
         <div><p>MAITRISE · DAILY TRAINING REPORT</p><h2>Raporo y'umunsi</h2></div>
-        <div><strong>{report.date}</strong><span>{report.class_group}</span></div>
+        <div><strong>{report.date}</strong></div>
       </header>
       <div className="maitrise-report__executive-summary">
         <div><span>Abitabiriye</span><strong>{report.students.attended}</strong></div>
         <div><span>Abasibye</span><strong>{report.students.missed}</strong></div>
         <div><span>Abanyeshuri bose</span><strong>{report.students.total_registered}</strong></div>
-        <div><span>Imodoka zakoreshejwe</span><strong>{vehiclesUsed} / {report.cars.length}</strong></div>
-        <div><span>Intera yose</span><strong>{formatKilometers(report.totals.km_used)} km</strong></div>
-        <div><span>Amasaha yose</span><strong>{Number(report.totals.hours_worked).toFixed(2)}</strong></div>
       </div>
       <div className="maitrise-report__table-wrap">
         <table className="maitrise-report__vehicle-table">
@@ -337,9 +333,8 @@ function ReportDocument({ report }) {
           <tbody>{report.cars.map((car, index) => <tr key={car.car}><td>{index + 1}</td><td>{formatVehicleName(car)}</td>{car.status === 'Not used' ? <td colSpan="7">Ntiyakoreshejwe</td> : <><td>{car.teacher}</td><td>{formatKilometers(car.km_start)}</td><td>{formatKilometers(car.km_end)}</td><td>{formatKilometers(car.km_used)}</td><td>{translateCondition(car.condition_start)} / {translateCondition(car.condition_end)}</td><td>{car.start_time} - {car.end_time}</td><td>{Number(car.hours_worked).toFixed(2)} h</td></>}</tr>)}</tbody>
         </table>
       </div>
-      <section className="maitrise-report__executive-note"><h3>Icyitonderwa / Ibibazo</h3><p className="maitrise-report__preserve-lines">{report.ikitonderwa || 'Nta kindi cyanditswe.'}</p></section>
+      <section className="maitrise-report__executive-note"><h3>Icyitonderwa</h3><p className="maitrise-report__preserve-lines">{cleanReportNote(report.ikitonderwa) || 'Nta kindi cyanditswe.'}</p></section>
       <footer className="maitrise-report__document-footer">
-        <p>Yateguwe na: <strong>{report.reported_by || '-'}</strong></p>
         <div className="maitrise-report__signature-grid">{REPORT_SIGNERS.map((signer) => <div key={signer.name}><strong>{signer.label}</strong><span>{signer.name}</span><small>{signer.title}</small><i /></div>)}</div>
       </footer>
     </section>
@@ -443,17 +438,17 @@ async function buildPdf(sourceReport) {
   doc.setTextColor(0, 0, 0);
   doc.setFont('helvetica', 'bold');
   doc.setFontSize(13);
-  doc.text("MAITRISE | RAPORO Y'UMUNSI", margin, 76);
+  doc.text("MAITRISE | RAPORO Y'UMUNSI", margin, 74);
   doc.setFont('helvetica', 'normal');
   doc.setFontSize(9);
-  doc.text(`Itsinda: ${report.class_group || '-'}     Itariki: ${report.date}`, pageWidth - margin, 76, { align: 'right' });
+  doc.text(`Itariki: ${report.date}`, pageWidth - margin, 74, { align: 'right' });
 
   autoTable(doc, {
     theme: 'grid',
-    startY: 80,
+    startY: 79,
     margin: { left: margin, right: margin, bottom: 8 },
-    head: [['ABITABIRIYE', 'ABATARITABIRIYE', 'ABANYESHURI BOSE', 'IMODOKA ZAKORESHEJWE', 'INTERA YOSE (KM)', 'AMASAHA YOSE']],
-    body: [[report.students.attended, report.students.missed, report.students.total_registered, `${report.cars.filter((car) => car.status === 'Used').length} / ${report.cars.length}`, formatKilometers(report.totals.km_used), Number(report.totals.hours_worked).toFixed(2)]],
+    head: [['ABITABIRIYE', 'ABATARITABIRIYE', 'ABANYESHURI BOSE']],
+    body: [[report.students.attended, report.students.missed, report.students.total_registered]],
     styles: { fontSize: 9, cellPadding: 2, textColor: [0, 0, 0], fillColor: [255, 255, 255], lineColor: [0, 0, 0], lineWidth: 0.2, halign: 'center' },
     headStyles: { fontSize: 8, fillColor: [235, 242, 238], textColor: [0, 0, 0], lineColor: [0, 0, 0], fontStyle: 'bold' },
   });
@@ -481,22 +476,28 @@ async function buildPdf(sourceReport) {
   });
 
   const note = report.ikitonderwa || 'Nta kindi cyanditswe.';
-  const noteTitleY = doc.lastAutoTable.finalY + 5;
-  doc.setFont('helvetica', 'bold');
-  doc.setFontSize(9);
-  doc.text('ICYITONDERWA / IBIBAZO', margin, noteTitleY);
-  const signatureY = pageHeight - 24;
-  let noteFontSize = 9;
+  const noteTitleY = doc.lastAutoTable.finalY + 4;
+  const signatureY = pageHeight - 22;
+  let noteFontSize = 10;
   let noteLines;
   do {
     doc.setFont('helvetica', 'normal');
     doc.setFontSize(noteFontSize);
     noteLines = doc.splitTextToSize(note, contentWidth);
-    if (noteLines.length * noteFontSize * 0.42 <= signatureY - noteTitleY - 5 || noteFontSize <= 7) break;
+    if (noteLines.length * noteFontSize * 0.45 <= signatureY - noteTitleY - 8 || noteFontSize <= 7) break;
     noteFontSize -= 0.5;
   } while (noteFontSize > 6.5);
+  const noteTextY = noteTitleY + 6;
+  const noteHeight = Math.min(noteLines.length * noteFontSize * 0.45 + 11, Math.max(signatureY - noteTitleY + 2, 10));
+  doc.setFillColor(245, 248, 246);
+  doc.setDrawColor(190, 202, 194);
+  doc.roundedRect(margin, noteTitleY - 4, contentWidth, noteHeight, 1, 1, 'FD');
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(10);
+  doc.text('ICYITONDERWA / IBIBAZO', margin + 3, noteTitleY);
+  doc.setFont('helvetica', 'normal');
   doc.setFontSize(noteFontSize);
-  doc.text(noteLines, margin, noteTitleY + 5, { lineHeightFactor: 0.9 });
+  doc.text(noteLines, margin + 3, noteTextY, { lineHeightFactor: 1 });
 
   const signatureXs = [margin, 79, 149, 219];
   REPORT_SIGNERS.forEach((signer, index) => {
@@ -508,12 +509,6 @@ async function buildPdf(sourceReport) {
     doc.setDrawColor(0, 0, 0); doc.setLineWidth(0.25); doc.line(x, signatureY + 14, x + 64, signatureY + 14);
   });
 
-  const generatedDate = new Date().toLocaleDateString('en-GB');
-  doc.setDrawColor(0, 0, 0);
-  doc.line(margin, pageHeight - 6, pageWidth - margin, pageHeight - 6);
-  doc.setFont('helvetica', 'normal'); doc.setFontSize(7); doc.setTextColor(0, 0, 0);
-  doc.text(`Byakozwe: ${generatedDate}   |   Yateguwe na: ${report.reported_by || '-'}`, margin, pageHeight - 3);
-  doc.text('MAITRISE', pageWidth - margin, pageHeight - 3, { align: 'right' });
   return doc;
 }
 
