@@ -42,7 +42,6 @@ async function create(req, res, next) {
     const incidents = normalizedCars.filter((car) => car.problem_details).map((car) => `${car.car}: ${car.problem_details}`);
     const userNote = String(ikitonderwa || '').trim();
     const note = [...(userNote ? [userNote] : []), ...incidents].join('\n');
-    if (!note) return res.status(400).json({ success: false, message: 'Class notes are required. Enter an incident or confirm that nothing unusual happened.' });
     const report = await MaitriseReport.create({
       date,
       class_group: String(classGroup).trim(),

@@ -40,7 +40,7 @@ const reportSchema = new mongoose.Schema({
     km_used: { type: Number, required: true, min: 0 },
     hours_worked: { type: Number, required: true, min: 0 },
   },
-  ikitonderwa: { type: String, required: true, trim: true },
+  ikitonderwa: { type: String, trim: true, default: '' },
   reported_by: { type: String, required: true, trim: true },
   signatures: {
     prepared_by: { type: String, default: 'JEAN' },

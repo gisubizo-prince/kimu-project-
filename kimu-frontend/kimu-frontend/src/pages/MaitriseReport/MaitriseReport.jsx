@@ -61,7 +61,7 @@ export default function MaitriseReport() {
 
   const currentCar = form.cars[carIndex];
   const completedPayload = buildPayload(form);
-  const stepNames = ['Class', 'Students', 'Vehicles', 'Ikitonderwa', 'Reporter', 'Review'];
+  const stepNames = ['Class', 'Students', 'Vehicles', 'Incidents', 'Reporter', 'Review'];
 
   function updateForm(field, value) {
     setForm((current) => ({ ...current, [field]: value }));
@@ -178,7 +178,7 @@ export default function MaitriseReport() {
       ['Abasibye', data.students.missed],
       ['Abiyandikishije bose', data.students.total_registered],
       [],
-      ['Icyitonderwa', data.ikitonderwa],
+      ...(data.ikitonderwa ? [['Icyitonderwa', data.ikitonderwa]] : []),
       ['Raporo yateguwe na', data.reported_by],
     ];
     const vehicles = data.cars.map((car, index) => ({
@@ -244,7 +244,7 @@ export default function MaitriseReport() {
           <p>Did anything serious or unusual happen during today&apos;s training? For example, an accident, vehicle breakdown, student injury, teacher issue, or delay.</p>
           <div className="maitrise-report__choice-row"><label><input type="radio" name="incident" checked={form.incident_answer === 'yes'} onChange={() => { updateForm('incident_answer', 'yes'); updateForm('incident_details', ''); }} /> Yes</label><label><input type="radio" name="incident" checked={form.incident_answer === 'no'} onChange={() => { updateForm('incident_answer', 'no'); updateForm('incident_details', ''); }} /> No</label></div>
           {form.incident_answer === 'yes' && <label>Describe what happened<textarea rows="4" value={form.incident_details} onChange={(event) => updateForm('incident_details', event.target.value)} /></label>}
-          {form.incident_answer === 'no' && <p className="maitrise-report__note-preview">The report will say: “Nothing unusual to report.”</p>}
+          {form.incident_answer === 'no' && <p className="maitrise-report__note-preview">No incident section will be added to the report.</p>}
         </div>}
 
         {step === 4 && <div className="maitrise-report__form-grid"><label>Full name of person preparing the report<input value={form.reported_by} onChange={(event) => updateForm('reported_by', event.target.value)} /></label></div>}
@@ -299,7 +299,7 @@ function ReviewSummary({ data, onEdit }) {
     <section><div className="maitrise-report__review-heading"><h3>Class details</h3><button onClick={() => onEdit(0)}>Edit</button></div><p>Date: {data.date} · Class/group: {data.class_group}</p></section>
     <section><div className="maitrise-report__review-heading"><h3>Student attendance</h3><button onClick={() => onEdit(1)}>Edit</button></div><p>Attended {data.students.attended} · Missed {data.students.missed} · Total registered {data.students.total_registered}</p></section>
     <section><div className="maitrise-report__review-heading"><h3>Vehicle utilization</h3><button onClick={() => onEdit(2, 0)}>Edit</button></div><div className="maitrise-report__table-wrap"><table><thead><tr><th>Imodoka</th><th>Teacher</th><th>KM start</th><th>KM end</th><th>KM used</th><th>Condition</th><th>Start</th><th>End</th><th>Hours</th></tr></thead><tbody>{data.cars.map((car) => <tr key={car.car}><td>{formatVehicleName(car)}</td>{car.status === 'Not used' ? <td colSpan="8">NOT USED</td> : <><td>{car.teacher}</td><td>{formatKilometers(car.km_start)}</td><td>{formatKilometers(car.km_end)}</td><td>{formatKilometers(car.km_used)}</td><td>{translateCondition(car.condition_start)} / {translateCondition(car.condition_end)}</td><td>{car.start_time}</td><td>{car.end_time}</td><td>{car.hours_worked.toFixed(2)}</td></>}</tr>)}</tbody></table></div></section>
-    <section><div className="maitrise-report__review-heading"><h3>Ikitonderwa</h3><button onClick={() => onEdit(3)}>Edit</button></div><p className="maitrise-report__preserve-lines">{data.ikitonderwa}</p></section>
+    {data.ikitonderwa && <section><div className="maitrise-report__review-heading"><h3>Ikitonderwa</h3><button onClick={() => onEdit(3)}>Edit</button></div><p className="maitrise-report__preserve-lines">{data.ikitonderwa}</p></section>}
     <section><div className="maitrise-report__review-heading"><h3>Reported by</h3><button onClick={() => onEdit(4)}>Edit</button></div><p>{data.reported_by}</p></section>
   </div>;
 }
@@ -333,7 +333,7 @@ function ReportDocument({ report }) {
           <tbody>{report.cars.map((car, index) => <tr key={car.car}><td>{index + 1}</td><td>{formatVehicleName(car)}</td>{car.status === 'Not used' ? <td colSpan="7">Ntiyakoreshejwe</td> : <><td>{car.teacher}</td><td>{formatKilometers(car.km_start)}</td><td>{formatKilometers(car.km_end)}</td><td>{formatKilometers(car.km_used)}</td><td>{translateCondition(car.condition_start)} / {translateCondition(car.condition_end)}</td><td>{car.start_time} - {car.end_time}</td><td>{Number(car.hours_worked).toFixed(2)} h</td></>}</tr>)}</tbody>
         </table>
       </div>
-      <section className="maitrise-report__executive-note"><h3>Icyitonderwa</h3><p className="maitrise-report__preserve-lines">{cleanReportNote(report.ikitonderwa) || 'Nta kindi cyanditswe.'}</p></section>
+      {report.ikitonderwa && <section className="maitrise-report__executive-note"><h3>Icyitonderwa</h3><p className="maitrise-report__preserve-lines">{report.ikitonderwa}</p></section>}
       <footer className="maitrise-report__document-footer">
         <div className="maitrise-report__signature-grid">{REPORT_SIGNERS.map((signer) => <div key={signer.name}><strong>{signer.label}</strong><span>{signer.name}</span><small>{signer.title}</small><i /></div>)}</div>
       </footer>
@@ -351,10 +351,10 @@ function buildPayload(form) {
     return { car: car.car, plate: car.plate, status: 'Used', teacher: car.teacher.trim(), km_start: kmStart, km_end: kmEnd, km_used: Math.max(kmEnd - kmStart, 0), condition_start: car.condition_start, condition_end: car.condition_end, start_time: start?.value || '', end_time: end?.value || '', hours_worked: start && end && end.minutes > start.minutes ? Number(((end.minutes - start.minutes) / 60).toFixed(2)) : 0, problem_details: car.problem_details.trim() };
   });
   const problemNotes = cars.filter((car) => car.problem_details).map((car) => `${car.car}: ${car.problem_details}`);
-  const note = form.incident_answer === 'yes' ? form.incident_details.trim() : problemNotes.length ? '' : 'Nothing unusual to report.';
+  const note = form.incident_answer === 'yes' ? form.incident_details.trim() : '';
   const attended = wholeNumber(form.students.attended) || 0;
   const missed = wholeNumber(form.students.missed) || 0;
-  return { date: form.date, class_group: form.class_group.trim(), students: { attended, missed, total_registered: attended + missed }, cars, totals: { km_used: cars.reduce((total, car) => total + car.km_used, 0), hours_worked: Number(cars.reduce((total, car) => total + car.hours_worked, 0).toFixed(2)) }, ikitonderwa: cleanReportNote([note, ...problemNotes].join('\n')) || 'No additional notes.', reported_by: form.reported_by.trim() };
+  return { date: form.date, class_group: form.class_group.trim(), students: { attended, missed, total_registered: attended + missed }, cars, totals: { km_used: cars.reduce((total, car) => total + car.km_used, 0), hours_worked: Number(cars.reduce((total, car) => total + car.hours_worked, 0).toFixed(2)) }, ikitonderwa: cleanReportNote([note, ...problemNotes].join('\n')), reported_by: form.reported_by.trim() };
 }
 
 function exportableReport(report) {
@@ -394,7 +394,7 @@ function kinyarwandaReport(report) {
       amasaha_yakoreshejwe: Number(car.hours_worked).toFixed(2),
       uko_ikinyabiziga_cyakoreshejwe: car.status === 'Not used' ? 'Ntiyakoreshejwe' : 'Cyakoreshejwe',
     })),
-    icyitonderwa: data.ikitonderwa,
+    ...(data.ikitonderwa ? { icyitonderwa: data.ikitonderwa } : {}),
     raporo_yateguwe_na: data.reported_by,
     abasinya: REPORT_SIGNERS.map(({ label, name, title }) => ({ uwasinye: name, inshingano: title, igikorwa: label })),
   };
@@ -418,11 +418,12 @@ function translateCondition(condition) {
 }
 
 function cleanReportNote(value) {
-  return String(value || '')
+  const note = String(value || '')
     .replace(/Muri\s+Maitrise\s+dukeneye\s+umushoferi\s+usimbura\s+uwagiye\s+kugira\s+ngo\s+amahugurwa\s+akomeze\s+kugenda\s+neza[.,]?\s+ariko\s+mugihe\s+ataraboneka\s+twari\s+turikwifashisha\s+GISUBIZO\s+PRINCE\s+mumahugurwa[.!]?/gi, '')
     .replace(/[ \t]+\n/g, '\n')
     .replace(/\n{3,}/g, '\n\n')
     .trim();
+  return /^(?:nothing unusual to report|no additional notes|nta kindi cyanditswe)\.?$/i.test(note) ? '' : note;
 }
 
 async function buildPdf(sourceReport) {
@@ -475,29 +476,30 @@ async function buildPdf(sourceReport) {
     columnStyles: { 0: { cellWidth: 9, halign: 'center' }, 1: { cellWidth: 31 }, 2: { cellWidth: 31 }, 3: { cellWidth: 27 }, 4: { cellWidth: 27 }, 5: { cellWidth: 23 }, 6: { cellWidth: 42 }, 7: { cellWidth: 43 }, 8: { cellWidth: 28 } },
   });
 
-  const note = report.ikitonderwa || 'Nta kindi cyanditswe.';
-  const noteTitleY = doc.lastAutoTable.finalY + 12;
   const signatureY = pageHeight - 22;
-  let noteFontSize = 10;
-  let noteLines;
-  do {
+  if (report.ikitonderwa) {
+    const noteTitleY = doc.lastAutoTable.finalY + 12;
+    let noteFontSize = 10;
+    let noteLines;
+    do {
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(noteFontSize);
+      noteLines = doc.splitTextToSize(report.ikitonderwa, contentWidth);
+      if (noteLines.length * noteFontSize * 0.45 <= signatureY - noteTitleY - 8 || noteFontSize <= 7) break;
+      noteFontSize -= 0.5;
+    } while (noteFontSize > 6.5);
+    const noteTextY = noteTitleY + 6;
+    const noteHeight = Math.min(noteLines.length * noteFontSize * 0.45 + 11, Math.max(signatureY - noteTitleY + 2, 10));
+    doc.setFillColor(245, 248, 246);
+    doc.setDrawColor(190, 202, 194);
+    doc.roundedRect(margin, noteTitleY - 4, contentWidth, noteHeight, 1, 1, 'FD');
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(10);
+    doc.text('ICYITONDERWA / IBIBAZO', margin + 3, noteTitleY);
     doc.setFont('helvetica', 'normal');
     doc.setFontSize(noteFontSize);
-    noteLines = doc.splitTextToSize(note, contentWidth);
-    if (noteLines.length * noteFontSize * 0.45 <= signatureY - noteTitleY - 8 || noteFontSize <= 7) break;
-    noteFontSize -= 0.5;
-  } while (noteFontSize > 6.5);
-  const noteTextY = noteTitleY + 6;
-  const noteHeight = Math.min(noteLines.length * noteFontSize * 0.45 + 11, Math.max(signatureY - noteTitleY + 2, 10));
-  doc.setFillColor(245, 248, 246);
-  doc.setDrawColor(190, 202, 194);
-  doc.roundedRect(margin, noteTitleY - 4, contentWidth, noteHeight, 1, 1, 'FD');
-  doc.setFont('helvetica', 'bold');
-  doc.setFontSize(10);
-  doc.text('ICYITONDERWA / IBIBAZO', margin + 3, noteTitleY);
-  doc.setFont('helvetica', 'normal');
-  doc.setFontSize(noteFontSize);
-  doc.text(noteLines, margin + 3, noteTextY, { lineHeightFactor: 1 });
+    doc.text(noteLines, margin + 3, noteTextY, { lineHeightFactor: 1 });
+  }
 
   const signatureXs = [margin, 79, 149, 219];
   REPORT_SIGNERS.forEach((signer, index) => {
