@@ -443,7 +443,7 @@ async function buildPdf(sourceReport) {
   doc.text("MAITRISE | RAPORO Y'UMUNSI", margin, headingY);
   doc.setFont('helvetica', 'normal');
   doc.setFontSize(9);
-  doc.text(`Itariki: ${report.date}`, pageWidth - margin, headingY, { align: 'right' });
+  doc.text(`Itariki: ${report.date}`, pageWidth - margin - pageWidth * 0.1, headingY, { align: 'right' });
 
   autoTable(doc, {
     theme: 'grid',
