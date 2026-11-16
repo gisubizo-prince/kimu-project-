@@ -60,7 +60,7 @@
 .maitrise-report__document-heading > div:last-child { display: grid; gap: 4px; text-align: right; }
 .maitrise-report__document-heading > div:last-child strong { font-size: 16px; }
 .maitrise-report__document-heading > div:last-child span { color: #4c5a53; font-size: 13px; }
-.maitrise-report__executive-summary { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 8px; margin: 0 0 14px; }
+.maitrise-report__executive-summary { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; margin: 0 0 14px; }
 .maitrise-report__executive-summary > div { display: grid; gap: 5px; padding: 10px 12px; border-left: 3px solid var(--kimu-green); background: #f1f5f2; }
 .maitrise-report__executive-summary span { color: #48564e; font-size: 12px; }
 .maitrise-report__executive-summary strong { color: #14251d; font-size: 19px; }
@@ -84,19 +84,9 @@
 .maitrise-report__json { margin-top: 14px; color: var(--kimu-text-secondary); font-size: 12px; }
 .maitrise-report__json summary { cursor: pointer; }
 .maitrise-report__json pre { max-height: 360px; overflow: auto; margin-top: 10px; padding: 14px; background: var(--kimu-bg); color: var(--kimu-text); font-size: 11px; }
-.maitrise-report__new-students { margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--kimu-border); }
-.maitrise-report__new-students .maitrise-report__section-heading { margin-bottom: 14px; }
-.maitrise-report__new-students .maitrise-report__section-heading h3 { font-size: 16px; }
-.maitrise-report__new-students .maitrise-report__section-heading p { margin-top: 4px; }
-.maitrise-report__new-students .maitrise-report__section-heading > strong { display: grid; place-items: center; min-width: 34px; min-height: 34px; border-radius: 50%; background: var(--kimu-green-light); color: var(--kimu-green-dark); }
-.maitrise-report__new-student-form { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr) auto; align-items: end; gap: 12px; margin-bottom: 16px; }
-.maitrise-report__new-student-form .kimu-btn { min-height: 42px; }
-.maitrise-report__new-student-badge { display: inline-block; margin-left: 8px; padding: 2px 7px; border-radius: 10px; background: var(--kimu-green-light); color: var(--kimu-green-dark); font-size: 10px; font-weight: 700; line-height: 1.4; vertical-align: middle; }
-.maitrise-report__new-students-document { margin-top: 14px; }
-.maitrise-report__new-students-document table { margin-top: 7px; }
 @media (max-width: 800px) { .maitrise-report__header { align-items: flex-start; flex-direction: column; } .maitrise-report__progress { grid-template-columns: repeat(3, minmax(0, 1fr)); row-gap: 12px; } .maitrise-report__form-grid { grid-template-columns: 1fr; } .maitrise-report__section-heading { align-items: flex-start; flex-direction: column; } }
 @media (max-width: 800px) { .maitrise-report__executive-summary { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
-@media (max-width: 600px) { .maitrise-report__panel { padding: 16px; } .maitrise-report__progress > div { font-size: 10px; } .maitrise-report__progress span { flex: 0 0 23px; } .maitrise-report__actions, .maitrise-report__export-actions { flex-direction: column; } .maitrise-report__actions .kimu-btn, .maitrise-report__export-actions .kimu-btn { width: 100%; } .maitrise-report__new-student-form { grid-template-columns: 1fr; } .maitrise-report__signature-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; } .maitrise-report__executive-summary { grid-template-columns: repeat(2, minmax(0, 1fr)); } .maitrise-report__document-page { min-height: 0; padding: 12px; } .maitrise-report__document-heading { align-items: flex-start; flex-direction: column; } .maitrise-report__document-heading > div:last-child { margin-right: 0; text-align: left; } }
+@media (max-width: 600px) { .maitrise-report__panel { padding: 16px; } .maitrise-report__progress > div { font-size: 10px; } .maitrise-report__progress span { flex: 0 0 23px; } .maitrise-report__actions, .maitrise-report__export-actions { flex-direction: column; } .maitrise-report__actions .kimu-btn, .maitrise-report__export-actions .kimu-btn { width: 100%; } .maitrise-report__signature-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; } .maitrise-report__executive-summary { grid-template-columns: repeat(2, minmax(0, 1fr)); } .maitrise-report__document-page { min-height: 0; padding: 12px; } .maitrise-report__document-heading { align-items: flex-start; flex-direction: column; } .maitrise-report__document-heading > div:last-child { margin-right: 0; text-align: left; } }
 @media print {
   @page { size: A4 landscape; margin: 8mm; }
   body * { visibility: hidden; }

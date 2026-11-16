@@ -24,6 +24,7 @@ function emptyReport() {
     date: '',
     class_group: '',
     students: { attended: '', missed: '' },
+    new_students_attended: '',
     cars: CARS.map(({ car, plate }) => ({
       car,
       plate,
@@ -53,11 +54,6 @@ export default function MaitriseReport() {
   const [history, setHistory] = useState([]);
   const [error, setError] = useState('');
   const [saving, setSaving] = useState(false);
-  const [newStudentForm, setNewStudentForm] = useState({ fullName: '', phone: '' });
-  const [newStudentError, setNewStudentError] = useState('');
-  const [newStudentSuccess, setNewStudentSuccess] = useState('');
-  const [savingNewStudent, setSavingNewStudent] = useState(false);
-
   useEffect(() => {
     if (view !== 'history') return;
     api.get('/maitrise-reports').then((response) => setHistory(response.data.data || [])).catch((requestError) => setError(requestError.message));
@@ -111,8 +107,10 @@ export default function MaitriseReport() {
     if (step === 1) {
       const attended = wholeNumber(form.students.attended);
       const missed = wholeNumber(form.students.missed);
+      const newStudentsAttended = wholeNumber(form.new_students_attended);
       if (attended === null || missed === null) return setError('Student totals must be whole numbers, zero or greater.');
-      setForm((current) => ({ ...current, students: { attended, missed } }));
+      if (newStudentsAttended === null) return setError('Enter how many new students attended today as a whole number, zero or greater.');
+      setForm((current) => ({ ...current, students: { attended, missed }, new_students_attended: newStudentsAttended }));
     }
     if (step === 2) return advanceCar();
     if (step === 3 && form.incident_answer === 'yes' && !form.incident_details.trim()) return setError('Describe what happened, or select No if nothing unusual happened.');
@@ -136,8 +134,6 @@ export default function MaitriseReport() {
   async function generateReport() {
     setSaving(true);
     setError('');
-    setNewStudentError('');
-    setNewStudentSuccess('');
     try {
       const response = await api.post('/maitrise-reports', completedPayload);
       setSavedReport(response.data.data);
@@ -149,50 +145,12 @@ export default function MaitriseReport() {
 
   async function openSavedReport(id) {
     setError('');
-    setNewStudentError('');
-    setNewStudentSuccess('');
-    setNewStudentForm({ fullName: '', phone: '' });
     try {
       const response = await api.get(`/maitrise-reports/${id}`);
       setSavedReport(response.data.data);
       setStep(6);
       setView('new');
     } catch (requestError) { setError(requestError.message || 'Unable to open the saved report.'); }
-  }
-
-  async function addNewStudent(event) {
-    event.preventDefault();
-    setNewStudentError('');
-    setNewStudentSuccess('');
-    setSavingNewStudent(true);
-    try {
-      const response = await api.post(`/maitrise-reports/${savedReport._id}/new-students`, newStudentForm);
-      setSavedReport((current) => ({ ...current, new_students: response.data.data.new_students || [] }));
-      setNewStudentForm({ fullName: '', phone: '' });
-      setNewStudentSuccess('New student saved for this training date.');
-      setHistory((current) => current.map((report) => report._id === savedReport._id
-        ? { ...report, new_students: response.data.data.new_students || [] }
-        : report));
-    } catch (requestError) {
-      setNewStudentError(requestError.message || 'Unable to save the new student.');
-    } finally {
-      setSavingNewStudent(false);
-    }
-  }
-
-  async function removeNewStudent(studentId) {
-    setNewStudentError('');
-    setNewStudentSuccess('');
-    try {
-      const response = await api.delete(`/maitrise-reports/${savedReport._id}/new-students/${studentId}`);
-      setSavedReport((current) => ({ ...current, new_students: response.data.data.new_students || [] }));
-      setHistory((current) => current.map((report) => report._id === savedReport._id
-        ? { ...report, new_students: response.data.data.new_students || [] }
-        : report));
-      setNewStudentSuccess('New student removed from this training date.');
-    } catch (requestError) {
-      setNewStudentError(requestError.message || 'Unable to remove the new student.');
-    }
   }
 
   function startNewReport() {
@@ -202,9 +160,6 @@ export default function MaitriseReport() {
     setStep(0);
     setView('new');
     setError('');
-    setNewStudentForm({ fullName: '', phone: '' });
-    setNewStudentError('');
-    setNewStudentSuccess('');
   }
 
   function downloadJson(report) {
@@ -224,7 +179,7 @@ export default function MaitriseReport() {
       ['Abitabiriye', data.students.attended],
       ['Abasibye', data.students.missed],
       ['Abiyandikishije bose', data.students.total_registered],
-      ['Abanyeshuri bashya bitabiriye', data.new_students.length],
+      ['Abashoferi bashya', data.new_students_attended],
       [],
       ...(data.ikitonderwa ? [['Icyitonderwa', data.ikitonderwa]] : []),
       ['Raporo yateguwe na', data.reported_by],
@@ -243,14 +198,8 @@ export default function MaitriseReport() {
       'Amasaha yakoreshejwe': Number(car.hours_worked).toFixed(2),
       'Imikoreshereze': car.status === 'Not used' ? 'Ntiyakoreshejwe' : 'Yarakoreshejwe',
     }));
-    const newStudents = data.new_students.map((student, index) => ({
-      'Nomero': index + 1,
-      'Amazina': student.fullName,
-      'Telephone': student.phone || '-',
-    }));
     XLSX.utils.book_append_sheet(workbook, XLSX.utils.aoa_to_sheet(summary), 'Incamake');
     XLSX.utils.book_append_sheet(workbook, XLSX.utils.json_to_sheet(vehicles), 'Ibinyabiziga');
-    if (newStudents.length) XLSX.utils.book_append_sheet(workbook, XLSX.utils.json_to_sheet(newStudents), 'Abanyeshuri bashya');
     XLSX.writeFile(workbook, `raporo-maitrise-${report.date}.xlsx`);
   }
 
@@ -274,10 +223,10 @@ export default function MaitriseReport() {
 
     {view === 'history' ? <section className="maitrise-report__panel">
       <div className="maitrise-report__section-heading"><div><h2>Saved daily reports</h2><p>Latest 100 reports</p></div><button className="kimu-btn kimu-btn--primary" onClick={startNewReport}>New report</button></div>
-      <div className="maitrise-report__table-wrap"><table><thead><tr><th>Date</th><th>Class/group</th><th>Attended</th><th>Missed</th><th>Registered</th><th>New students</th><th>KM used</th><th>Hours</th><th>Reported by</th><th></th></tr></thead><tbody>
-        {history.length === 0 ? <tr><td colSpan="10">No saved reports yet.</td></tr> : history.map((report) => <tr key={report._id}><td>{report.date}</td><td>{report.class_group}</td><td>{report.students.attended}</td><td>{report.students.missed}</td><td>{report.students.total_registered}</td><td>{report.new_students?.length || 0}</td><td>{formatKilometers(report.totals.km_used)}</td><td>{Number(report.totals.hours_worked).toFixed(2)}</td><td>{report.reported_by}</td><td><button className="maitrise-report__text-button" onClick={() => openSavedReport(report._id)}>Open</button></td></tr>)}
+      <div className="maitrise-report__table-wrap"><table><thead><tr><th>Date</th><th>Class/group</th><th>Attended</th><th>Missed</th><th>Registered</th><th>Abashoferi bashya</th><th>KM used</th><th>Hours</th><th>Reported by</th><th></th></tr></thead><tbody>
+        {history.length === 0 ? <tr><td colSpan="10">No saved reports yet.</td></tr> : history.map((report) => <tr key={report._id}><td>{report.date}</td><td>{report.class_group}</td><td>{report.students.attended}</td><td>{report.students.missed}</td><td>{report.students.total_registered}</td><td>{report.new_students_attended ?? 0}</td><td>{formatKilometers(report.totals.km_used)}</td><td>{Number(report.totals.hours_worked).toFixed(2)}</td><td>{report.reported_by}</td><td><button className="maitrise-report__text-button" onClick={() => openSavedReport(report._id)}>Open</button></td></tr>)}
       </tbody></table></div>
-    </section> : step === 6 && savedReport ? <GeneratedReport report={savedReport} newStudentForm={newStudentForm} setNewStudentForm={setNewStudentForm} newStudentError={newStudentError} newStudentSuccess={newStudentSuccess} savingNewStudent={savingNewStudent} onAddNewStudent={addNewStudent} onRemoveNewStudent={removeNewStudent} onNew={startNewReport} onPdf={() => downloadPdf(savedReport)} onJson={() => downloadJson(savedReport)} onExcel={() => downloadExcel(savedReport)} /> : <>
+    </section> : step === 6 && savedReport ? <GeneratedReport report={savedReport} onNew={startNewReport} onPdf={() => downloadPdf(savedReport)} onJson={() => downloadJson(savedReport)} onExcel={() => downloadExcel(savedReport)} /> : <>
       <nav className="maitrise-report__progress" aria-label="Report steps">{stepNames.map((name, index) => <div key={name} className={index === step ? 'is-current' : index < step ? 'is-complete' : ''}><span>{index + 1}</span>{name}</div>)}</nav>
       <section className="maitrise-report__panel">
         <div className="maitrise-report__section-heading"><div><p className="kimu-eyebrow">STEP {step + 1} OF 6</p><h2>{step === 2 ? `Vehicle ${carIndex + 1} of ${CAR_NAMES.length}: ${currentCar.car} (${currentCar.plate})` : title}</h2></div></div>
@@ -289,6 +238,7 @@ export default function MaitriseReport() {
         {step === 1 && <div className="maitrise-report__form-grid">
           <label>Students attended<input type="number" min="0" step="1" value={form.students.attended} onChange={(event) => updateStudents('attended', event.target.value)} /></label>
           <label>Students missed<input type="number" min="0" step="1" value={form.students.missed} onChange={(event) => updateStudents('missed', event.target.value)} /></label>
+          <label>How many new students attended today?<input type="number" min="0" step="1" value={form.new_students_attended} onChange={(event) => updateForm('new_students_attended', event.target.value)} /></label>
           <div className="maitrise-report__computed"><span>Total registered</span><strong>{(wholeNumber(form.students.attended) || 0) + (wholeNumber(form.students.missed) || 0)}</strong></div>
         </div>}
 
@@ -351,31 +301,18 @@ function VehicleStep({ car, updateCar }) {
 function ReviewSummary({ data, onEdit }) {
   return <div className="maitrise-report__review">
     <section><div className="maitrise-report__review-heading"><h3>Class details</h3><button onClick={() => onEdit(0)}>Edit</button></div><p>Date: {data.date} · Class/group: {data.class_group}</p></section>
-    <section><div className="maitrise-report__review-heading"><h3>Student attendance</h3><button onClick={() => onEdit(1)}>Edit</button></div><p>Attended {data.students.attended} · Missed {data.students.missed} · Total registered {data.students.total_registered}</p></section>
+    <section><div className="maitrise-report__review-heading"><h3>Student attendance</h3><button onClick={() => onEdit(1)}>Edit</button></div><p>Attended {data.students.attended} · Missed {data.students.missed} · Total registered {data.students.total_registered} · Abashoferi bashya {data.new_students_attended}</p></section>
     <section><div className="maitrise-report__review-heading"><h3>Vehicle utilization</h3><button onClick={() => onEdit(2, 0)}>Edit</button></div><div className="maitrise-report__table-wrap"><table><thead><tr><th>Imodoka</th><th>Teacher</th><th>KM start</th><th>KM end</th><th>KM used</th><th>Condition</th><th>Start</th><th>End</th><th>Hours</th></tr></thead><tbody>{data.cars.map((car) => <tr key={car.car}><td>{formatVehicleName(car)}</td>{car.status === 'Not used' ? <td colSpan="8">NOT USED</td> : <><td>{car.teacher}</td><td>{formatKilometers(car.km_start)}</td><td>{formatKilometers(car.km_end)}</td><td>{formatKilometers(car.km_used)}</td><td>{translateCondition(car.condition_start)} / {translateCondition(car.condition_end)}</td><td>{car.start_time}</td><td>{car.end_time}</td><td>{car.hours_worked.toFixed(2)}</td></>}</tr>)}</tbody></table></div></section>
     {data.ikitonderwa && <section><div className="maitrise-report__review-heading"><h3>Ikitonderwa</h3><button onClick={() => onEdit(3)}>Edit</button></div><p className="maitrise-report__preserve-lines">{data.ikitonderwa}</p></section>}
     <section><div className="maitrise-report__review-heading"><h3>Reported by</h3><button onClick={() => onEdit(4)}>Edit</button></div><p>{data.reported_by}</p></section>
   </div>;
 }
 
-function GeneratedReport({ report, newStudentForm, setNewStudentForm, newStudentError, newStudentSuccess, savingNewStudent, onAddNewStudent, onRemoveNewStudent, onNew, onPdf, onJson, onExcel }) {
+function GeneratedReport({ report, onNew, onPdf, onJson, onExcel }) {
   const data = exportableReport(report);
   return <section className="maitrise-report__panel">
     <div className="maitrise-report__section-heading"><div><p className="kimu-eyebrow">RAPORO YABITSWE</p><h2>Raporo y'amasomo y'umunsi yarakozwe</h2><p>{report.date}</p></div><button className="kimu-btn kimu-btn--secondary" onClick={onNew}>Tangira indi raporo</button></div>
     <ReportDocument report={data} />
-    <section className="maitrise-report__new-students">
-      <div className="maitrise-report__section-heading"><div><h3>New students who attended</h3><p>Record first-time students for {report.date}. These names are saved with this daily report.</p></div><strong>{data.new_students.length}</strong></div>
-      <form className="maitrise-report__new-student-form" onSubmit={onAddNewStudent}>
-        <label>Student name<input required maxLength="120" value={newStudentForm.fullName} onChange={(event) => setNewStudentForm((current) => ({ ...current, fullName: event.target.value }))} /></label>
-        <label>Phone (optional)<input maxLength="30" value={newStudentForm.phone} onChange={(event) => setNewStudentForm((current) => ({ ...current, phone: event.target.value }))} /></label>
-        <button className="kimu-btn kimu-btn--primary" disabled={savingNewStudent}>{savingNewStudent ? 'Saving...' : 'Add student'}</button>
-      </form>
-      {newStudentError && <p className="maitrise-report__error" role="alert">{newStudentError}</p>}
-      {newStudentSuccess && <p className="kimu-resource__success" role="status">{newStudentSuccess}</p>}
-      <div className="maitrise-report__table-wrap"><table><thead><tr><th>No.</th><th>Name</th><th>Phone</th><th></th></tr></thead><tbody>
-        {data.new_students.length === 0 ? <tr><td colSpan="4">No new students recorded for this report yet.</td></tr> : data.new_students.map((student, index) => <tr key={student._id || `${student.fullName}-${index}`}><td>{index + 1}</td><td>{student.fullName}{isNewStudentWithinWeek(student) && <span className="maitrise-report__new-student-badge" title="Recorded within the last 7 days">NEW</span>}</td><td>{student.phone || '-'}</td><td><button className="maitrise-report__text-button" type="button" onClick={() => onRemoveNewStudent(student._id)}>Remove</button></td></tr>)}
-      </tbody></table></div>
-    </section>
     <div className="maitrise-report__export-actions"><button className="kimu-btn kimu-btn--primary" onClick={onPdf}>Kuramo PDF</button><button className="kimu-btn kimu-btn--secondary" onClick={onExcel}>Ohereza muri Excel</button><button className="kimu-btn kimu-btn--secondary" onClick={onJson}>Kuramo JSON</button></div>
     <details className="maitrise-report__json"><summary>Reba raporo mu miterere ya JSON</summary><pre>{JSON.stringify(kinyarwandaReport(data), null, 2)}</pre></details>
   </section>;
@@ -393,6 +330,7 @@ function ReportDocument({ report }) {
         <div><span>Abitabiriye</span><strong>{report.students.attended}</strong></div>
         <div><span>Abasibye</span><strong>{report.students.missed}</strong></div>
         <div><span>Abanyeshuri bose</span><strong>{report.students.total_registered}</strong></div>
+        <div><span>Abashoferi bashya</span><strong>{report.new_students_attended}</strong></div>
       </div>
       <div className="maitrise-report__table-wrap">
         <table className="maitrise-report__vehicle-table">
@@ -400,12 +338,6 @@ function ReportDocument({ report }) {
           <tbody>{report.cars.map((car, index) => <tr key={car.car}><td>{index + 1}</td><td>{formatVehicleName(car)}</td>{car.status === 'Not used' ? <td colSpan="7">Ntiyakoreshejwe</td> : <><td>{car.teacher}</td><td>{formatKilometers(car.km_start)}</td><td>{formatKilometers(car.km_end)}</td><td>{formatKilometers(car.km_used)}</td><td>{translateCondition(car.condition_start)} / {translateCondition(car.condition_end)}</td><td>{car.start_time} - {car.end_time}</td><td>{Number(car.hours_worked).toFixed(2)} h</td></>}</tr>)}</tbody>
         </table>
       </div>
-          {report.new_students.length > 0 && <section className="maitrise-report__executive-note maitrise-report__new-students-document">
-            <h3>New students who attended</h3>
-            <div className="maitrise-report__table-wrap"><table><thead><tr><th>No.</th><th>Name</th><th>Phone</th></tr></thead><tbody>
-              {report.new_students.map((student, index) => <tr key={student._id || `${student.fullName}-${index}`}><td>{index + 1}</td><td>{student.fullName}</td><td>{student.phone || '-'}</td></tr>)}
-            </tbody></table></div>
-          </section>}
           {report.ikitonderwa && <section className="maitrise-report__executive-note"><h3>Icyitonderwa</h3><p className="maitrise-report__preserve-lines">{report.ikitonderwa}</p></section>}
       <footer className="maitrise-report__document-footer">
         <div className="maitrise-report__signature-grid">{REPORT_SIGNERS.map((signer) => <div key={signer.name}><strong>{signer.label}</strong><span>{signer.name}</span><small>{signer.title}</small><i /></div>)}</div>
@@ -427,7 +359,7 @@ function buildPayload(form) {
   const note = form.incident_answer === 'yes' ? form.incident_details.trim() : '';
   const attended = wholeNumber(form.students.attended) || 0;
   const missed = wholeNumber(form.students.missed) || 0;
-  return { date: form.date, class_group: form.class_group.trim(), students: { attended, missed, total_registered: attended + missed }, cars, totals: { km_used: cars.reduce((total, car) => total + car.km_used, 0), hours_worked: Number(cars.reduce((total, car) => total + car.hours_worked, 0).toFixed(2)) }, ikitonderwa: cleanReportNote([note, ...problemNotes].join('\n')), reported_by: form.reported_by.trim() };
+  return { date: form.date, class_group: form.class_group.trim(), students: { attended, missed, total_registered: attended + missed }, new_students_attended: wholeNumber(form.new_students_attended) || 0, cars, totals: { km_used: cars.reduce((total, car) => total + car.km_used, 0), hours_worked: Number(cars.reduce((total, car) => total + car.hours_worked, 0).toFixed(2)) }, ikitonderwa: cleanReportNote([note, ...problemNotes].join('\n')), reported_by: form.reported_by.trim() };
 }
 
 function exportableReport(report) {
@@ -435,7 +367,7 @@ function exportableReport(report) {
     date: report.date,
     class_group: report.class_group,
     students: report.students,
-    new_students: report.new_students || [],
+    new_students_attended: report.new_students_attended ?? 0,
     cars: report.cars,
     totals: report.totals,
     ikitonderwa: cleanReportNote(report.ikitonderwa),
@@ -454,7 +386,7 @@ function kinyarwandaReport(report) {
       abataritabiriye: data.students.missed,
       abanditswe_bose: data.students.total_registered,
     },
-    abanyeshuri_bashya_bitabiriye: data.new_students.map(({ fullName, phone }) => ({ amazina: fullName, telefoni: phone || '' })),
+    abashoferi_bashya: data.new_students_attended,
     ibinyabiziga: data.cars.map((car, index) => ({
       nimero: index + 1,
       imodoka: formatVehicleName(car),
@@ -477,12 +409,6 @@ function kinyarwandaReport(report) {
 
 function roundKilometers(value) {
   return value === null || value === undefined ? null : Number(Number(value).toFixed(1));
-}
-
-function isNewStudentWithinWeek(student) {
-  const recordedAt = Date.parse(student.createdAt || '');
-  const age = Date.now() - recordedAt;
-  return Number.isFinite(recordedAt) && age >= 0 && age < 7 * 24 * 60 * 60 * 1000;
 }
 
 function formatKilometers(value) {
@@ -530,8 +456,8 @@ async function buildPdf(sourceReport) {
     theme: 'grid',
     startY: headingY + 5,
     margin: { left: margin, right: margin, bottom: 8 },
-    head: [['ABITABIRIYE', 'ABATARITABIRIYE', 'ABANYESHURI BOSE']],
-    body: [[report.students.attended, report.students.missed, report.students.total_registered]],
+    head: [['ABITABIRIYE', 'ABATARITABIRIYE', 'ABANYESHURI BOSE', 'ABASHOFERI BASHYA']],
+    body: [[report.students.attended, report.students.missed, report.students.total_registered, report.new_students_attended]],
     styles: { fontSize: 9, cellPadding: 2, textColor: [0, 0, 0], fillColor: [255, 255, 255], lineColor: [0, 0, 0], lineWidth: 0.2, halign: 'center' },
     headStyles: { fontSize: 8, fillColor: [235, 242, 238], textColor: [0, 0, 0], lineColor: [0, 0, 0], fontStyle: 'bold' },
   });
@@ -592,26 +518,6 @@ async function buildPdf(sourceReport) {
     doc.setFont('helvetica', 'normal'); doc.setFontSize(7); doc.text(doc.splitTextToSize(signer.title, 64), x, signatureY + 8);
     doc.setDrawColor(0, 0, 0); doc.setLineWidth(0.25); doc.line(x, signatureY + 14, x + 64, signatureY + 14);
   });
-
-  if (report.new_students.length) {
-    doc.addPage();
-    doc.setTextColor(0, 0, 0);
-    doc.setFont('helvetica', 'bold');
-    doc.setFontSize(13);
-    doc.text("ABANYESHURI BASHYA BITABIRIYE", margin, 18);
-    doc.setFont('helvetica', 'normal');
-    doc.setFontSize(9);
-    doc.text(`Itariki: ${report.date}`, margin, 24);
-    autoTable(doc, {
-      theme: 'grid',
-      startY: 29,
-      margin: { left: margin, right: margin, bottom: 8 },
-      head: [['NO.', 'IZINA RY’UMUNYESHURI', 'TELEFONI']],
-      body: report.new_students.map((student, index) => [index + 1, student.fullName, student.phone || '-']),
-      styles: { fontSize: 10, cellPadding: 3, textColor: [0, 0, 0], fillColor: [255, 255, 255], lineColor: [0, 0, 0], lineWidth: 0.2 },
-      headStyles: { fillColor: [235, 242, 238], textColor: [0, 0, 0], fontStyle: 'bold' },
-    });
-  }
 
   return doc;
 }

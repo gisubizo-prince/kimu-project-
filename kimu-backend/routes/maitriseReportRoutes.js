@@ -7,7 +7,5 @@ router.use(protect);
 router.get('/', controller.list);
 router.get('/:id', controller.getById);
 router.post('/', authorize('super_admin', 'admin', 'hr_staff', 'manager'), controller.create);
-router.post('/:id/new-students', authorize('super_admin', 'admin', 'hr_staff', 'manager'), controller.addNewStudent);
-router.delete('/:id/new-students/:studentId', authorize('super_admin', 'admin', 'hr_staff', 'manager'), controller.removeNewStudent);
 
 module.exports = router;
