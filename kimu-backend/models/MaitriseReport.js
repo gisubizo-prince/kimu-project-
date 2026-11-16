@@ -20,6 +20,11 @@ const carSchema = new mongoose.Schema({
   problem_details: { type: String, trim: true, default: '' },
 }, { _id: false });
 
+const newStudentSchema = new mongoose.Schema({
+  fullName: { type: String, required: true, trim: true, maxlength: 120 },
+  phone: { type: String, trim: true, default: '', maxlength: 30 },
+}, { timestamps: true });
+
 const reportSchema = new mongoose.Schema({
   date: { type: String, required: true, match: /^\d{4}-\d{2}-\d{2}$/ },
   class_group: { type: String, required: true, trim: true },
@@ -28,6 +33,7 @@ const reportSchema = new mongoose.Schema({
     missed: { type: Number, required: true, min: 0 },
     total_registered: { type: Number, required: true, min: 0 },
   },
+  new_students: { type: [newStudentSchema], default: [] },
   cars: {
     type: [carSchema],
     required: true,

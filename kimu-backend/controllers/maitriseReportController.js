@@ -1,4 +1,5 @@
 const MaitriseReport = require('../models/MaitriseReport');
+const mongoose = require('mongoose');
 const { CAR_NAMES, CAR_PLATES, CONDITIONS } = MaitriseReport;
 
 async function create(req, res, next) {
@@ -61,7 +62,7 @@ async function create(req, res, next) {
 
 async function list(req, res, next) {
   try {
-    const reports = await MaitriseReport.find().select('date class_group students totals reported_by createdAt').sort({ date: -1, createdAt: -1 }).limit(100).lean();
+    const reports = await MaitriseReport.find().select('date class_group students new_students totals reported_by createdAt').sort({ date: -1, createdAt: -1 }).limit(100).lean();
     res.json({ success: true, data: reports });
   } catch (error) { next(error); }
 }
@@ -70,6 +71,44 @@ async function getById(req, res, next) {
   try {
     const report = await MaitriseReport.findById(req.params.id).select('-__v').lean();
     if (!report) return res.status(404).json({ success: false, message: 'Daily report not found.' });
+    res.json({ success: true, data: report });
+  } catch (error) { next(error); }
+}
+
+async function addNewStudent(req, res, next) {
+  try {
+    const payload = req.body || {};
+    const fullName = typeof payload.fullName === 'string' ? payload.fullName.trim() : '';
+    const phone = typeof payload.phone === 'string' ? payload.phone.trim() : '';
+    if (!fullName || fullName.length > 120) return res.status(400).json({ success: false, message: 'Enter a student name of 120 characters or fewer.' });
+    if (payload.phone !== undefined && typeof payload.phone !== 'string') return res.status(400).json({ success: false, message: 'Phone number must be text.' });
+    if (phone.length > 30) return res.status(400).json({ success: false, message: 'Phone number must be 30 characters or fewer.' });
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) return res.status(400).json({ success: false, message: 'Invalid daily report.' });
+
+    const report = await MaitriseReport.findById(req.params.id).select('new_students');
+    if (!report) return res.status(404).json({ success: false, message: 'Daily report not found.' });
+    if (report.new_students.length >= 100) return res.status(400).json({ success: false, message: 'A report can have at most 100 new students.' });
+
+    const updatedReport = await MaitriseReport.findByIdAndUpdate(
+      req.params.id,
+      { $push: { new_students: { fullName, phone } } },
+      { new: true, runValidators: true, select: 'new_students' }
+    ).lean();
+    res.status(201).json({ success: true, data: updatedReport });
+  } catch (error) { next(error); }
+}
+
+async function removeNewStudent(req, res, next) {
+  try {
+    if (!mongoose.Types.ObjectId.isValid(req.params.id) || !mongoose.Types.ObjectId.isValid(req.params.studentId)) {
+      return res.status(400).json({ success: false, message: 'Invalid report or student record.' });
+    }
+    const report = await MaitriseReport.findOneAndUpdate(
+      { _id: req.params.id, 'new_students._id': req.params.studentId },
+      { $pull: { new_students: { _id: req.params.studentId } } },
+      { new: true, select: 'new_students' }
+    ).lean();
+    if (!report) return res.status(404).json({ success: false, message: 'New student record not found.' });
     res.json({ success: true, data: report });
   } catch (error) { next(error); }
 }
@@ -101,4 +140,4 @@ function parseTime(value) {
   return { value, minutes: hours * 60 + minutes };
 }
 
-module.exports = { create, list, getById };
+module.exports = { create, list, getById, addNewStudent, removeNewStudent };
