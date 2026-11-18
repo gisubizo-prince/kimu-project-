@@ -59,8 +59,9 @@
 
 .maitrize-hero {
   position: relative;
-  margin-top: 108px;
-  height: calc(92vh - 108px);
+  margin-top: 0;
+  padding-top: 108px;
+  height: 92vh;
   min-height: 560px;
   display: flex;
   align-items: center;
@@ -210,7 +211,7 @@
 @media (max-width:1100px) {
   .maitrize-nav__links { display:none; }
   .maitrize-nav { height:76px; }
-  .maitrize-hero { margin-top:96px; height:calc(92vh - 96px); min-height:540px; }
+  .maitrize-hero { margin-top:0; padding-top:96px; height:92vh; min-height:540px; }
   .maitrize-menu { display:block; color:inherit; }
   .maitrize-nav__brand { margin-right:auto; }
   .maitrize-mobile-menu { display:flex; position:absolute; left:0; right:0; top:100%; padding:18px 5%; flex-direction:column; background:#fff; color:#17211d; box-shadow:0 18px 30px rgba(18,58,41,.12); }
@@ -233,7 +234,7 @@
   .maitrize-language { display:none; }
   .maitrize-nav__cta { display:none; }
   .maitrize-nav__login { display:none; }
-  .maitrize-hero { margin-top:88px; height:calc(100svh - 88px); min-height:520px; align-items:flex-end; }
+  .maitrize-hero { margin-top:0; padding-top:88px; height:100svh; min-height:520px; align-items:flex-end; }
   .maitrize-hero__road::after { display:none; }
   .maitrize-hero__car { width:220px; height:92px; right:-20px; bottom:18%; transform:scale(.75); opacity:.38; }
   .maitrize-hero__shade { background:linear-gradient(0deg,rgba(8,28,19,.96) 0%,rgba(10,38,26,.78) 62%,rgba(7,24,16,.28) 100%); }
