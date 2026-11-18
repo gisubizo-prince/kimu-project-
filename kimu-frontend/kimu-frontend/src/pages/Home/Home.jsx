@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import kimuLogo from '../../assets/LETTER HEAD.png';
+import kimuLogo from '../../assets/images.jpg';
 import heroDriverKeys from '../../assets/images/247bde7bff181a35aa3acfb59625f4fd.jpg';
 import heroTaxi from '../../assets/images/28b0d1580f7a028aee7aedcc96aa3331.jpg';
 import heroProfessional from '../../assets/images/3535b62bb207a024cb5790c3c89cd50c.jpg';
@@ -45,6 +45,24 @@ const slides = [
     title: ['LEARN THE ROAD.', 'MASTER EVERY MANOEUVRE.'],
     text: 'Develop practical driving, parking, circulation and road safety skills with professional guidance.',
     image: heroProfessional,
+  },
+  {
+    label: 'REAL TRANSPORT ENVIRONMENT',
+    title: ['YOUR SKILLS CAN OPEN', 'NEW CAREER OPPORTUNITIES.'],
+    text: 'Train with KIMU and prepare yourself for professional opportunities in the transport industry.',
+    image: heroVehicle,
+  },
+  {
+    label: 'MAITRIZE PROFESSIONAL TRAINING',
+    title: ['BUILD SKILLS THAT', 'MOVE YOUR CAREER.'],
+    text: 'Learn practical vehicle care, confident operation and the professional habits employers expect.',
+    image: trainingVehicle,
+  },
+  {
+    label: 'CONFIDENT DRIVERS. STRONG CAREERS.',
+    title: ['START WHERE YOU ARE.', 'DRIVE WHERE YOU WANT.'],
+    text: 'Develop the confidence, navigation skill and service mindset needed for the road ahead.',
+    image: confidentDriver,
   },
 ];
 
@@ -142,6 +160,7 @@ export default function Home() {
       <header className={`maitrize-nav ${scrolled ? 'is-scrolled' : ''}`}>
         <button className="maitrize-nav__brand" onClick={() => scrollToSection('home')} aria-label="KIMU Transport home">
           <img src={kimuLogo} alt="KIMU Transport and Multiservices Ltd" />
+          <span><strong>KIMU</strong><small>TRANSPORT</small></span>
         </button>
         <nav className="maitrize-nav__links" aria-label="Main navigation">
           {t.nav.map((label, index) => (
@@ -181,15 +200,15 @@ export default function Home() {
         onTouchEnd={handleTouchEnd}
       >
         <div className="maitrize-hero__backdrop" key={slide}>
-          <img src={current.image} alt="Professional driver training" />
-          <div className="maitrize-hero__road">
-            <div className="maitrize-hero__car">
-              <span className="maitrize-hero__car-window" />
-              <span className="maitrize-hero__car-light" />
-              <span className="maitrize-hero__car-wheel maitrize-hero__car-wheel--left" />
-              <span className="maitrize-hero__car-wheel maitrize-hero__car-wheel--right" />
-            </div>
-          </div>
+          {slides.map((item, index) => (
+            <img
+              key={item.label}
+              src={item.image}
+              alt=""
+              className={index === slide ? 'is-active' : ''}
+              aria-hidden={index !== slide}
+            />
+          ))}
         </div>
         <div className="maitrize-hero__shade" />
         <div className="maitrize-hero__content" key={`content-${slide}`}>
@@ -360,6 +379,7 @@ export default function Home() {
       <footer className="maitrize-footer">
         <div className="maitrize-footer__brand">
           <img src={kimuLogo} alt="KIMU Transport" />
+          <div><strong>KIMU</strong><small>TRANSPORT &amp; MULTISERVICES</small></div>
           <p>Professional driver training focused on practical skills, navigation, road safety and professional conduct.</p>
         </div>
         <div>
