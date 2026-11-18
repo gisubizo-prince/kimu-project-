@@ -31,7 +31,7 @@ api.interceptors.response.use(
     if (error.response.status === 401) {
       localStorage.removeItem(TOKEN_KEY);
       localStorage.removeItem('kimu_user');
-      if (window.location.pathname !== '/login') {
+      if (error.config?.url !== '/auth/logout' && window.location.pathname !== '/login') {
         window.location.href = '/login';
       }
     }

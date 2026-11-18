@@ -1,4 +1,5 @@
 import { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { authApi, TOKEN_KEY } from '../services/api';
 
 const AuthContext = createContext(null);
@@ -6,6 +7,7 @@ const AuthContext = createContext(null);
 const USER_KEY = 'kimu_user';
 
 export function AuthProvider({ children }) {
+  const navigate = useNavigate();
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true); // true while we verify a persisted session
 
@@ -52,7 +54,8 @@ export function AuthProvider({ children }) {
     localStorage.removeItem(TOKEN_KEY);
     localStorage.removeItem(USER_KEY);
     setUser(null);
-  }, []);
+    navigate('/', { replace: true });
+  }, [navigate]);
 
   const hasRole = useCallback(
     (...roles) => !!user && roles.includes(user.role),
