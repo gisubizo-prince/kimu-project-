@@ -1,6 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import kimuLogo from '../../assets/images.jpg';
+import instructorLearnerPhoto from '../../assets/hero-photos/vehicle-familiarization.jpg';
+import drivingLessonPhoto from '../../assets/hero-photos/adult-driving-lesson.jpg';
+import confidentDriverPhoto from '../../assets/hero-photos/smiling-driver-ethiopia.jpg';
 import heroDriverKeys from '../../assets/images/247bde7bff181a35aa3acfb59625f4fd.jpg';
 import heroTaxi from '../../assets/images/28b0d1580f7a028aee7aedcc96aa3331.jpg';
 import heroProfessional from '../../assets/images/3535b62bb207a024cb5790c3c89cd50c.jpg';
@@ -26,43 +29,25 @@ const slides = [
     label: 'KIMU TRANSPORT PRESENTS MAITRIZE',
     title: ['FROM LEARNING TO DRIVE', 'TO BECOMING A', 'PROFESSIONAL DRIVER.'],
     text: "Your journey to professional driving starts here. Gain practical driving skills, master navigation and prepare for opportunities in Rwanda's transport industry.",
-    image: heroDriverKeys,
+    image: instructorLearnerPhoto,
+    credit: 'Silverkblack',
+    source: 'https://www.pexels.com/photo/couple-exploring-features-in-a-new-car-interior-40895130/',
   },
   {
     label: 'CONFIDENT, PROFESSIONAL DRIVERS',
-    title: ['DRIVE WITH CONFIDENCE.', 'WORK WITH PROFESSIONALISM.'],
-    text: 'Learn the skills that make the difference between an ordinary driver and a professional taxi driver.',
-    image: heroTaxi,
+    title: ['LEARN WITH GUIDANCE.', 'DRIVE WITH CONFIDENCE.'],
+    text: 'Build practical driving skills with clear instruction, focused practice and professional guidance.',
+    image: drivingLessonPhoto,
+    credit: 'Gustavo Fring',
+    source: 'https://www.pexels.com/photo/man-in-white-hoodie-sitting-inside-car-with-a-woman-6817037/',
   },
   {
-    label: 'PRACTICAL NAVIGATION TRAINING',
-    title: ['MASTER GOOGLE MAPS.', 'NEVER LOSE YOUR WAY.'],
-    text: 'Learn professional GPS navigation, location sharing, route planning and real-world navigation skills.',
-    image: heroGps,
-  },
-  {
-    label: 'PRACTICAL ROAD SKILLS',
-    title: ['LEARN THE ROAD.', 'MASTER EVERY MANOEUVRE.'],
-    text: 'Develop practical driving, parking, circulation and road safety skills with professional guidance.',
-    image: heroProfessional,
-  },
-  {
-    label: 'REAL TRANSPORT ENVIRONMENT',
-    title: ['YOUR SKILLS CAN OPEN', 'NEW CAREER OPPORTUNITIES.'],
-    text: 'Train with KIMU and prepare yourself for professional opportunities in the transport industry.',
-    image: heroVehicle,
-  },
-  {
-    label: 'MAITRIZE PROFESSIONAL TRAINING',
-    title: ['BUILD SKILLS THAT', 'MOVE YOUR CAREER.'],
-    text: 'Learn practical vehicle care, confident operation and the professional habits employers expect.',
-    image: trainingVehicle,
-  },
-  {
-    label: 'CONFIDENT DRIVERS. STRONG CAREERS.',
-    title: ['START WHERE YOU ARE.', 'DRIVE WHERE YOU WANT.'],
-    text: 'Develop the confidence, navigation skill and service mindset needed for the road ahead.',
-    image: confidentDriver,
+    label: 'YOUR JOURNEY STARTS HERE',
+    title: ['YOUR NEXT CHAPTER', 'STARTS BEHIND THE WHEEL.'],
+    text: 'Prepare for professional driving with practical skills, road awareness and the confidence to take the next step.',
+    image: confidentDriverPhoto,
+    credit: 'Abiy Fikru',
+    source: 'https://www.pexels.com/photo/young-woman-driving-a-car-and-smiling-17164787/',
   },
 ];
 
@@ -114,7 +99,7 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
-    if (paused) return undefined;
+    if (paused || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return undefined;
     const timer = window.setInterval(() => setSlide((current) => (current + 1) % slides.length), 6500);
     return () => window.clearInterval(timer);
   }, [paused]);
@@ -193,13 +178,13 @@ export default function Home() {
 
       <section
         id="home"
-        className="maitrize-hero"
+        className={`maitrize-hero ${paused ? 'is-paused' : ''}`}
         onMouseEnter={() => setPaused(true)}
         onMouseLeave={() => setPaused(false)}
         onTouchStart={handleTouchStart}
         onTouchEnd={handleTouchEnd}
       >
-        <div className="maitrize-hero__backdrop" key={slide}>
+        <div className="maitrize-hero__backdrop">
           {slides.map((item, index) => (
             <img
               key={item.label}
@@ -228,9 +213,13 @@ export default function Home() {
         <button className="maitrize-hero__arrow maitrize-hero__arrow--right" onClick={() => changeSlide(1)} aria-label="Next slide">›</button>
         <div className="maitrize-hero__dots" aria-label="Slide controls">
           {slides.map((item, index) => (
-            <button key={item.label} className={index === slide ? 'active' : ''} onClick={() => setSlide(index)} aria-label={`Go to slide ${index + 1}`} />
+            <button key={item.label} className={index === slide ? 'active' : ''} onClick={() => setSlide(index)} aria-label={`Go to slide ${index + 1}`} aria-current={index === slide ? 'true' : undefined} />
           ))}
+          <span className="maitrize-hero__slide-count"><strong>0{slide + 1}</strong> / 0{slides.length}</span>
         </div>
+        <a className="maitrize-hero__photo-credit" href={current.source} target="_blank" rel="noreferrer">
+          Illustrative stock photo · Photo by {current.credit} on Pexels
+        </a>
       </section>
 
       <main>
