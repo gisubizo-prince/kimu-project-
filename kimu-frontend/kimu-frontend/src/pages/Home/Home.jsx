@@ -1,16 +1,12 @@
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import kimuLogo from '../../assets/images.jpg';
-import instructorLearnerPhoto from '../../assets/hero-photos/vehicle-familiarization.jpg';
+import instructorLearnerPhoto from '../../assets/hero-photos/black-woman-driver.jpg';
 import drivingLessonPhoto from '../../assets/hero-photos/adult-driving-lesson.jpg';
 import confidentDriverPhoto from '../../assets/hero-photos/smiling-driver-ethiopia.jpg';
-import heroDriverKeys from '../../assets/images/247bde7bff181a35aa3acfb59625f4fd.jpg';
-import heroTaxi from '../../assets/images/28b0d1580f7a028aee7aedcc96aa3331.jpg';
-import heroProfessional from '../../assets/images/3535b62bb207a024cb5790c3c89cd50c.jpg';
-import heroVehicle from '../../assets/images/4043c0f5f6bd04fd233192f9a2634dae.jpg';
-import heroGps from '../../assets/images/aa896c29f5ce1468607e0f201652fa31.jpg';
-import trainingVehicle from '../../assets/images/622230504012f46ec32a07d64282b38f.jpg';
-import confidentDriver from '../../assets/images/a665034af5d191ea77fb6e686b09e18c.jpg';
+import practicePhoto from '../../assets/hero-photos/black-woman-practice.jpg';
+import blackMaleDriverPhoto from '../../assets/hero-photos/black-man-driver.jpg';
+import gpsPhoto from '../../assets/hero-photos/gps-navigation.jpg';
 import './Home.css';
 
 const copy = {
@@ -30,36 +26,36 @@ const slides = [
     title: ['FROM LEARNING TO DRIVE', 'TO BECOMING A', 'PROFESSIONAL DRIVER.'],
     text: "Your journey to professional driving starts here. Gain practical driving skills, master navigation and prepare for opportunities in Rwanda's transport industry.",
     image: instructorLearnerPhoto,
-    credit: 'Silverkblack',
-    source: 'https://www.pexels.com/photo/couple-exploring-features-in-a-new-car-interior-40895130/',
+    credit: 'Gustavo Fring',
+    source: 'https://www.pexels.com/photo/smiling-woman-at-steering-wheel-in-car-6817008/',
   },
   {
     label: 'CONFIDENT, PROFESSIONAL DRIVERS',
     title: ['LEARN WITH GUIDANCE.', 'DRIVE WITH CONFIDENCE.'],
     text: 'Build practical driving skills with clear instruction, focused practice and professional guidance.',
-    image: drivingLessonPhoto,
+    image: practicePhoto,
     credit: 'Gustavo Fring',
-    source: 'https://www.pexels.com/photo/man-in-white-hoodie-sitting-inside-car-with-a-woman-6817037/',
+    source: 'https://www.pexels.com/photo/a-young-woman-behind-the-steering-wheel-6816982/',
   },
   {
     label: 'YOUR JOURNEY STARTS HERE',
     title: ['YOUR NEXT CHAPTER', 'STARTS BEHIND THE WHEEL.'],
     text: 'Prepare for professional driving with practical skills, road awareness and the confidence to take the next step.',
-    image: confidentDriverPhoto,
-    credit: 'Abiy Fikru',
-    source: 'https://www.pexels.com/photo/young-woman-driving-a-car-and-smiling-17164787/',
+    image: blackMaleDriverPhoto,
+    credit: 'cottonbro studio',
+    source: 'https://www.pexels.com/photo/man-in-white-dress-shirt-driving-car-4606336/',
   },
 ];
 
 const modules = [
-  ['01', 'Practical Driving', 'Vehicle handling, steering, acceleration, braking and responsible driving.'],
-  ['02', 'Google Maps & GPS', 'Search destinations, understand routes, share locations and navigate customers.'],
-  ['03', 'Road Circulation', 'Road signs, markings, traffic rules, junctions, lane discipline and safe circulation.'],
-  ['04', 'Professional Parking', 'Safe parking, reverse parking, parallel parking and accurate positioning.'],
-  ['05', 'Road Safety', 'Hazard awareness, defensive habits, safe distances and responsible driving.'],
-  ['06', 'Taxi Professionalism', 'Customer care, communication, punctuality and responsible service.'],
-  ['07', 'Vehicle Inspection', 'Basic checks, cleanliness, maintenance awareness and reporting problems.'],
-  ['08', 'Real-World Preparation', 'Build the confidence and habits expected in professional transport work.'],
+  ['01', 'Practical Driving', 'Vehicle handling, steering, acceleration, braking and responsible driving.', practicePhoto, 'Gustavo Fring'],
+  ['02', 'Google Maps & GPS', 'Search destinations, understand routes, share locations and navigate customers.', gpsPhoto, 'Dustin Konrad'],
+  ['03', 'Road Circulation', 'Road signs, markings, traffic rules, junctions, lane discipline and safe circulation.', blackMaleDriverPhoto, 'cottonbro studio'],
+  ['04', 'Professional Parking', 'Safe parking, reverse parking, parallel parking and accurate positioning.', drivingLessonPhoto, 'Gustavo Fring'],
+  ['05', 'Road Safety', 'Hazard awareness, defensive habits, safe distances and responsible driving.', blackMaleDriverPhoto, 'cottonbro studio'],
+  ['06', 'Taxi Professionalism', 'Customer care, communication, punctuality and responsible service.', confidentDriverPhoto, 'Abiy Fikru'],
+  ['07', 'Vehicle Inspection', 'Basic checks, cleanliness, maintenance awareness and reporting problems.', blackMaleDriverPhoto, 'cottonbro studio'],
+  ['08', 'Real-World Preparation', 'Build the confidence and habits expected in professional transport work.', confidentDriverPhoto, 'Abiy Fikru'],
 ];
 
 const journey = [
@@ -225,8 +221,9 @@ export default function Home() {
       <main>
         <section id="about" className="maitrize-intro maitrize-section">
           <div className="maitrize-intro__visual">
-            <img src={heroVehicle} alt="Professional driver in a vehicle" loading="lazy" />
+            <img src={drivingLessonPhoto} alt="Black learner discussing driving practice with an instructor" loading="lazy" />
             <div className="maitrize-intro__stamp">MAI<br /><strong>TRIZE</strong></div>
+            <a className="maitrize-image-credit" href="https://www.pexels.com/photo/man-in-white-hoodie-sitting-inside-car-with-a-woman-6817037/" target="_blank" rel="noreferrer">Illustrative photo · Gustavo Fring / Pexels</a>
           </div>
           <div className="maitrize-intro__copy">
             <p className="maitrize-eyebrow">WELCOME TO KIMU TRANSPORT</p>
@@ -242,10 +239,13 @@ export default function Home() {
             <h2>THE SKILLS THAT MAKE A <span>PROFESSIONAL DRIVER.</span></h2>
           </div>
           <div className="maitrize-module-grid">
-            {modules.map(([number, title, text], index) => (
+            {modules.map(([number, title, text, image, photographer], index) => (
               <article className={`maitrize-module maitrize-module--${index + 1}`} key={title}>
+                <div className="maitrize-module__photo">
+                  <img src={image} alt="" loading="lazy" />
+                  <span>{photographer} / Pexels</span>
+                </div>
                 <span className="maitrize-module__number">{number}</span>
-                <div className="maitrize-module__icon" aria-hidden="true">{['↗', '⌖', '⇄', 'P', '✓', '◆', '⚙', '→'][index]}</div>
                 <h3>{title}</h3>
                 <p>{text}</p>
               </article>
@@ -255,7 +255,8 @@ export default function Home() {
 
         <section id="why-kimu" className="maitrize-why">
           <div className="maitrize-why__visual">
-            <img src={heroProfessional} alt="Professional driver" loading="lazy" />
+            <img src={blackMaleDriverPhoto} alt="Black professional driver behind the wheel" loading="lazy" />
+            <a className="maitrize-image-credit" href="https://www.pexels.com/photo/man-in-white-dress-shirt-driving-car-4606336/" target="_blank" rel="noreferrer">Illustrative photo · cottonbro studio / Pexels</a>
           </div>
           <div className="maitrize-why__copy">
             <p className="maitrize-eyebrow maitrize-eyebrow--light">WHY CHOOSE KIMU</p>
@@ -291,7 +292,8 @@ export default function Home() {
             <button className="maitrize-button maitrize-button--white" onClick={() => scrollToSection('contact')}>JOIN MAITRIZE TODAY</button>
           </div>
           <div className="maitrize-careers__visual">
-            <img src={confidentDriver} alt="Professional vehicle handover and career opportunity" loading="lazy" />
+            <img src={confidentDriverPhoto} alt="Black woman smiling behind the wheel" loading="lazy" />
+            <a className="maitrize-image-credit" href="https://www.pexels.com/photo/young-woman-driving-a-car-and-smiling-17164787/" target="_blank" rel="noreferrer">Illustrative photo · Abiy Fikru / Pexels</a>
           </div>
         </section>
 
@@ -320,10 +322,15 @@ export default function Home() {
             <h2>LEARNING. PRACTISING. <span>PROGRESSING.</span></h2>
           </div>
           <div className="maitrize-gallery__grid">
-            {[['Driving & navigation', heroGps], ['Parking practice', heroDriverKeys], ['Professional conduct', heroTaxi], ['KIMU vehicles', trainingVehicle]].map(([title, image], index) => (
+            {[
+              ['Learning behind the wheel', instructorLearnerPhoto, 'Gustavo Fring', 'https://www.pexels.com/photo/smiling-woman-at-steering-wheel-in-car-6817008/'],
+              ['GPS & navigation', gpsPhoto, 'Dustin Konrad', 'https://www.pexels.com/photo/close-up-of-a-smartphone-displaying-driving-directions-15548360/'],
+              ['Driving practice', drivingLessonPhoto, 'Gustavo Fring', 'https://www.pexels.com/photo/man-in-white-hoodie-sitting-inside-car-with-a-woman-6817037/'],
+              ['Professional drivers', confidentDriverPhoto, 'Abiy Fikru', 'https://www.pexels.com/photo/young-woman-driving-a-car-and-smiling-17164787/'],
+            ].map(([title, image, photographer, source], index) => (
               <figure key={title} className={`maitrize-gallery__item maitrize-gallery__item--${index + 1}`}>
                 <img src={image} alt={title} loading="lazy" />
-                <figcaption><strong>{title}</strong><span>Project asset</span></figcaption>
+                <figcaption><strong>{title}</strong><a href={source} target="_blank" rel="noreferrer">Illustrative photo · {photographer} / Pexels</a></figcaption>
               </figure>
             ))}
           </div>

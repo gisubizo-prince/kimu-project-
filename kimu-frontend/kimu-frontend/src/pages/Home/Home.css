@@ -101,8 +101,10 @@
 .maitrize-section { max-width:1280px; margin:auto; padding:110px 5%; }
 .maitrize-intro { display:grid; grid-template-columns:1fr 1fr; gap:8%; align-items:center; }
 .maitrize-intro__visual { position:relative; min-height:520px; background:#edf4ef; display:flex; align-items:center; justify-content:center; border-radius:1px 80px 1px 1px; }
-.maitrize-intro__visual img { width:78%; height:78%; object-fit:contain; }
-.maitrize-intro__stamp { position:absolute; right:-32px; bottom:38px; width:110px; height:110px; display:grid; place-content:center; text-align:center; border-radius:50%; background:var(--green); color:#fff; border:8px solid #fff; font-size:20px; line-height:.8; letter-spacing:.08em; }
+.maitrize-intro__visual img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+.maitrize-intro__stamp { position:absolute; z-index:1; right:-32px; bottom:38px; width:110px; height:110px; display:grid; place-content:center; text-align:center; border-radius:50%; background:var(--green); color:#fff; border:8px solid #fff; font-size:20px; line-height:.8; letter-spacing:.08em; }
+.maitrize-image-credit { position:absolute; right:12px; bottom:12px; z-index:2; padding:7px 9px; background:rgba(12,35,24,.75); color:rgba(255,255,255,.92); font-size:10px; text-decoration:none; }
+.maitrize-image-credit:hover { color:#fff; text-decoration:underline; }
 .maitrize-intro__copy h2, .maitrize-section-heading h2, .maitrize-why h2, .maitrize-careers h2, .maitrize-faq h2, .maitrize-contact h2 { font-size:clamp(38px,4.2vw,64px); line-height:1.02; letter-spacing:-.045em; }
 .maitrize-intro__copy h2 span, .maitrize-section-heading h2 span, .maitrize-why h2 span, .maitrize-careers h2 span, .maitrize-faq h2 span, .maitrize-contact h2 span { color:var(--green); }
 .maitrize-intro__copy > p:not(.maitrize-eyebrow) { margin-top:28px; color:#5b6b62; line-height:1.8; }
@@ -112,15 +114,18 @@
 .maitrize-programme { max-width:none; background:#f3f6f4; }
 .maitrize-section-heading { max-width:760px; margin:0 auto 55px; text-align:center; }
 .maitrize-module-grid { max-width:1280px; margin:auto; display:grid; grid-template-columns:repeat(4,1fr); gap:14px; }
-.maitrize-module { min-height:310px; background:#fff; padding:28px; border:1px solid #e1e8e4; display:flex; flex-direction:column; transition:transform .25s, box-shadow .25s, border-color .25s; }
+.maitrize-module { min-height:365px; background:#fff; padding:0 24px 24px; border:1px solid #e1e8e4; display:flex; flex-direction:column; transition:transform .25s, box-shadow .25s, border-color .25s; }
 .maitrize-module:hover { transform:translateY(-8px); box-shadow:0 18px 40px rgba(31,107,69,.12); border-color:#82ad96; }
-.maitrize-module__number { color:#8da097; font-size:12px; font-weight:800; }
-.maitrize-module__icon { width:58px; height:58px; margin:32px 0 22px; display:grid; place-content:center; border-radius:50%; background:#edf4ef; color:var(--green); font-size:25px; }
+.maitrize-module__photo { position:relative; height:168px; margin:0 -24px 20px; overflow:hidden; background:#e4ebe6; }
+.maitrize-module__photo img { width:100%; height:100%; object-fit:cover; transition:transform .45s; }
+.maitrize-module:hover .maitrize-module__photo img { transform:scale(1.05); }
+.maitrize-module__photo span { position:absolute; right:8px; bottom:8px; padding:5px 7px; background:rgba(12,35,24,.72); color:#fff; font-size:9px; }
+.maitrize-module__number { color:#8da097; font-size:11px; font-weight:800; letter-spacing:.12em; margin-bottom:8px; }
 .maitrize-module h3 { font-size:20px; margin-bottom:12px; }
 .maitrize-module p { color:#66766e; font-size:14px; line-height:1.7; }
 
 .maitrize-why { min-height:680px; display:grid; grid-template-columns:47% 53%; background:var(--dark); color:#fff; }
-.maitrize-why__visual { overflow:hidden; background:#dce7df; }
+.maitrize-why__visual { position:relative; overflow:hidden; background:#dce7df; }
 .maitrize-why__visual img { width:100%; height:100%; object-fit:cover; }
 .maitrize-why__copy { padding:90px 8%; align-self:center; }
 .maitrize-why h2 { color:#fff; max-width:650px; }
@@ -144,7 +149,7 @@
 .maitrize-careers__copy > p:not(.maitrize-eyebrow) { max-width:680px; margin-top:25px; line-height:1.8; color:#dce7e1; }
 .maitrize-careers__copy .maitrize-careers__note { font-size:13px; color:#a9beb1 !important; border-left:2px solid #86b999; padding-left:16px; }
 .maitrize-careers__copy .maitrize-button { margin-top:28px; }
-.maitrize-careers__visual { margin:70px 5% 70px 0; overflow:hidden; border-radius:80px 0 80px 0; background:#eaf1ed; }
+.maitrize-careers__visual { position:relative; margin:70px 5% 70px 0; overflow:hidden; border-radius:80px 0 80px 0; background:#eaf1ed; }
 .maitrize-careers__visual img { width:100%; height:100%; object-fit:cover; }
 
 .maitrize-testimonial-grid { max-width:1280px; margin:auto; display:grid; grid-template-columns:repeat(3,1fr); gap:18px; }
@@ -164,7 +169,8 @@
 .maitrize-gallery__item img { width:100%; height:100%; object-fit:cover; transition:transform .5s; }
 .maitrize-gallery__item:hover img { transform:scale(1.04); }
 .maitrize-gallery__item figcaption { position:absolute; left:0; right:0; bottom:0; padding:18px 20px; background:linear-gradient(transparent,rgba(9,42,27,.92)); color:#fff; display:flex; flex-direction:column; }
-.maitrize-gallery__item figcaption span { font-size:12px; opacity:.75; margin-top:4px; }
+.maitrize-gallery__item figcaption a { width:fit-content; margin-top:5px; color:rgba(255,255,255,.8); font-size:10px; text-decoration:none; }
+.maitrize-gallery__item figcaption a:hover { color:#fff; text-decoration:underline; }
 
 .maitrize-faq { display:grid; grid-template-columns:.75fr 1.25fr; gap:8%; }
 .maitrize-faq h2 { font-size:52px; }
@@ -244,7 +250,7 @@
   .maitrize-intro__visual { min-height:330px; border-radius:1px 50px 1px 1px; }
   .maitrize-intro__copy h2, .maitrize-section-heading h2, .maitrize-why h2, .maitrize-careers h2, .maitrize-faq h2, .maitrize-contact h2 { font-size:38px; }
   .maitrize-module-grid { grid-template-columns:1fr; }
-  .maitrize-module { min-height:250px; }
+  .maitrize-module { min-height:330px; }
   .maitrize-why { grid-template-columns:1fr; }
   .maitrize-why__visual { height:320px; }
   .maitrize-why__copy { padding:70px 20px; }
