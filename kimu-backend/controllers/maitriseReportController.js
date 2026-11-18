@@ -43,7 +43,7 @@ async function create(req, res, next) {
 
     const incidents = normalizedCars.filter((car) => car.problem_details).map((car) => `${car.car}: ${car.problem_details}`);
     const userNote = String(ikitonderwa || '').trim();
-    const note = [...(userNote ? [userNote] : []), ...incidents].join('\n');
+    const note = [...new Set([...(userNote ? userNote.split(/\r?\n/) : []), ...incidents].map((line) => line.trim()).filter(Boolean))].join('\n');
     const report = await MaitriseReport.create({
       date,
       class_group: String(classGroup).trim(),

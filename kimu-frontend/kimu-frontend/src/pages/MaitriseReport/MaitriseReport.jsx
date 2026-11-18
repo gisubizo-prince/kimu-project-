@@ -299,10 +299,13 @@ function VehicleStep({ car, updateCar }) {
 }
 
 function ReviewSummary({ data, onEdit }) {
+  const vehiclesWithProblems = data.cars.filter((car) => car.problem_details);
+
   return <div className="maitrise-report__review">
     <section><div className="maitrise-report__review-heading"><h3>Class details</h3><button onClick={() => onEdit(0)}>Edit</button></div><p>Date: {data.date} · Class/group: {data.class_group}</p></section>
     <section><div className="maitrise-report__review-heading"><h3>Student attendance</h3><button onClick={() => onEdit(1)}>Edit</button></div><p>Attended {data.students.attended} · Missed {data.students.missed} · Total registered {data.students.total_registered} · Abashoferi bashya {data.new_students_attended}</p></section>
     <section><div className="maitrise-report__review-heading"><h3>Vehicle utilization</h3><button onClick={() => onEdit(2, 0)}>Edit</button></div><div className="maitrise-report__table-wrap"><table><thead><tr><th>Imodoka</th><th>Teacher</th><th>KM start</th><th>KM end</th><th>KM used</th><th>Condition</th><th>Start</th><th>End</th><th>Hours</th></tr></thead><tbody>{data.cars.map((car) => <tr key={car.car}><td>{formatVehicleName(car)}</td>{car.status === 'Not used' ? <td colSpan="8">NOT USED</td> : <><td>{car.teacher}</td><td>{formatKilometers(car.km_start)}</td><td>{formatKilometers(car.km_end)}</td><td>{formatKilometers(car.km_used)}</td><td>{translateCondition(car.condition_start)} / {translateCondition(car.condition_end)}</td><td>{car.start_time}</td><td>{car.end_time}</td><td>{car.hours_worked.toFixed(2)}</td></>}</tr>)}</tbody></table></div></section>
+    {vehiclesWithProblems.length > 0 && <section><div className="maitrise-report__review-heading"><h3>Vehicle condition notes</h3><button onClick={() => onEdit(2, data.cars.findIndex((car) => car.problem_details))}>Edit</button></div>{vehiclesWithProblems.map((car) => <p key={car.car}><strong>{formatVehicleName(car)}:</strong> {car.problem_details}</p>)}</section>}
     {data.ikitonderwa && <section><div className="maitrise-report__review-heading"><h3>Ikitonderwa</h3><button onClick={() => onEdit(3)}>Edit</button></div><p className="maitrise-report__preserve-lines">{data.ikitonderwa}</p></section>}
     <section><div className="maitrise-report__review-heading"><h3>Reported by</h3><button onClick={() => onEdit(4)}>Edit</button></div><p>{data.reported_by}</p></section>
   </div>;
@@ -355,11 +358,10 @@ function buildPayload(form) {
     const kmEnd = numeric(car.km_end) ?? 0;
     return { car: car.car, plate: car.plate, status: 'Used', teacher: car.teacher.trim(), km_start: kmStart, km_end: kmEnd, km_used: Math.max(kmEnd - kmStart, 0), condition_start: car.condition_start, condition_end: car.condition_end, start_time: start?.value || '', end_time: end?.value || '', hours_worked: start && end && end.minutes > start.minutes ? Number(((end.minutes - start.minutes) / 60).toFixed(2)) : 0, problem_details: car.problem_details.trim() };
   });
-  const problemNotes = cars.filter((car) => car.problem_details).map((car) => `${car.car}: ${car.problem_details}`);
   const note = form.incident_answer === 'yes' ? form.incident_details.trim() : '';
   const attended = wholeNumber(form.students.attended) || 0;
   const missed = wholeNumber(form.students.missed) || 0;
-  return { date: form.date, class_group: form.class_group.trim(), students: { attended, missed, total_registered: attended + missed }, new_students_attended: wholeNumber(form.new_students_attended) || 0, cars, totals: { km_used: cars.reduce((total, car) => total + car.km_used, 0), hours_worked: Number(cars.reduce((total, car) => total + car.hours_worked, 0).toFixed(2)) }, ikitonderwa: cleanReportNote([note, ...problemNotes].join('\n')), reported_by: form.reported_by.trim() };
+  return { date: form.date, class_group: form.class_group.trim(), students: { attended, missed, total_registered: attended + missed }, new_students_attended: wholeNumber(form.new_students_attended) || 0, cars, totals: { km_used: cars.reduce((total, car) => total + car.km_used, 0), hours_worked: Number(cars.reduce((total, car) => total + car.hours_worked, 0).toFixed(2)) }, ikitonderwa: cleanReportNote(note), reported_by: form.reported_by.trim() };
 }
 
 function exportableReport(report) {
@@ -430,7 +432,8 @@ function cleanReportNote(value) {
     .replace(/[ \t]+\n/g, '\n')
     .replace(/\n{3,}/g, '\n\n')
     .trim();
-  return /^(?:nothing unusual to report|no additional notes|nta kindi cyanditswe)\.?$/i.test(note) ? '' : note;
+  const uniqueLines = [...new Set(note.split('\n').map((line) => line.trim()).filter(Boolean))].join('\n');
+  return /^(?:nothing unusual to report|no additional notes|nta kindi cyanditswe)\.?$/i.test(uniqueLines) ? '' : uniqueLines;
 }
 
 async function buildPdf(sourceReport) {
