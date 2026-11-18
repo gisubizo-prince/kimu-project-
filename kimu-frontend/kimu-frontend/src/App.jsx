@@ -13,6 +13,7 @@ import Settings, { AdminControls } from './pages/Settings/Settings';
 import Students from './pages/Students/Students';
 import VisitorList from './pages/Visitors/VisitorList';
 import MaitriseReport from './pages/MaitriseReport/MaitriseReport';
+import Home from './pages/Home/Home';
 
 export default function App() {
   return (
@@ -42,7 +43,7 @@ export default function App() {
             <Route path="/settings/admin" element={<ProtectedRoute roles={['super_admin', 'admin']}><AdminControls /></ProtectedRoute>} />
           </Route>
 
-          <Route path="/" element={<Navigate to="/dashboard" replace />} />
+          <Route path="/" element={<Home />} />
           <Route path="*" element={<Navigate to="/dashboard" replace />} />
         </Routes>
       </AuthProvider>

@@ -9,6 +9,7 @@ const NAV_ITEMS = [
   { to: '/attendance', label: 'Attendance', icon: ClockIcon },
   { to: '/reports', label: 'Daily Reports', icon: ChartIcon },
   { to: '/maitrise-report', label: 'MAITRISE REPORT', icon: ReportIcon },
+  { href: 'https://kimucertverify.vercel.app/', label: 'Certificate', icon: BadgeIcon, external: true },
   { to: '/settings', label: 'Settings', icon: GearIcon },
 ];
 
@@ -30,18 +31,39 @@ export default function Sidebar({ collapsed, mobileOpen, onNavigate }) {
       </div>
 
       <nav className="kimu-sidebar__nav" aria-label="Main navigation">
-        {NAV_ITEMS.map(({ to, label, icon: Icon }) => (
-          <NavLink
-            key={to}
-            to={to}
-            onClick={onNavigate}
-            className={({ isActive }) => `kimu-sidebar__link ${isActive ? 'is-active' : ''}`}
-            title={collapsed ? label : undefined}
-          >
-            <Icon />
-            {!collapsed && <span>{label}</span>}
-          </NavLink>
-        ))}
+        {NAV_ITEMS.map((item) => {
+          const { label, icon: Icon } = item;
+
+          if (item.external) {
+            return (
+              <a
+                key={item.href}
+                href={item.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={onNavigate}
+                className="kimu-sidebar__link"
+                title={collapsed ? label : undefined}
+              >
+                <Icon />
+                {!collapsed && <span>{label}</span>}
+              </a>
+            );
+          }
+
+          return (
+            <NavLink
+              key={item.to}
+              to={item.to}
+              onClick={onNavigate}
+              className={({ isActive }) => `kimu-sidebar__link ${isActive ? 'is-active' : ''}`}
+              title={collapsed ? label : undefined}
+            >
+              <Icon />
+              {!collapsed && <span>{label}</span>}
+            </NavLink>
+          );
+        })}
       </nav>
 
       <div className="kimu-sidebar__footer">
