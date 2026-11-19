@@ -13,6 +13,7 @@ const PAGE_TITLES = {
   '/reports': 'Daily Reports',
   '/maitrise-report': 'MAITRISE REPORT',
   '/notifications': 'Notifications',
+  '/contacts': 'Contact',
   '/settings': 'Settings',
   '/settings/admin': 'System Controls',
 };

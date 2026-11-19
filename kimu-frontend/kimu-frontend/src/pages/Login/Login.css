@@ -1,71 +1,215 @@
 .kimu-login {
   min-height: 100vh;
   min-height: 100dvh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--kimu-charcoal);
-  padding: 32px 20px;
-  overflow-y: auto;
+  display: grid;
+  place-items: center;
+  padding: 38px 24px;
+  overflow: auto;
+  background:
+    radial-gradient(ellipse at 75% 4%, rgba(108, 197, 149, .24), transparent 34%),
+    linear-gradient(135deg, #10271d 0%, #173c2b 48%, #10271d 100%);
 }
 
 .kimu-login__card {
-  position: relative;
-  isolation: isolate;
-  width: 100%;
-  max-width: 400px;
-  background: var(--kimu-surface);
-  border-radius: 14px;
-  padding: 36px 32px;
-  box-shadow: none;
-  margin: auto;
+  display: grid;
+  grid-template-columns: minmax(0, .96fr) minmax(0, 1.04fr);
+  width: min(100%, 1100px);
+  min-height: 620px;
+  padding: 9px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, .76);
+  border-radius: 22px;
+  background: #fff;
+  box-shadow: 0 28px 90px rgba(0, 0, 0, .25);
 }
 
-.kimu-login__card form {
-  width: 100%;
+.kimu-login__welcome {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  padding: 42px 42px 32px;
+  overflow: hidden;
+  border-radius: 15px;
+  color: #fff;
+  background:
+    radial-gradient(ellipse at 100% 0%, rgba(69, 207, 159, .68), transparent 45%),
+    linear-gradient(155deg, #147d63 0%, #14644c 48%, #0c382c 100%);
+}
+
+.kimu-login__welcome::before,
+.kimu-login__welcome::after {
+  position: absolute;
+  z-index: -1;
+  content: '';
+  border: 1px solid rgba(224, 255, 237, .12);
+  border-radius: 50%;
+}
+
+.kimu-login__welcome::before {
+  width: 430px;
+  height: 430px;
+  right: -210px;
+  top: -180px;
+}
+
+.kimu-login__welcome::after {
+  width: 330px;
+  height: 330px;
+  right: -160px;
+  top: -130px;
 }
 
 .kimu-login__brand {
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: 10px;
-  margin-bottom: 28px;
+  align-self: flex-start;
+  max-width: 240px;
+  min-height: 58px;
+  padding: 7px 12px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, .97);
 }
 
 .kimu-login__mark {
-  width: 100%;
-  max-width: 300px;
-  height: auto;
+  display: block;
+  width: 210px;
+  max-width: 100%;
+  max-height: 48px;
+  object-fit: contain;
 }
 
-.kimu-login__brand-name {
-  font-family: var(--font-heading);
-  font-weight: 600;
-  font-size: 15px;
-  color: var(--kimu-charcoal);
+.kimu-login__welcome-copy {
+  margin-top: auto;
+  padding: 50px 0 28px;
+}
+
+.kimu-login__eyebrow,
+.kimu-login__form-eyebrow {
+  margin-bottom: 14px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .16em;
+}
+
+.kimu-login__eyebrow {
+  color: #b7ead2;
+}
+
+.kimu-login__welcome h1 {
+  color: #fff;
+  font-size: clamp(42px, 5vw, 58px);
+  font-weight: 700;
+  letter-spacing: -.055em;
+  line-height: .98;
+}
+
+.kimu-login__welcome-subtitle {
+  max-width: 350px;
+  margin-top: 16px;
+  color: rgba(244, 255, 248, .78);
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+.kimu-login__features {
+  display: grid;
+  gap: 18px;
+  margin: 4px 0 35px;
+}
+
+.kimu-login__feature {
+  display: grid;
+  grid-template-columns: 44px 1fr;
+  align-items: center;
+  gap: 14px;
+}
+
+.kimu-login__feature-icon {
+  display: grid;
+  width: 42px;
+  height: 42px;
+  place-items: center;
+  border: 1px solid rgba(255, 255, 255, .22);
+  border-radius: 12px;
+  color: #e0f6e8;
+  background: rgba(229, 255, 239, .13);
+}
+
+.kimu-login__feature-copy {
+  display: grid;
+  gap: 4px;
+}
+
+.kimu-login__feature-copy strong {
+  color: #fff;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.kimu-login__feature-copy > span {
+  color: rgba(244, 255, 248, .72);
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+.kimu-login__welcome-footer {
+  margin-top: auto;
+  padding-top: 18px;
+  border-top: 1px solid rgba(255, 255, 255, .16);
+  color: rgba(244, 255, 248, .66);
+  font-size: 10px;
+  letter-spacing: .06em;
+}
+
+.kimu-login__form-panel {
+  display: grid;
+  place-items: center;
+  padding: 56px 52px;
+  background: #fff;
+}
+
+.kimu-login__form-content {
+  width: min(100%, 390px);
+}
+
+.kimu-login__form-eyebrow {
+  margin-bottom: 12px;
+  color: var(--kimu-green);
 }
 
 .kimu-login__title {
-  font-size: 22px;
-  margin-bottom: 4px;
+  margin-bottom: 8px;
+  font-size: clamp(29px, 3vw, 36px);
+  font-weight: 700;
+  letter-spacing: -.045em;
+  line-height: 1.15;
+  text-align: center;
 }
 
 .kimu-login__subtitle {
-  font-size: 14px;
+  margin-bottom: 36px;
   color: var(--kimu-text-secondary);
-  margin-bottom: 26px;
+  font-size: 14px;
+  line-height: 1.6;
+  text-align: center;
+}
+
+.kimu-login__form-content form {
+  width: 100%;
 }
 
 .kimu-field {
-  margin-bottom: 18px;
+  margin-bottom: 20px;
 }
 
 .kimu-field label {
   display: block;
-  font-size: 13px;
-  font-weight: 600;
+  margin-bottom: 8px;
   color: var(--kimu-text);
-  margin-bottom: 6px;
+  font-size: 12px;
+  font-weight: 700;
 }
 
 .kimu-field input[type='email'],
@@ -73,16 +217,31 @@
 .kimu-field input[type='text'] {
   width: 100%;
   min-width: 0;
-  padding: 11px 12px;
-  border: 1px solid var(--kimu-border);
-  border-radius: var(--radius-control);
-  font-size: 14px;
-  background: var(--kimu-surface);
+  min-height: 48px;
+  padding: 0 14px;
+  border: 1px solid #e3ebe5;
+  border-radius: 9px;
+  outline: none;
   color: var(--kimu-text);
+  background: #f5f8f6;
+  font: 400 13px var(--font-body);
+  transition: border-color .16s ease, box-shadow .16s ease, background .16s ease;
+}
+
+.kimu-field input::placeholder {
+  color: #98a59d;
 }
 
 .kimu-field input:focus {
   border-color: var(--kimu-green);
+  outline: none;
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(31, 107, 69, .11);
+}
+
+.kimu-field input:disabled {
+  cursor: wait;
+  opacity: .7;
 }
 
 .kimu-field__password-wrap {
@@ -90,65 +249,215 @@
 }
 
 .kimu-field__password-wrap input {
-  padding-right: 40px;
+  padding-right: 46px;
 }
 
 .kimu-field__toggle {
   position: absolute;
-  right: 8px;
   top: 50%;
-  transform: translateY(-50%);
-  background: none;
-  border: none;
-  color: var(--kimu-text-secondary);
+  right: 10px;
   display: flex;
-  padding: 4px;
-  z-index: 1;
+  padding: 6px;
+  transform: translateY(-50%);
+  border: 0;
+  color: var(--kimu-text-secondary);
+  background: transparent;
+}
+
+.kimu-field__toggle:hover {
+  color: var(--kimu-green);
 }
 
 .kimu-login__row {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px;
+  justify-content: space-between;
+  margin: 2px 0 22px;
 }
 
 .kimu-checkbox {
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: 8px;
-  font-size: 13px;
+  gap: 9px;
   color: var(--kimu-text-secondary);
+  font-size: 12px;
+}
+
+.kimu-checkbox input {
+  width: 15px;
+  height: 15px;
+  margin: 0;
+  accent-color: var(--kimu-green);
 }
 
 .kimu-login__error {
-  background: var(--status-danger-bg);
-  color: var(--status-danger);
-  border-radius: var(--radius-control);
-  padding: 10px 12px;
-  font-size: 13px;
   margin-bottom: 16px;
+  padding: 11px 13px;
+  border: 1px solid #f1ceca;
+  border-radius: 9px;
+  color: var(--status-danger);
+  background: var(--status-danger-bg);
+  font-size: 12px;
+  line-height: 1.5;
 }
 
 .kimu-login__submit {
+  display: flex;
   width: 100%;
-  padding: 12px;
-  font-size: 14px;
+  min-height: 50px;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  border: 0;
+  border-radius: 999px;
+  color: #fff;
+  background: var(--kimu-green-dark);
+  box-shadow: 0 7px 15px rgba(22, 78, 51, .16);
+  font: 700 13px var(--font-body);
+  transition: background .16s ease, transform .16s ease, box-shadow .16s ease;
 }
 
-@media (max-width: 480px) {
+.kimu-login__submit:hover:not(:disabled) {
+  transform: translateY(-1px);
+  background: var(--kimu-green);
+  box-shadow: 0 9px 18px rgba(22, 78, 51, .2);
+}
+
+.kimu-login__submit:focus-visible,
+.kimu-login__back-link:focus-visible,
+.kimu-login__brand:focus-visible {
+  outline: 3px solid #91c9a8;
+  outline-offset: 3px;
+}
+
+.kimu-login__submit:disabled {
+  cursor: wait;
+  opacity: .76;
+}
+
+.kimu-login__security {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 24px;
+  color: var(--kimu-text-muted);
+  font-size: 11px;
+}
+
+.kimu-login__security svg {
+  color: var(--kimu-green);
+}
+
+.kimu-login__back-link {
+  display: block;
+  width: fit-content;
+  margin: 28px auto 0;
+  color: var(--kimu-green-dark);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.kimu-login__back-link:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 800px) {
+  .kimu-login__card {
+    grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr);
+    min-height: 570px;
+  }
+
+  .kimu-login__welcome {
+    padding: 30px 26px 26px;
+  }
+
+  .kimu-login__mark {
+    width: 175px;
+  }
+
+  .kimu-login__form-panel {
+    padding: 40px 30px;
+  }
+}
+
+@media (max-width: 620px) {
   .kimu-login {
-    align-items: flex-start;
-    padding: 20px 12px;
+    display: block;
+    padding: 14px;
   }
 
   .kimu-login__card {
-    max-width: 100%;
-    padding: 28px 22px;
-    border-radius: 10px;
+    grid-template-columns: 1fr;
+    width: min(100%, 470px);
+    min-height: 0;
+    margin: 0 auto;
+    padding: 7px;
+    border-radius: 18px;
+  }
+
+  .kimu-login__welcome {
+    min-height: 0;
+    padding: 22px 22px 18px;
   }
 
   .kimu-login__brand {
-    margin-bottom: 22px;
+    min-height: 48px;
+  }
+
+  .kimu-login__mark {
+    width: 165px;
+    max-height: 38px;
+  }
+
+  .kimu-login__welcome-copy {
+    padding: 28px 0 20px;
+  }
+
+  .kimu-login__welcome h1 {
+    font-size: 38px;
+  }
+
+  .kimu-login__welcome-subtitle {
+    margin-top: 10px;
+  }
+
+  .kimu-login__features {
+    gap: 13px;
+    margin: 0 0 22px;
+  }
+
+  .kimu-login__feature {
+    grid-template-columns: 38px 1fr;
+    gap: 11px;
+  }
+
+  .kimu-login__feature-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+  }
+
+  .kimu-login__welcome-footer {
+    padding-top: 13px;
+  }
+
+  .kimu-login__form-panel {
+    padding: 34px 22px 27px;
+  }
+
+  .kimu-login__subtitle {
+    margin-bottom: 25px;
+  }
+
+  .kimu-login__back-link {
+    margin-top: 22px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .kimu-field input,
+  .kimu-login__submit {
+    transition: none;
   }
 }

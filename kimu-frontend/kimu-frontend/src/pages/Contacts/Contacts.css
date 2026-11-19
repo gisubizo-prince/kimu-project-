@@ -1,0 +1,11 @@
+.kimu-contacts .kimu-operations__list { padding: 22px; }
+.kimu-contacts .kimu-resource__table-wrap { overflow-x: auto; }
+.kimu-contacts table { min-width: 1000px; }
+.kimu-contacts td:nth-child(3) { white-space: normal; min-width: 170px; }
+.kimu-contacts td:nth-child(4) { white-space: normal; min-width: 180px; }
+
+@media (max-width: 650px) {
+  .kimu-contacts .kimu-operations__list { padding: 14px; }
+  .kimu-contacts .kimu-list-toolbar { align-items: stretch; flex-direction: column; gap: 10px; }
+  .kimu-contacts .kimu-list-toolbar input { width: 100%; }
+}

@@ -95,5 +95,10 @@ export const dashboardApi = {
   summary: () => api.get('/dashboard/summary'),
 };
 
+export const contactApi = {
+  submit: (payload) => api.post('/contacts', payload),
+  list: (params) => api.get('/contacts', { params }),
+};
+
 export { TOKEN_KEY };
 export default api;

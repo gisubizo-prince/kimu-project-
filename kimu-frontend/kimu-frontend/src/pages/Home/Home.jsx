@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { contactApi } from '../../services/api';
 import kimuLogo from '../../assets/LOGO WEBSITE OK.png';
 import instructorLearnerPhoto from '../../assets/hero-photos/black-woman-driver.jpg';
 import drivingLessonPhoto from '../../assets/hero-photos/adult-driving-lesson.jpg';
@@ -85,6 +86,7 @@ export default function Home() {
   const [language, setLanguage] = useState('en');
   const [openFaq, setOpenFaq] = useState(0);
   const [formState, setFormState] = useState({ status: '', message: '' });
+  const [submitting, setSubmitting] = useState(false);
   const touchStart = useRef(null);
 
   useEffect(() => {
@@ -120,17 +122,40 @@ export default function Home() {
     touchStart.current = null;
   }
 
-  function handleSubmit(event) {
+  async function handleSubmit(event) {
     event.preventDefault();
-    const form = new FormData(event.currentTarget);
-    if (!form.get('name')?.trim() || !form.get('phone')?.trim()) {
+    const formElement = event.currentTarget;
+    const form = new FormData(formElement);
+    const name = form.get('name')?.trim();
+    const phone = form.get('phone')?.trim();
+    const email = form.get('email')?.trim();
+    if (!name || !phone) {
       setFormState({ status: 'error', message: 'Please enter your full name and telephone number.' });
       return;
     }
-    setFormState({
-      status: 'info',
-      message: 'Your details have been validated locally. This form is ready for a verified KIMU application endpoint; no information has been sent.',
-    });
+    if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      setFormState({ status: 'error', message: 'Please enter a valid email address.' });
+      return;
+    }
+
+    setSubmitting(true);
+    setFormState({ status: '', message: '' });
+    try {
+      await contactApi.submit({
+        fullName: name,
+        phone,
+        email,
+        interest: form.get('interest'),
+        experience: form.get('experience'),
+        contactMethod: form.get('contactMethod'),
+      });
+      formElement.reset();
+      setFormState({ status: 'success', message: 'Thank you. Your details have been sent to KIMU Transport.' });
+    } catch (error) {
+      setFormState({ status: 'error', message: error.message || 'Unable to send your details. Please try again.' });
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   const t = copy[language];
@@ -366,7 +391,7 @@ export default function Home() {
             <label>Previous driving experience<select name="experience" defaultValue="None"><option>None</option><option>Beginner</option><option>Some experience</option><option>Licensed driver</option></select></label>
             <label>Preferred contact method<select name="contactMethod" defaultValue="Telephone"><option>Telephone</option><option>Email</option><option>WhatsApp</option></select></label>
             {formState.message && <p className={`maitrize-form__message ${formState.status}`} role={formState.status === 'error' ? 'alert' : 'status'}>{formState.message}</p>}
-            <button className="maitrize-button maitrize-button--green" type="submit">ENROLL NOW</button>
+            <button className="maitrize-button maitrize-button--green" type="submit" disabled={submitting}>{submitting ? 'SENDING...' : 'ENROLL NOW'}</button>
           </form>
         </section>
       </main>

@@ -9,6 +9,7 @@ const NAV_ITEMS = [
   { to: '/attendance', label: 'Attendance', icon: ClockIcon },
   { to: '/reports', label: 'Daily Reports', icon: ChartIcon },
   { to: '/maitrise-report', label: 'MAITRISE REPORT', icon: ReportIcon },
+  { to: '/contacts', label: 'Contact', icon: ContactIcon },
   { href: 'https://kimucertverify.vercel.app/', label: 'Certificate', icon: BadgeIcon, external: true },
   { to: '/settings', label: 'Settings', icon: GearIcon },
 ];
@@ -115,6 +116,7 @@ function ClockIcon() { return <svg {...iconProps()}><circle cx="12" cy="12" r="8
 function BadgeIcon() { return <svg {...iconProps()}><rect x="5" y="4" width="14" height="17" rx="2"/><circle cx="12" cy="10.5" r="2.5"/><path d="M8.5 17c.6-1.6 1.9-2.5 3.5-2.5s2.9.9 3.5 2.5"/></svg>; }
 function ChartIcon() { return <svg {...iconProps()}><path d="M4 20V10M11 20V4M18 20v-7"/><path d="M3 20h18"/></svg>; }
 function ReportIcon() { return <svg {...iconProps()}><path d="M7 3.5h7l4 4V20a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V4.5a1 1 0 0 1 1-1Z"/><path d="M14 3.5v4h4M9 12h6M9 16h6"/></svg>; }
+function ContactIcon() { return <svg {...iconProps()}><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m4 7 8 6 8-6M7 10l-3 3m13-3 3 3"/></svg>; }
 function BellIcon() { return <svg {...iconProps()}><path d="M6 9a6 6 0 1 1 12 0c0 4 1.5 5.5 1.5 5.5H4.5S6 13 6 9Z"/><path d="M10 19a2 2 0 0 0 4 0"/></svg>; }
 function GearIcon() { return <svg {...iconProps()}><circle cx="12" cy="12" r="3"/><path d="M19.4 13.5a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 1 1-2.9 2.9l-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.6v.1a2 2 0 1 1-4 0v-.2a1.7 1.7 0 0 0-1.1-1.6 1.7 1.7 0 0 0-1.9.3l-.1.1a2 2 0 1 1-2.9-2.9l.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.6-1H4a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.6-1 1.7 1.7 0 0 0-.3-1.9l-.1-.1a2 2 0 1 1 2.9-2.9l.1.1a1.7 1.7 0 0 0 1.9.3H10a1.7 1.7 0 0 0 1-1.6V4a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.6 1.7 1.7 0 0 0 1.9-.3l.1-.1a2 2 0 1 1 2.9 2.9l-.1.1a1.7 1.7 0 0 0-.3 1.9V10a1.7 1.7 0 0 0 1.6 1H20a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1Z"/></svg>; }
 function LogoutIcon() { return <svg {...iconProps()}><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>; }
