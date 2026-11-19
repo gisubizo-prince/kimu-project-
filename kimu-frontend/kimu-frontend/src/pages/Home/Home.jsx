@@ -88,6 +88,8 @@ export default function Home() {
   const [formState, setFormState] = useState({ status: '', message: '' });
   const [submitting, setSubmitting] = useState(false);
   const touchStart = useRef(null);
+  const testimonialViewport = useRef(null);
+  const [testimonialScroll, setTestimonialScroll] = useState({ canScrollBack: false, canScrollForward: false });
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40);
@@ -102,6 +104,29 @@ export default function Home() {
     return () => window.clearInterval(timer);
   }, [paused]);
 
+  useEffect(() => {
+    const viewport = testimonialViewport.current;
+    if (!viewport) return undefined;
+
+    function updateTestimonialScroll() {
+      setTestimonialScroll({
+        canScrollBack: viewport.scrollLeft > 2,
+        canScrollForward: viewport.scrollLeft + viewport.clientWidth < viewport.scrollWidth - 2,
+      });
+    }
+
+    updateTestimonialScroll();
+    viewport.addEventListener('scroll', updateTestimonialScroll, { passive: true });
+    const observer = typeof ResizeObserver === 'undefined' ? null : new ResizeObserver(updateTestimonialScroll);
+    observer?.observe(viewport);
+    window.addEventListener('resize', updateTestimonialScroll);
+    return () => {
+      viewport.removeEventListener('scroll', updateTestimonialScroll);
+      observer?.disconnect();
+      window.removeEventListener('resize', updateTestimonialScroll);
+    };
+  }, []);
+
   function scrollToSection(id) {
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
     setMenuOpen(false);
@@ -109,6 +134,15 @@ export default function Home() {
 
   function changeSlide(direction) {
     setSlide((current) => (current + direction + slides.length) % slides.length);
+  }
+
+  function scrollTestimonials(direction) {
+    const viewport = testimonialViewport.current;
+    const card = viewport?.querySelector('.maitrize-testimonial-card');
+    if (!viewport || !card) return;
+
+    const gap = Number.parseFloat(window.getComputedStyle(viewport).columnGap) || 0;
+    viewport.scrollBy({ left: direction * (card.getBoundingClientRect().width + gap), behavior: 'smooth' });
   }
 
   function handleTouchStart(event) {
@@ -322,22 +356,36 @@ export default function Home() {
         </section>
 
         <section id="testimonials" className="maitrize-testimonials maitrize-section">
-          <div className="maitrize-section-heading">
-            <p className="maitrize-eyebrow">STUDENT EXPERIENCES</p>
-            <h2>REAL EXPERIENCES. <span>REAL PROGRESS.</span></h2>
+          <div className="maitrize-testimonials__heading">
+            <div className="maitrize-section-heading">
+              <p className="maitrize-eyebrow">STUDENT EXPERIENCES</p>
+              <h2>REAL EXPERIENCES. <span>REAL PROGRESS.</span></h2>
+            </div>
+            <div className="maitrize-testimonials__controls" aria-label="Testimonial carousel controls">
+              <button type="button" onClick={() => scrollTestimonials(-1)} disabled={!testimonialScroll.canScrollBack} aria-label="Show previous testimonials"><span aria-hidden="true">&larr;</span></button>
+              <button type="button" onClick={() => scrollTestimonials(1)} disabled={!testimonialScroll.canScrollForward} aria-label="Show more testimonials"><span aria-hidden="true">&rarr;</span></button>
+            </div>
           </div>
-          <div className="maitrize-testimonial-grid">
-            {[1, 2, 3].map((number) => (
-              <article key={number}>
-                <div className="maitrize-testimonial__quote">“</div>
-                <p>Genuine student testimonial placeholder.</p>
-                <footer>
-                  <div>{number}</div>
-                  <span><strong>Student name</strong><small>MAITRISE student · Replace with approved testimonial</small></span>
-                </footer>
-              </article>
-            ))}
+          <div className="maitrize-testimonial-viewport" ref={testimonialViewport} aria-label="Student testimonials" tabIndex="0">
+            <div className="maitrize-testimonial-track">
+              {[1, 2, 3].map((number) => (
+                <article className="maitrize-testimonial-card" key={number}>
+                  <span className="maitrize-testimonial__seal" aria-hidden="true"><QuoteIcon /></span>
+                  <div className="maitrize-testimonial__person">
+                    <span className="maitrize-testimonial__avatar" aria-hidden="true"><PersonIcon /></span>
+                    <span className="maitrize-testimonial__identity"><strong>Student name</strong><small>MAITRISE student</small></span>
+                    <span className="maitrize-testimonial__label">STUDENT VOICE</span>
+                  </div>
+                  <div className="maitrize-testimonial__rule" />
+                  <div className="maitrize-testimonial__quote-mark" aria-hidden="true">“</div>
+                  <p>Genuine student testimonial placeholder.</p>
+                  <footer>Replace with an approved student testimonial</footer>
+                  <span className="maitrize-testimonial__number" aria-hidden="true">{String(number).padStart(2, '0')}</span>
+                </article>
+              ))}
+            </div>
           </div>
+          <p className="maitrize-testimonials__hint">Use the arrows or swipe to explore student stories</p>
         </section>
 
         <section className="maitrize-gallery maitrize-section">
@@ -425,4 +473,17 @@ export default function Home() {
       </footer>
     </div>
   );
+}
+
+function QuoteIcon() {
+  return <svg width="26" height="26" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+    <path d="M10.4 11.2H5.8a1 1 0 0 1-1-1V5.8a1 1 0 0 1 1-1h4.6a1 1 0 0 1 1 1v6.8c0 3.2-1.6 5.3-4.8 6.4M19.2 11.2h-4.6a1 1 0 0 1-1-1V5.8a1 1 0 0 1 1-1h4.6a1 1 0 0 1 1 1v6.8c0 3.2-1.6 5.3-4.8 6.4" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"/>
+  </svg>;
+}
+
+function PersonIcon() {
+  return <svg width="27" height="27" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+    <circle cx="12" cy="8" r="3.1" stroke="currentColor" strokeWidth="1.5"/>
+    <path d="M5.5 19.5c.5-3.1 2.9-5 6.5-5s6 1.9 6.5 5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+  </svg>;
 }
