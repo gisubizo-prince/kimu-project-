@@ -18,6 +18,7 @@ const userRoutes = require('./routes/userRoutes');
 const reportRoutes = require('./routes/reportRoutes');
 const maitriseReportRoutes = require('./routes/maitriseReportRoutes');
 const contactRoutes = require('./routes/contactRoutes');
+const testimonialRoutes = require('./routes/testimonialRoutes');
 
 const app = express();
 const allowedOrigins = new Set([process.env.CLIENT_URL || 'http://localhost:5173']);
@@ -53,6 +54,7 @@ app.use('/api/users', userRoutes);
 app.use('/api/reports', reportRoutes);
 app.use('/api/maitrise-reports', maitriseReportRoutes);
 app.use('/api/contacts', contactRoutes);
+app.use('/api/testimonials', testimonialRoutes);
 app.get('/api/dashboard/summary', require('./middleware/auth').protect, async (req, res, next) => {
   try {
     const today = getLocalDateKey();

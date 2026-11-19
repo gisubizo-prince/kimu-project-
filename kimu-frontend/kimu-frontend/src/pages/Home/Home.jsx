@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { contactApi } from '../../services/api';
+import { contactApi, testimonialApi } from '../../services/api';
 import kimuLogo from '../../assets/LOGO WEBSITE OK.png';
 import instructorLearnerPhoto from '../../assets/hero-photos/black-woman-driver.jpg';
 import drivingLessonPhoto from '../../assets/hero-photos/adult-driving-lesson.jpg';
@@ -89,7 +89,25 @@ export default function Home() {
   const [submitting, setSubmitting] = useState(false);
   const touchStart = useRef(null);
   const testimonialViewport = useRef(null);
+  const [testimonials, setTestimonials] = useState([]);
+  const [testimonialsLoading, setTestimonialsLoading] = useState(true);
+  const [testimonialsError, setTestimonialsError] = useState('');
   const [testimonialScroll, setTestimonialScroll] = useState({ canScrollBack: false, canScrollForward: false });
+
+  useEffect(() => {
+    let active = true;
+    testimonialApi.listPublished()
+      .then((response) => {
+        if (active) setTestimonials(response.data.data || []);
+      })
+      .catch((error) => {
+        if (active) setTestimonialsError(error.message || 'Unable to load student testimonials.');
+      })
+      .finally(() => {
+        if (active) setTestimonialsLoading(false);
+      });
+    return () => { active = false; };
+  }, []);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40);
@@ -119,13 +137,14 @@ export default function Home() {
     viewport.addEventListener('scroll', updateTestimonialScroll, { passive: true });
     const observer = typeof ResizeObserver === 'undefined' ? null : new ResizeObserver(updateTestimonialScroll);
     observer?.observe(viewport);
+    if (viewport.firstElementChild) observer?.observe(viewport.firstElementChild);
     window.addEventListener('resize', updateTestimonialScroll);
     return () => {
       viewport.removeEventListener('scroll', updateTestimonialScroll);
       observer?.disconnect();
       window.removeEventListener('resize', updateTestimonialScroll);
     };
-  }, []);
+  }, [testimonials.length]);
 
   function scrollToSection(id) {
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
@@ -138,10 +157,11 @@ export default function Home() {
 
   function scrollTestimonials(direction) {
     const viewport = testimonialViewport.current;
-    const card = viewport?.querySelector('.maitrize-testimonial-card');
+    const track = viewport?.firstElementChild;
+    const card = track?.querySelector('.maitrize-testimonial-card');
     if (!viewport || !card) return;
 
-    const gap = Number.parseFloat(window.getComputedStyle(viewport).columnGap) || 0;
+    const gap = Number.parseFloat(window.getComputedStyle(track).columnGap) || 0;
     viewport.scrollBy({ left: direction * (card.getBoundingClientRect().width + gap), behavior: 'smooth' });
   }
 
@@ -366,26 +386,36 @@ export default function Home() {
               <button type="button" onClick={() => scrollTestimonials(1)} disabled={!testimonialScroll.canScrollForward} aria-label="Show more testimonials"><span aria-hidden="true">&rarr;</span></button>
             </div>
           </div>
-          <div className="maitrize-testimonial-viewport" ref={testimonialViewport} aria-label="Student testimonials" tabIndex="0">
+          <div className="maitrize-testimonial-viewport" ref={testimonialViewport} role="region" aria-roledescription="carousel" aria-label="Student testimonials" tabIndex="0">
             <div className="maitrize-testimonial-track">
-              {[1, 2, 3].map((number) => (
-                <article className="maitrize-testimonial-card" key={number}>
+              {testimonials.map((testimonial, index) => (
+                <article className="maitrize-testimonial-card" key={testimonial._id}>
                   <span className="maitrize-testimonial__seal" aria-hidden="true"><QuoteIcon /></span>
                   <div className="maitrize-testimonial__person">
-                    <span className="maitrize-testimonial__avatar" aria-hidden="true"><PersonIcon /></span>
-                    <span className="maitrize-testimonial__identity"><strong>Student name</strong><small>MAITRISE student</small></span>
-                    <span className="maitrize-testimonial__label">STUDENT VOICE</span>
+                    <span className="maitrize-testimonial__avatar">
+                      <img src={testimonial.image} alt={`${testimonial.fullName}`} loading="lazy" />
+                    </span>
+                    <span className="maitrize-testimonial__identity"><strong>{testimonial.fullName}</strong><small>{testimonial.role || 'MAITRISE student'}</small></span>
+                    <span className="maitrize-testimonial__label">STUDENT STORY</span>
                   </div>
                   <div className="maitrize-testimonial__rule" />
                   <div className="maitrize-testimonial__quote-mark" aria-hidden="true">“</div>
-                  <p>Genuine student testimonial placeholder.</p>
-                  <footer>Replace with an approved student testimonial</footer>
-                  <span className="maitrize-testimonial__number" aria-hidden="true">{String(number).padStart(2, '0')}</span>
+                  <p>{testimonial.message}</p>
+                  <footer>MAITRISE <span>·</span> KIMU TRANSPORT</footer>
+                  <span className="maitrize-testimonial__number" aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>
                 </article>
               ))}
             </div>
+            {testimonialsLoading && <div className="maitrize-testimonials__empty" role="status"><span>Loading student stories…</span></div>}
+            {!testimonialsLoading && testimonials.length === 0 && (
+              <div className="maitrize-testimonials__empty" role={testimonialsError ? 'alert' : 'status'}>
+                <span className="maitrize-testimonials__empty-icon"><QuoteIcon /></span>
+                <strong>{testimonialsError ? 'Testimonials are unavailable right now' : 'Student stories are coming soon'}</strong>
+                <span>{testimonialsError || 'We look forward to sharing real MAITRISE student experiences here.'}</span>
+              </div>
+            )}
           </div>
-          <p className="maitrize-testimonials__hint">Use the arrows or swipe to explore student stories</p>
+          {testimonials.length > 1 && <p className="maitrize-testimonials__hint">Use the arrows or swipe to explore student stories</p>}
         </section>
 
         <section className="maitrize-gallery maitrize-section">

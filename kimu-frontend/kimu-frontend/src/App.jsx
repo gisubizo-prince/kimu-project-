@@ -16,6 +16,7 @@ import VisitorList from './pages/Visitors/VisitorList';
 import MaitriseReport from './pages/MaitriseReport/MaitriseReport';
 import Home from './pages/Home/Home';
 import Contacts from './pages/Contacts/Contacts';
+import Testimonials from './pages/Testimonials/Testimonials';
 
 export default function App() {
   return (
@@ -45,6 +46,7 @@ export default function App() {
             <Route path="/contacts" element={<Contacts />} />
             <Route path="/settings" element={<Settings />} />
             <Route path="/settings/admin" element={<ProtectedRoute roles={['super_admin', 'admin']}><AdminControls /></ProtectedRoute>} />
+            <Route path="/testimonials/manage" element={<ProtectedRoute roles={['super_admin', 'admin']}><Testimonials /></ProtectedRoute>} />
           </Route>
 
           <Route path="/" element={<Home />} />

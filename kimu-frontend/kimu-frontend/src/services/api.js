@@ -100,5 +100,12 @@ export const contactApi = {
   list: (params) => api.get('/contacts', { params }),
 };
 
+export const testimonialApi = {
+  listPublished: () => api.get('/testimonials'),
+  listForManagement: () => api.get('/testimonials/manage'),
+  create: (payload) => api.post('/testimonials', payload),
+  remove: (id) => api.delete(`/testimonials/${id}`),
+};
+
 export { TOKEN_KEY };
 export default api;

@@ -1,0 +1,53 @@
+.kimu-testimonials-admin { max-width: 1440px; margin: 0 auto; }
+.kimu-testimonials-admin__count { flex: 0 0 auto; padding: 8px 12px; border: 1px solid #d5e8dc; border-radius: 999px; color: #256c4a; background: #edf6ef; font-size: 11px; font-weight: 700; }
+.kimu-testimonials-admin__feedback { margin: 0 0 18px; padding: 12px 14px; border: 1px solid transparent; border-radius: 10px; font-size: 13px; }
+.kimu-testimonials-admin__feedback.is-success { border-color: #bfdfca; color: #1f6b45; background: #edf7f0; }
+.kimu-testimonials-admin__feedback.is-error { border-color: #efc8c3; color: #a52c25; background: #fff0ef; }
+.kimu-testimonials-admin__layout { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(360px, .9fr); align-items: start; gap: 18px; }
+.kimu-testimonials-admin__list, .kimu-testimonials-admin__form { padding: 22px; border-radius: 14px; }
+.kimu-testimonials-admin__section-heading { display: flex; justify-content: space-between; align-items: center; gap: 14px; margin-bottom: 18px; }
+.kimu-testimonials-admin__section-heading .kimu-eyebrow { margin-bottom: 5px; }
+.kimu-testimonials-admin__section-heading h3 { color: #173c2b; font-size: 18px; letter-spacing: -.025em; }
+.kimu-testimonials-admin__section-heading > span:not(.kimu-testimonials-admin__form-mark) { color: #819087; font-size: 11px; }
+.kimu-testimonials-admin__form-mark { display: grid; width: 38px; height: 38px; place-items: center; border-radius: 11px; color: #26734e; background: #e7f2e9; }
+.kimu-testimonials-admin__empty { display: grid; min-height: 230px; align-content: center; justify-items: center; gap: 9px; color: #839188; font-size: 12px; text-align: center; }
+.kimu-testimonials-admin__empty strong { color: #385444; font-size: 14px; }
+.kimu-testimonials-admin__empty > span:last-child { max-width: 260px; line-height: 1.6; }
+.kimu-testimonials-admin__empty-icon { display: grid; width: 48px; height: 48px; margin-bottom: 4px; place-items: center; border-radius: 15px; color: #367552; background: #edf6ef; }
+.kimu-testimonials-admin__items { display: grid; gap: 12px; }
+.kimu-testimonials-admin__item { display: grid; grid-template-columns: 58px minmax(0, 1fr) auto; align-items: start; gap: 13px; padding: 13px; border: 1px solid #e7eee9; border-radius: 12px; background: #fcfdfc; }
+.kimu-testimonials-admin__item > img { width: 58px; height: 58px; border-radius: 50%; object-fit: cover; background: #e4eee6; }
+.kimu-testimonials-admin__item-copy { display: grid; min-width: 0; gap: 3px; }
+.kimu-testimonials-admin__item-copy > strong { color: #213d2d; font-size: 13px; }
+.kimu-testimonials-admin__item-copy > span { color: #73847a; font-size: 11px; }
+.kimu-testimonials-admin__item-copy > p { display: -webkit-box; margin-top: 5px; overflow: hidden; color: #54665b; font-size: 11px; line-height: 1.55; -webkit-box-orient: vertical; -webkit-line-clamp: 3; }
+.kimu-testimonials-admin__item > button { padding: 6px 8px; border: 1px solid #f0d9d6; border-radius: 7px; color: #a13c34; background: #fff8f7; font: 600 10px var(--font-body); }
+.kimu-testimonials-admin__item > button:hover:not(:disabled) { background: #ffefed; }
+.kimu-testimonials-admin__item > button:disabled { opacity: .6; }
+.kimu-testimonials-admin__form { display: grid; gap: 16px; }
+.kimu-testimonials-admin__form .kimu-testimonials-admin__section-heading { margin-bottom: 1px; }
+.kimu-testimonials-admin__upload { position: relative; display: flex; min-height: 112px; align-items: center; gap: 16px; padding: 15px; border: 1px dashed #a9cbb4; border-radius: 12px; background: #f5faf6; cursor: pointer; transition: border-color .16s ease, background .16s ease; }
+.kimu-testimonials-admin__upload:hover { border-color: #39805a; background: #eef7f0; }
+.kimu-testimonials-admin__upload:focus-within { outline: 3px solid #cfe5d4; outline-offset: 2px; }
+.kimu-testimonials-admin__upload input { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; clip-path: inset(50%); }
+.kimu-testimonials-admin__upload-icon { display: grid; width: 48px; height: 48px; flex: 0 0 48px; place-items: center; border-radius: 13px; color: #31764e; background: #e5f1e7; }
+.kimu-testimonials-admin__preview { width: 76px; height: 76px; flex: 0 0 76px; border: 3px solid #fff; border-radius: 13px; object-fit: cover; box-shadow: 0 3px 12px rgba(31, 74, 47, .12); }
+.kimu-testimonials-admin__upload-copy { display: grid; min-width: 0; gap: 4px; }
+.kimu-testimonials-admin__upload-copy strong { color: #294b36; font-size: 12px; }
+.kimu-testimonials-admin__upload-copy small { overflow: hidden; color: #7d8b81; font-size: 10px; text-overflow: ellipsis; white-space: nowrap; }
+.kimu-testimonials-admin__upload-copy em { width: fit-content; margin-top: 2px; color: #26734e; font-size: 10px; font-style: normal; font-weight: 700; }
+.kimu-testimonials-admin__fields { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.kimu-testimonials-admin__fields label, .kimu-testimonials-admin__message { display: grid; gap: 7px; color: #344a3c; font-size: 11px; font-weight: 700; }
+.kimu-testimonials-admin__optional { display: inline; margin-left: 4px; color: #8a978f; font-size: 10px; font-weight: 400; }
+.kimu-testimonials-admin__fields input, .kimu-testimonials-admin__message textarea { width: 100%; border: 1px solid #dce7df; border-radius: 8px; outline: none; color: #24352b; background: #fbfcfb; font: 400 12px var(--font-body); transition: border-color .16s ease, box-shadow .16s ease; }
+.kimu-testimonials-admin__fields input { min-height: 42px; padding: 0 11px; }
+.kimu-testimonials-admin__message textarea { min-height: 136px; padding: 11px; resize: vertical; line-height: 1.6; }
+.kimu-testimonials-admin__fields input:focus, .kimu-testimonials-admin__message textarea:focus { border-color: #4b9368; box-shadow: 0 0 0 3px rgba(64, 135, 88, .11); }
+.kimu-testimonials-admin__fields input::placeholder, .kimu-testimonials-admin__message textarea::placeholder { color: #a2ada5; }
+.kimu-testimonials-admin__message > span { justify-self: end; color: #8a978f; font-size: 10px; font-weight: 400; }
+.kimu-testimonials-admin__form-footer { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding-top: 3px; }
+.kimu-testimonials-admin__form-footer > span { display: flex; align-items: center; gap: 6px; color: #849188; font-size: 9px; line-height: 1.5; }
+.kimu-testimonials-admin__form-footer > span svg { flex: 0 0 auto; color: #438360; }
+.kimu-testimonials-admin__form-footer .kimu-btn { gap: 8px; min-height: 42px; padding-inline: 14px; font-size: 11px; white-space: nowrap; }
+@media (max-width: 1000px) { .kimu-testimonials-admin__layout { grid-template-columns: 1fr; } .kimu-testimonials-admin__form { order: -1; } }
+@media (max-width: 600px) { .kimu-testimonials-admin__list, .kimu-testimonials-admin__form { padding: 16px; } .kimu-testimonials-admin__fields { grid-template-columns: 1fr; } .kimu-testimonials-admin__form-footer { align-items: stretch; flex-direction: column; } .kimu-testimonials-admin__form-footer .kimu-btn { width: 100%; } .kimu-testimonials-admin__item { grid-template-columns: 48px minmax(0, 1fr); gap: 10px; padding: 10px; } .kimu-testimonials-admin__item > img { width: 48px; height: 48px; } .kimu-testimonials-admin__item > button { grid-column: 2; justify-self: start; } }

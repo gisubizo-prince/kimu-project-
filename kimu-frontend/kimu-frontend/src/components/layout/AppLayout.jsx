@@ -14,6 +14,7 @@ const PAGE_TITLES = {
   '/maitrise-report': 'MAITRISE REPORT',
   '/notifications': 'Notifications',
   '/contacts': 'Contact',
+  '/testimonials/manage': 'Testimonials',
   '/settings': 'Settings',
   '/settings/admin': 'System Controls',
 };
