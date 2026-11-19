@@ -1,5 +1,6 @@
 import { Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import LoadingIndicator from '../components/common/LoadingIndicator';
 
 /**
  * Guards a route behind authentication, and optionally behind specific roles.
@@ -10,11 +11,7 @@ export default function ProtectedRoute({ children, roles }) {
   const location = useLocation();
 
   if (isLoading) {
-    return (
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh' }}>
-        <span style={{ color: 'var(--kimu-text-secondary)', fontFamily: 'var(--font-body)' }}>Loading…</span>
-      </div>
-    );
+    return <LoadingIndicator />;
   }
 
   if (!isAuthenticated) {

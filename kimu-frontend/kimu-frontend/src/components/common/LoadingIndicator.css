@@ -1,0 +1,129 @@
+.kimu-network-loader {
+  position: fixed;
+  z-index: 9999;
+  top: 16px;
+  left: 50%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 230px;
+  padding: 11px 16px;
+  transform: translateX(-50%);
+  border: 1px solid rgba(31, 107, 69, .14);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, .96);
+  box-shadow: 0 10px 32px rgba(18, 58, 41, .16);
+  color: #173c2b;
+  font: 600 12px/1.2 var(--font-body, 'Segoe UI', sans-serif);
+  backdrop-filter: blur(12px);
+  animation: kimu-loader-enter .2s ease-out both;
+}
+
+.kimu-network-loader__spinner,
+.kimu-loading-screen__spinner {
+  flex: 0 0 auto;
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(31, 107, 69, .18);
+  border-top-color: #1f6b45;
+  border-radius: 50%;
+  animation: kimu-loader-spin .8s linear infinite;
+}
+
+.kimu-network-loader__track {
+  position: absolute;
+  right: 22px;
+  bottom: 0;
+  left: 22px;
+  height: 2px;
+  overflow: hidden;
+  border-radius: 2px;
+  background: #e6eee9;
+}
+
+.kimu-network-loader__track i {
+  display: block;
+  width: 38%;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #1f6b45, #d6a85f);
+  animation: kimu-loader-progress 1.25s ease-in-out infinite;
+}
+
+.kimu-loading-screen {
+  position: fixed;
+  z-index: 10000;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background:
+    radial-gradient(ellipse at 50% 42%, rgba(35, 109, 72, .12), transparent 42%),
+    #f5f8f6;
+}
+
+.kimu-loading-screen__card {
+  display: flex;
+  width: min(100%, 360px);
+  flex-direction: column;
+  align-items: center;
+  padding: 38px 32px 32px;
+  border: 1px solid rgba(31, 107, 69, .1);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, .9);
+  box-shadow: 0 22px 65px rgba(18, 58, 41, .1);
+  text-align: center;
+  animation: kimu-loader-enter .35s ease-out both;
+}
+
+.kimu-loading-screen__card img {
+  width: min(100%, 250px);
+  height: 74px;
+  margin-bottom: 25px;
+  object-fit: contain;
+}
+
+.kimu-loading-screen__spinner {
+  width: 28px;
+  height: 28px;
+  margin-bottom: 17px;
+  border-width: 3px;
+}
+
+.kimu-loading-screen__card strong {
+  color: #173c2b;
+  font: 700 15px/1.4 var(--font-body, 'Segoe UI', sans-serif);
+}
+
+.kimu-loading-screen__caption {
+  margin-top: 6px;
+  color: #77877e;
+  font: 400 12px/1.5 var(--font-body, 'Segoe UI', sans-serif);
+}
+
+@keyframes kimu-loader-spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes kimu-loader-progress {
+  from { transform: translateX(-120%); }
+  to { transform: translateX(360%); }
+}
+
+@keyframes kimu-loader-enter {
+  from { opacity: 0; transform: translate(-50%, -5px); }
+  to { opacity: 1; transform: translate(-50%, 0); }
+}
+
+@media (max-width: 480px) {
+  .kimu-network-loader { top: 10px; }
+  .kimu-loading-screen__card { padding: 32px 24px 28px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .kimu-network-loader,
+  .kimu-loading-screen__card { animation: none; }
+  .kimu-network-loader__spinner,
+  .kimu-loading-screen__spinner,
+  .kimu-network-loader__track i { animation-duration: 2.5s; }
+}

@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import ProtectedRoute from './routes/ProtectedRoute';
 import AppLayout from './components/layout/AppLayout';
+import { NetworkLoader } from './components/common/LoadingIndicator';
 
 import Login from './pages/Login/Login';
 import Dashboard from './pages/Dashboard/Dashboard';
@@ -19,6 +20,7 @@ export default function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
+        <NetworkLoader />
         <Routes>
           <Route path="/login" element={<Login />} />
 

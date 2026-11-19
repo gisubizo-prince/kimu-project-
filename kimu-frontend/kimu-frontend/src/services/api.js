@@ -2,6 +2,27 @@ import axios from 'axios';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 const TOKEN_KEY = 'kimu_token';
+let pendingRequests = 0;
+let loadingTimer;
+
+function startNetworkLoading() {
+  pendingRequests += 1;
+  if (pendingRequests === 1) {
+    loadingTimer = window.setTimeout(() => {
+      if (pendingRequests > 0) {
+        window.dispatchEvent(new CustomEvent('kimu:network-loading', { detail: { visible: true } }));
+      }
+    }, 350);
+  }
+}
+
+function stopNetworkLoading() {
+  pendingRequests = Math.max(0, pendingRequests - 1);
+  if (pendingRequests === 0) {
+    window.clearTimeout(loadingTimer);
+    window.dispatchEvent(new CustomEvent('kimu:network-loading', { detail: { visible: false } }));
+  }
+}
 
 const api = axios.create({
   baseURL: API_URL,
@@ -14,13 +35,18 @@ api.interceptors.request.use((config) => {
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
+  startNetworkLoading();
   return config;
 });
 
 // Normalize errors and handle expired/invalid sessions globally.
 api.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    stopNetworkLoading();
+    return response;
+  },
   (error) => {
+    stopNetworkLoading();
     if (!error.response) {
       // Network error - backend unreachable
       return Promise.reject({
