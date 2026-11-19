@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import api from '../../services/api';
 import './ResourcePage.css';
 
-export default function ResourcePage({ title, description, endpoint, columns, fields, resourceClassName = '', statusEndpoint, allowDelete = false, deleteConfirmation }) {
+export default function ResourcePage({ title, description, endpoint, columns, fields, resourceClassName = '', statusEndpoint, allowDelete = false, deleteConfirmation, headerActions, headerError }) {
   const [items, setItems] = useState([]);
   const [search, setSearch] = useState('');
   const [form, setForm] = useState({});
@@ -65,7 +65,11 @@ export default function ResourcePage({ title, description, endpoint, columns, fi
 
   return (
     <div className={`kimu-resource ${resourceClassName}`}>
-      <header className="kimu-resource__intro"><div><h2>{title}</h2><p>{description}</p></div></header>
+      <header className="kimu-resource__intro">
+        <div><h2>{title}</h2><p>{description}</p></div>
+        {headerActions}
+      </header>
+      {headerError && <p className="kimu-resource__error" role="alert">{headerError}</p>}
       <div className="kimu-resource__layout">
         <section className="kimu-panel kimu-resource__table-panel">
           <div className="kimu-resource__toolbar"><input value={search} onChange={(event) => setSearch(event.target.value)} placeholder={`Search ${title.toLowerCase()}...`} aria-label={`Search ${title}`} /><span>{items.length} records</span></div>
