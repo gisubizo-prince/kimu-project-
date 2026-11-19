@@ -1,5 +1,6 @@
 const crypto = require('crypto');
 const Student = require('../models/Student');
+const { getLocalDateKey } = require('../utils/localTime');
 
 async function list(req, res, next) {
   try {
@@ -96,7 +97,7 @@ async function remove(req, res, next) {
 const STUDENT_STATUSES = ['trainee', 'pass', 'repeat'];
 
 function createRegistrationNumber() {
-  const date = new Date().toISOString().slice(0, 10).replace(/-/g, '');
+  const date = getLocalDateKey().replace(/-/g, '');
   return `MTR-${date}-${crypto.randomBytes(3).toString('hex').toUpperCase()}`;
 }
 

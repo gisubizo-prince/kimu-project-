@@ -2,12 +2,13 @@ import { useEffect, useState } from 'react';
 import { jsPDF } from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import api from '../../services/api';
+import { catDateKey } from '../../utils/catTime';
 import kimuLogo from '../../assets/LETTER HEAD.png';
 import '../Operations/Operations.css';
 import './Reports.css';
 
 export default function Reports() {
-  const [date, setDate] = useState(localDateKey(new Date()));
+  const [date, setDate] = useState(catDateKey());
   const [report, setReport] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -59,7 +60,7 @@ export default function Reports() {
     <section className="kimu-panel kimu-report-section">
       <div className="kimu-report-section__header"><div><p className="kimu-eyebrow">ATTENDANCE REGISTER</p><h3>Training attendance</h3><span>{attendance.length} records for {date}</span></div><div className="kimu-report-section__actions"><button className="kimu-btn kimu-btn--primary" onClick={buildPdf} disabled={loading || attendance.length === 0}>Download PDF</button><button className="kimu-btn kimu-btn--secondary" onClick={emailReport} disabled={loading || attendance.length === 0 || emailSending}>{emailSending ? 'Emailing...' : 'Email report'}</button></div></div>
       <div className="kimu-list-toolbar"><label className="kimu-date-filter">Attendance date<input type="date" value={date} onChange={(event) => setDate(event.target.value)} /></label></div>
-      {loading ? <p className="kimu-panel__placeholder">Loading attendance...</p> : attendance.length === 0 ? <p className="kimu-report-empty" role="status">No attendance records for this date. Choose another date to view or download a report.</p> : <div className="kimu-resource__table-wrap"><table><thead><tr><th>NO.</th><th>NAME</th><th>TEL</th><th>SHIFT</th><th>LESSON</th></tr></thead><tbody>{attendance.map((record, index) => <tr key={record._id}><td>{index + 1}</td><td className="kimu-name-cell">{record.studentName}</td><td>{record.telephone || '-'}</td><td>{record.shift}</td><td>{record.lesson}</td></tr>)}</tbody></table></div>}
+      {loading ? <p className="kimu-panel__placeholder">Loading attendance...</p> : attendance.length === 0 ? <p className="kimu-report-empty" role="status">No attendance records for this date. Choose another date to view or download a report.</p> : <div className="kimu-resource__table-wrap"><table><thead><tr><th>NO.</th><th>NAME</th><th>TEL</th><th>SHIFT (CAT)</th><th>LESSON</th></tr></thead><tbody>{attendance.map((record, index) => <tr key={record._id}><td>{index + 1}</td><td className="kimu-name-cell">{record.studentName}</td><td>{record.telephone || '-'}</td><td>{record.shift}</td><td>{record.lesson}</td></tr>)}</tbody></table></div>}
     </section>
   </div>;
 }
@@ -72,7 +73,7 @@ async function buildAttendancePdf(records, date) {
     theme: 'grid',
     startY: tableStart,
     margin: { left: 14, right: 14, bottom: 32 },
-    head: [['NO.', 'AMAZINA', 'TEL', 'AMASAHA', 'ISOMO']],
+    head: [['NO.', 'AMAZINA', 'TEL', 'AMASAHA (CAT)', 'ISOMO']],
     body: records.map((record, index) => [index + 1, record.studentName, record.telephone || '-', record.shift, record.lesson]),
     styles: { fontSize: 8, cellPadding: 2, overflow: 'linebreak', valign: 'middle', textColor: [0, 0, 0], fillColor: [255, 255, 255], lineColor: [0, 0, 0], lineWidth: 0.1 },
     headStyles: { fillColor: [255, 255, 255], textColor: [0, 0, 0], lineColor: [0, 0, 0], fontStyle: 'bold' },
@@ -113,13 +114,6 @@ async function buildAttendancePdf(records, date) {
     document.line(blockX, lineY, blockX + blockWidth, lineY);
   });
   return document;
-}
-
-function localDateKey(value) {
-  const date = new Date(value);
-  const parts = new Intl.DateTimeFormat('en-CA', { timeZone: 'Africa/Kigali', year: 'numeric', month: '2-digit', day: '2-digit' }).formatToParts(date);
-  const dateParts = Object.fromEntries(parts.filter((part) => part.type !== 'literal').map((part) => [part.type, part.value]));
-  return `${dateParts.year}-${dateParts.month}-${dateParts.day}`;
 }
 
 async function addReportHeader(document, title, subtitle) {

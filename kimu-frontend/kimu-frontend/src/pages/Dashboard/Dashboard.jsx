@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { dashboardApi } from '../../services/api';
+import { catHour, formatCatDate, formatCatWeekday } from '../../utils/catTime';
 import './Dashboard.css';
 
 const LESSONS = ['GPS', 'PARKING', 'CIRCULATION'];
@@ -12,7 +13,7 @@ export default function Dashboard() {
   const { user } = useAuth();
   const [summary, setSummary] = useState(null);
   const [error, setError] = useState('');
-  const today = new Date().toLocaleDateString('en-RW', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+  const today = formatCatDate(new Date(), 'en-RW', { weekday: 'long', month: 'long', day: 'numeric' });
 
   useEffect(() => {
     dashboardApi.summary()
@@ -75,7 +76,7 @@ export default function Dashboard() {
 }
 
 function firstName(name) { return name ? name.split(' ')[0] : 'there'; }
-function greeting() { const hour = new Date().getHours(); return hour < 12 ? 'Good morning' : hour < 18 ? 'Good afternoon' : 'Good evening'; }
+function greeting() { const hour = catHour(); return hour < 12 ? 'Good morning' : hour < 18 ? 'Good afternoon' : 'Good evening'; }
 
 function WeeklyChart({ days = [], loading }) {
   const maximum = Math.max(...days.map((day) => day.count), 1);
@@ -98,6 +99,5 @@ function Breakdown({ rows, loading }) {
 }
 
 function formatDay(dateKey) {
-  const date = new Date(`${dateKey}T12:00:00`);
-  return Number.isNaN(date.getTime()) ? '' : new Intl.DateTimeFormat('en', { weekday: 'short' }).format(date);
+  return formatCatWeekday(dateKey);
 }

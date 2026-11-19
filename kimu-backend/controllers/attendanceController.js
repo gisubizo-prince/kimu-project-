@@ -1,6 +1,5 @@
 const Attendance = require('../models/Attendance');
 const Student = require('../models/Student');
-const CompanySettings = require('../models/CompanySettings');
 const { dateKeyAsUtcDate, getLocalDateKey } = require('../utils/localTime');
 const { SHIFTS, LESSONS } = Attendance;
 
@@ -44,8 +43,7 @@ async function record(req, res, next) {
     if (!studentId || !shift || !lesson) return res.status(400).json({ success: false, message: 'Student, shift, and lesson are required.' });
     if (!SHIFTS.includes(shift)) return res.status(400).json({ success: false, message: 'Select a valid shift.' });
     if (!LESSONS.includes(lesson)) return res.status(400).json({ success: false, message: 'Select a valid lesson.' });
-    const company = await CompanySettings.findOne({ key: 'default' }).select('timezone').lean();
-    const dateKey = req.body.date || getLocalDateKey(new Date(), company?.timezone || 'Africa/Kigali');
+    const dateKey = req.body.date || getLocalDateKey();
     const day = parseDateKey(dateKey);
     if (!day) return res.status(400).json({ success: false, message: 'Invalid attendance date.' });
     const student = await Student.findOne({

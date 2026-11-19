@@ -8,7 +8,6 @@ const createResourceRoutes = require('./routes/resourceRoutes');
 const Visitor = require('./models/Visitor');
 const Attendance = require('./models/Attendance');
 const Student = require('./models/Student');
-const CompanySettings = require('./models/CompanySettings');
 const { dateKeyAsUtcDate, getLocalDateKey } = require('./utils/localTime');
 const Employee = require('./models/Employee');
 const studentRoutes = require('./routes/studentRoutes');
@@ -54,9 +53,7 @@ app.use('/api/reports', reportRoutes);
 app.use('/api/maitrise-reports', maitriseReportRoutes);
 app.get('/api/dashboard/summary', require('./middleware/auth').protect, async (req, res, next) => {
   try {
-    const company = await CompanySettings.findOne({ key: 'default' }).select('timezone').lean();
-    const timeZone = company?.timezone || 'Africa/Kigali';
-    const today = getLocalDateKey(new Date(), timeZone);
+    const today = getLocalDateKey();
     const todayDate = dateKeyAsUtcDate(today);
     const weekStart = new Date(todayDate);
     weekStart.setUTCDate(weekStart.getUTCDate() - 6);
@@ -104,9 +101,7 @@ app.get('/api/dashboard/summary', require('./middleware/auth').protect, async (r
 });
 app.get('/api/reports/daily', require('./middleware/auth').protect, async (req, res, next) => {
   try {
-    const company = await CompanySettings.findOne({ key: 'default' }).select('timezone').lean();
-    const timeZone = company?.timezone || 'Africa/Kigali';
-    const reportDate = req.query.date || getLocalDateKey(new Date(), timeZone);
+    const reportDate = req.query.date || getLocalDateKey();
     const day = dateKeyAsUtcDate(reportDate);
     if (Number.isNaN(day.getTime()) || day.toISOString().slice(0, 10) !== reportDate || !/^\d{4}-\d{2}-\d{2}$/.test(reportDate)) {
       return res.status(400).json({ success: false, message: 'Invalid report date.' });

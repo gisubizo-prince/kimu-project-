@@ -5,6 +5,7 @@ import ResourcePage from '../../components/common/ResourcePage';
 import { useAuth } from '../../context/AuthContext';
 import api from '../../services/api';
 import kimuLogo from '../../assets/LETTER HEAD.png';
+import { catDateKey, formatCatDate } from '../../utils/catTime';
 
 const fields = [
   { name: 'fullName', label: 'Full name' },
@@ -15,7 +16,7 @@ const columns = [
   { key: 'registrationNumber', label: 'Student ID' },
   { key: 'fullName', label: 'Name' },
   { key: 'phone', label: 'Telephone' },
-  { key: 'registrationDate', label: 'Registered', render: (student) => new Date(student.registrationDate).toLocaleDateString() },
+  { key: 'registrationDate', label: 'Registered', render: (student) => formatCatDate(student.registrationDate) },
   { key: 'status', label: 'Status', render: (student) => formatStatus(student.status) },
 ];
 
@@ -39,7 +40,7 @@ export default function Students() {
       const students = response.data.data;
       if (!Array.isArray(students)) throw new Error('Unable to load the registered students.');
       const document = await buildStudentsPdf(students);
-      document.save(`registered-students-${new Date().toISOString().slice(0, 10)}.pdf`);
+      document.save(`registered-students-${catDateKey()}.pdf`);
     } catch (error) {
       setDownloadError(error.message || 'Unable to download the registered students.');
     } finally {
@@ -113,7 +114,7 @@ function drawStudentsHeader(document, logo, title) {
   document.line(titleX, titleY + 1.5, titleX + titleWidth, titleY + 1.5);
   document.setFont('helvetica', 'normal');
   document.setFontSize(10);
-  document.text(`Tariki: ${new Date().toLocaleDateString('en-GB')}`, 14, titleY + 8);
+  document.text(`Tariki: ${formatCatDate(new Date())}`, 14, titleY + 8);
   return titleY + 15;
 }
 
@@ -128,8 +129,7 @@ function drawReportFooter(document) {
 }
 
 function formatRegistrationDate(value) {
-  const date = new Date(value);
-  return Number.isNaN(date.getTime()) ? '-' : date.toLocaleDateString('en-GB');
+  return formatCatDate(value);
 }
 
 function loadLogo() {

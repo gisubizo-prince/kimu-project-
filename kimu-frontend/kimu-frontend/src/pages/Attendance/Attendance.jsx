@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import api from '../../services/api';
+import { catDateKey } from '../../utils/catTime';
 import './Attendance.css';
 import '../Operations/Operations.css';
 
@@ -11,7 +12,7 @@ export default function Attendance() {
   const [records, setRecords] = useState([]);
   const [form, setForm] = useState({ studentId: '', shift: '', lesson: '' });
   const [editingId, setEditingId] = useState('');
-  const [date, setDate] = useState(localDateKey(new Date()));
+  const [date, setDate] = useState(catDateKey());
   const [studentFilter, setStudentFilter] = useState('');
   const [shiftFilter, setShiftFilter] = useState('');
   const [lessonFilter, setLessonFilter] = useState('');
@@ -82,7 +83,7 @@ export default function Attendance() {
   }
 
   return <div className="kimu-operations kimu-attendance-page">
-    <div className="kimu-operations__heading"><div><p className="kimu-eyebrow">METRIZE TRAINING</p><h2>Attendance</h2><p>Record student participation by training shift and lesson.</p></div></div>
+    <div className="kimu-operations__heading"><div><p className="kimu-eyebrow">METRIZE TRAINING</p><h2>Attendance</h2><p>Record student participation by training shift and lesson. All times are CAT (UTC+02:00).</p></div></div>
     <form className="kimu-panel kimu-training-form" onSubmit={submit}>
       <h3>{editingId ? 'Edit attendance' : 'Record attendance'}</h3>
       {error && <p className="kimu-resource__error" role="alert">{error}</p>}
@@ -90,7 +91,7 @@ export default function Attendance() {
       <div className="kimu-training-form__grid">
         <label>Student<select required value={form.studentId} onChange={(event) => setForm({ ...form, studentId: event.target.value })}><option value="">Select student</option>{trainingStudents.map((student) => <option key={student._id} value={student._id}>{student.fullName}</option>)}</select></label>
         <label>Telephone<input value={selectedStudent?.phone || ''} readOnly placeholder="Filled from student record" /></label>
-        <label>Shift<select required value={form.shift} onChange={(event) => setForm({ ...form, shift: event.target.value })}><option value="">Select shift</option>{SHIFTS.map((shift) => <option key={shift} value={shift}>{shift}</option>)}</select></label>
+        <label>Shift (CAT)<select required value={form.shift} onChange={(event) => setForm({ ...form, shift: event.target.value })}><option value="">Select shift</option>{SHIFTS.map((shift) => <option key={shift} value={shift}>{shift} CAT</option>)}</select></label>
         <label>Lesson<select required value={form.lesson} onChange={(event) => setForm({ ...form, lesson: event.target.value })}><option value="">Select lesson</option>{LESSONS.map((lesson) => <option key={lesson} value={lesson}>{lesson}</option>)}</select></label>
         <label>Attendance date<input required type="date" value={date} onChange={(event) => setDate(event.target.value)} /></label>
       </div>
@@ -101,7 +102,7 @@ export default function Attendance() {
       <div className="kimu-list-toolbar kimu-attendance-filters">
         <label>Day<input type="date" value={date} onChange={(event) => setDate(event.target.value)} /></label>
         <label>Student<select value={studentFilter} onChange={(event) => setStudentFilter(event.target.value)}><option value="">All students</option>{students.map((student) => <option key={student._id} value={student._id}>{student.fullName}</option>)}</select></label>
-        <label>Shift<select value={shiftFilter} onChange={(event) => setShiftFilter(event.target.value)}><option value="">All shifts</option>{SHIFTS.map((shift) => <option key={shift} value={shift}>{shift}</option>)}</select></label>
+        <label>Shift (CAT)<select value={shiftFilter} onChange={(event) => setShiftFilter(event.target.value)}><option value="">All shifts</option>{SHIFTS.map((shift) => <option key={shift} value={shift}>{shift} CAT</option>)}</select></label>
         <label>Lesson<select value={lessonFilter} onChange={(event) => setLessonFilter(event.target.value)}><option value="">All lessons</option>{LESSONS.map((lesson) => <option key={lesson} value={lesson}>{lesson}</option>)}</select></label>
       </div>
       <div className="kimu-resource__table-wrap"><table><thead><tr><th>NO.</th><th>NAME</th><th>TEL</th><th>SHIFT</th><th>LESSON</th><th>Actions</th></tr></thead><tbody>
@@ -113,12 +114,4 @@ export default function Attendance() {
 
 function isTrainingStudent(student) {
   return ['trainee', 'repeat'].includes(student.status || 'trainee');
-}
-
-function localDateKey(value) {
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return '';
-  const parts = new Intl.DateTimeFormat('en-CA', { timeZone: 'Africa/Kigali', year: 'numeric', month: '2-digit', day: '2-digit' }).formatToParts(date);
-  const dateParts = Object.fromEntries(parts.filter((part) => part.type !== 'literal').map((part) => [part.type, part.value]));
-  return `${dateParts.year}-${dateParts.month}-${dateParts.day}`;
 }

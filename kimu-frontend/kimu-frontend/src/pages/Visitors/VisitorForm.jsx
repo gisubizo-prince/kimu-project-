@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import api from '../../services/api';
+import { catDateKey } from '../../utils/catTime';
 import '../Attendance/Attendance.css';
 import '../Operations/Operations.css';
 
@@ -17,9 +18,9 @@ export default function VisitorForm() {
     try {
       const response = await api.get('/visitors');
       const visitors = response.data.data || [];
-      const today = new Date().toISOString().slice(0, 10);
+      const today = catDateKey();
       setStats({
-        today: visitors.filter((visitor) => new Date(visitor.createdAt).toISOString().slice(0, 10) === today).length,
+        today: visitors.filter((visitor) => catDateKey(visitor.createdAt) === today).length,
         inside: visitors.filter((visitor) => visitor.status === 'checked_in').length,
       });
     } catch {

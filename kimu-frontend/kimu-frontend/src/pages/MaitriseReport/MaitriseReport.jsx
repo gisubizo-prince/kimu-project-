@@ -193,8 +193,8 @@ export default function MaitriseReport() {
       'KM zakozwe': formatKilometers(car.km_used),
       'Imiterere yo gutangira': translateCondition(car.condition_start),
       'Imiterere yo kurangiza': translateCondition(car.condition_end),
-      'Igihe cyo gutangira': car.start_time || '-',
-      'Igihe cyo kurangiza': car.end_time || '-',
+      'Igihe cyo gutangira (CAT)': car.start_time || '-',
+      'Igihe cyo kurangiza (CAT)': car.end_time || '-',
       'Amasaha yakoreshejwe': Number(car.hours_worked).toFixed(2),
       'Imikoreshereze': car.status === 'Not used' ? 'Ntiyakoreshejwe' : 'Yarakoreshejwe',
     }));
@@ -287,8 +287,8 @@ function VehicleStep({ car, updateCar }) {
         <label>KM at end<input type="number" min="0" step="any" value={car.km_end} onChange={(event) => updateCar('km_end', event.target.value)} /></label>
         <label>Condition at start<select value={car.condition_start} onChange={(event) => updateCar('condition_start', event.target.value)}><option value="">Choose condition</option>{CONDITIONS.map((condition) => <option key={condition}>{condition}</option>)}</select></label>
         <label>Condition at end<select value={car.condition_end} onChange={(event) => updateCar('condition_end', event.target.value)}><option value="">Choose condition</option>{CONDITIONS.map((condition) => <option key={condition}>{condition}</option>)}</select></label>
-        <label>Class start time<input value={car.start_time} onChange={(event) => updateCar('start_time', event.target.value)} placeholder="8am, 08:00, saa mbiri" /></label>
-        <label>Class end time<input value={car.end_time} onChange={(event) => updateCar('end_time', event.target.value)} placeholder="11:30am, 11:30" /></label>
+        <label>Class start time (CAT)<input type="time" lang="en-GB" step="60" value={car.start_time} onChange={(event) => updateCar('start_time', event.target.value)} /></label>
+        <label>Class end time (CAT)<input type="time" lang="en-GB" step="60" value={car.end_time} onChange={(event) => updateCar('end_time', event.target.value)} /></label>
       </div>
       {(car.condition_start === 'Problem' || car.condition_end === 'Problem') && <label className="maitrise-report__full-field">Describe the vehicle problem<textarea rows="3" value={car.problem_details} onChange={(event) => updateCar('problem_details', event.target.value)} /></label>}
       <div className="maitrise-report__vehicle-calculation"><span>KM used so far: <strong>{Math.max(kmUsed, 0)}</strong></span><span>Hours so far: <strong>{hours.toFixed(2)}</strong></span></div>
@@ -304,7 +304,7 @@ function ReviewSummary({ data, onEdit }) {
   return <div className="maitrise-report__review">
     <section><div className="maitrise-report__review-heading"><h3>Class details</h3><button onClick={() => onEdit(0)}>Edit</button></div><p>Date: {data.date} · Class/group: {data.class_group}</p></section>
     <section><div className="maitrise-report__review-heading"><h3>Student attendance</h3><button onClick={() => onEdit(1)}>Edit</button></div><p>Attended {data.students.attended} · Missed {data.students.missed} · Total registered {data.students.total_registered} · Abashoferi bashya {data.new_students_attended}</p></section>
-    <section><div className="maitrise-report__review-heading"><h3>Vehicle utilization</h3><button onClick={() => onEdit(2, 0)}>Edit</button></div><div className="maitrise-report__table-wrap"><table><thead><tr><th>Imodoka</th><th>Teacher</th><th>KM start</th><th>KM end</th><th>KM used</th><th>Condition</th><th>Start</th><th>End</th><th>Hours</th></tr></thead><tbody>{data.cars.map((car) => <tr key={car.car}><td>{formatVehicleName(car)}</td>{car.status === 'Not used' ? <td colSpan="8">NOT USED</td> : <><td>{car.teacher}</td><td>{formatKilometers(car.km_start)}</td><td>{formatKilometers(car.km_end)}</td><td>{formatKilometers(car.km_used)}</td><td>{translateCondition(car.condition_start)} / {translateCondition(car.condition_end)}</td><td>{car.start_time}</td><td>{car.end_time}</td><td>{car.hours_worked.toFixed(2)}</td></>}</tr>)}</tbody></table></div></section>
+    <section><div className="maitrise-report__review-heading"><h3>Vehicle utilization</h3><button onClick={() => onEdit(2, 0)}>Edit</button></div><div className="maitrise-report__table-wrap"><table><thead><tr><th>Imodoca</th><th>Teacher</th><th>KM start</th><th>KM end</th><th>KM used</th><th>Condition</th><th>Start (CAT)</th><th>End (CAT)</th><th>Hours</th></tr></thead><tbody>{data.cars.map((car) => <tr key={car.car}><td>{formatVehicleName(car)}</td>{car.status === 'Not used' ? <td colSpan="8">NOT USED</td> : <><td>{car.teacher}</td><td>{formatKilometers(car.km_start)}</td><td>{formatKilometers(car.km_end)}</td><td>{formatKilometers(car.km_used)}</td><td>{translateCondition(car.condition_start)} / {translateCondition(car.condition_end)}</td><td>{car.start_time}</td><td>{car.end_time}</td><td>{car.hours_worked.toFixed(2)}</td></>}</tr>)}</tbody></table></div></section>
     {vehiclesWithProblems.length > 0 && <section><div className="maitrise-report__review-heading"><h3>Vehicle condition notes</h3><button onClick={() => onEdit(2, data.cars.findIndex((car) => car.problem_details))}>Edit</button></div>{vehiclesWithProblems.map((car) => <p key={car.car}><strong>{formatVehicleName(car)}:</strong> {car.problem_details}</p>)}</section>}
     {data.ikitonderwa && <section><div className="maitrise-report__review-heading"><h3>Ikitonderwa</h3><button onClick={() => onEdit(3)}>Edit</button></div><p className="maitrise-report__preserve-lines">{data.ikitonderwa}</p></section>}
     <section><div className="maitrise-report__review-heading"><h3>Reported by</h3><button onClick={() => onEdit(4)}>Edit</button></div><p>{data.reported_by}</p></section>
@@ -337,8 +337,8 @@ function ReportDocument({ report }) {
       </div>
       <div className="maitrise-report__table-wrap">
         <table className="maitrise-report__vehicle-table">
-          <thead><tr><th>No.</th><th>Imodoka</th><th>Umwarimu</th><th>KM gutangira</th><th>KM gusoza</th><th>KM zakozwe</th><th>Imiterere (intangiriro / isoza)</th><th>Amasaha (itangiriro - isoza)</th><th>Igiteranyo</th></tr></thead>
-          <tbody>{report.cars.map((car, index) => <tr key={car.car}><td>{index + 1}</td><td>{formatVehicleName(car)}</td>{car.status === 'Not used' ? <td colSpan="7">Ntiyakoreshejwe</td> : <><td>{car.teacher}</td><td>{formatKilometers(car.km_start)}</td><td>{formatKilometers(car.km_end)}</td><td>{formatKilometers(car.km_used)}</td><td>{translateCondition(car.condition_start)} / {translateCondition(car.condition_end)}</td><td>{car.start_time} - {car.end_time}</td><td>{Number(car.hours_worked).toFixed(2)} h</td></>}</tr>)}</tbody>
+          <thead><tr><th>No.</th><th>Imodoka</th><th>Umwarimu</th><th>KM gutangira</th><th>KM gusoza</th><th>KM zakozwe</th><th>Imiterere (intangiriro / isoza)</th><th>Amasaha (CAT, intangiriro - isoza)</th><th>Igiteranyo</th></tr></thead>
+          <tbody>{report.cars.map((car, index) => <tr key={car.car}><td>{index + 1}</td><td>{formatVehicleName(car)}</td>{car.status === 'Not used' ? <td colSpan="7">Ntiyakoreshejwe</td> : <><td>{car.teacher}</td><td>{formatKilometers(car.km_start)}</td><td>{formatKilometers(car.km_end)}</td><td>{formatKilometers(car.km_used)}</td><td>{translateCondition(car.condition_start)} / {translateCondition(car.condition_end)}</td><td>{car.start_time} - {car.end_time} CAT</td><td>{Number(car.hours_worked).toFixed(2)} h</td></>}</tr>)}</tbody>
         </table>
       </div>
           {report.ikitonderwa && <section className="maitrise-report__executive-note"><h3>Icyitonderwa</h3><p className="maitrise-report__preserve-lines">{report.ikitonderwa}</p></section>}
@@ -480,7 +480,7 @@ async function buildPdf(sourceReport) {
     theme: 'grid',
     startY: doc.lastAutoTable.finalY + 4,
     margin: { left: margin, right: margin, bottom: 8 },
-    head: [['NO.', 'IMODOKA', 'UMWARIMU', 'KM YO GUTANGIRA', 'KM YO GUSOZA', 'KM ZAKOZWE', 'IMITERERE (TANGIRA / SOZA)', 'AMASAHA (TANGIRA - SOZA)', 'IGITERANYO']],
+    head: [['NO.', 'IMODOKA', 'UMWARIMU', 'KM YO GUTANGIRA', 'KM YO GUSOZA', 'KM ZAKOZWE', 'IMITERERE (TANGIRA / SOZA)', 'AMASAHA (CAT, TANGIRA - SOZA)', 'IGITERANYO']],
     body,
     styles: { fontSize: 8, cellPadding: 2, overflow: 'linebreak', valign: 'middle', textColor: [0, 0, 0], fillColor: [255, 255, 255], lineColor: [0, 0, 0], lineWidth: 0.2 },
     headStyles: { fontSize: 7, fillColor: [235, 242, 238], textColor: [0, 0, 0], lineColor: [0, 0, 0], fontStyle: 'bold', halign: 'center' },

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { notificationApi } from '../../services/api';
+import { catHour } from '../../utils/catTime';
 import './Header.css';
 
 export default function Header({ pageTitle, onToggleSidebar, onToggleMobile }) {
@@ -48,7 +49,7 @@ function firstName(name) {
 }
 
 function greeting() {
-  const hour = new Date().getHours();
+  const hour = catHour();
   if (hour < 12) return 'Good morning';
   if (hour < 18) return 'Good afternoon';
   return 'Good evening';

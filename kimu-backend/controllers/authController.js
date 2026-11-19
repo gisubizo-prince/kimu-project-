@@ -107,7 +107,7 @@ async function updateSettings(req, res, next) {
     if (fullName !== undefined) req.user.fullName = fullName;
     if (phone !== undefined) req.user.phone = phone;
     if (profilePhoto !== undefined) req.user.profilePhoto = profilePhoto;
-    if (preferences) req.user.preferences = { ...(req.user.preferences || {}), ...preferences };
+    if (preferences) req.user.preferences = { ...(req.user.preferences || {}), ...preferences, timezone: 'Africa/Kigali' };
     await req.user.save();
     res.json({ success: true, message: 'Settings saved successfully.', data: { user: req.user.toSafeObject() } });
   } catch (error) { next(error); }
