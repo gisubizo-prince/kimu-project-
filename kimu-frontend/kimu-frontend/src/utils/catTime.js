@@ -21,43 +21,61 @@ export function catDateKey(value = new Date()) {
   return `${values.year}-${values.month}-${values.day}`;
 }
 
-export function formatCatDate(value, locale = 'en-GB', options = {}) {
+export function formatCatDate(value) {
   const date = parseDate(value);
   if (Number.isNaN(date.getTime())) return '-';
-  return new Intl.DateTimeFormat(locale, {
+  const parts = new Intl.DateTimeFormat('en-GB', {
     timeZone: CAT_TIME_ZONE,
     day: '2-digit',
     month: '2-digit',
     year: 'numeric',
-    ...options,
-  }).format(date);
+  }).formatToParts(date);
+  const values = Object.fromEntries(parts.filter((part) => part.type !== 'literal').map((part) => [part.type, part.value]));
+  return `${values.day}/${values.month}/${values.year}`;
 }
 
-export function formatCatTime(value, locale = 'en-GB') {
+export function formatCatTime(value) {
   const date = parseDate(value);
   if (Number.isNaN(date.getTime())) return '-';
-  const formatted = new Intl.DateTimeFormat(locale, {
+  return new Intl.DateTimeFormat('en-US', {
     timeZone: CAT_TIME_ZONE,
     hour: '2-digit',
     minute: '2-digit',
-    hourCycle: 'h23',
+    hour12: true,
   }).format(date);
-  return formatted;
 }
 
-export function formatCatDateTime(value, locale = 'en-GB') {
+export function formatTimeValue(value) {
+  if (typeof value !== 'string') return '-';
+  const match = value.trim().match(/^([01]\d|2[0-3]):([0-5]\d)$/);
+  if (!match) return value || '-';
+  const hour = Number(match[1]);
+  const suffix = hour < 12 ? 'AM' : 'PM';
+  const hour12 = hour % 12 || 12;
+  return `${String(hour12).padStart(2, '0')}:${match[2]} ${suffix}`;
+}
+
+export function formatTimeRange(value) {
+  if (typeof value !== 'string') return '-';
+  const match = value.trim().match(/^(.+?)\s*-\s*(.+)$/);
+  if (!match) return formatTimeValue(value);
+  return `${formatTimeValue(match[1])} - ${formatTimeValue(match[2])}`;
+}
+
+export function formatCatDateTime(value) {
   const date = parseDate(value);
   if (Number.isNaN(date.getTime())) return '-';
-  const formatted = new Intl.DateTimeFormat(locale, {
+  const parts = new Intl.DateTimeFormat('en-GB', {
     timeZone: CAT_TIME_ZONE,
     day: '2-digit',
     month: '2-digit',
     year: 'numeric',
     hour: '2-digit',
     minute: '2-digit',
-    hourCycle: 'h23',
-  }).format(date);
-  return `${formatted} CAT`;
+    hour12: true,
+  }).formatToParts(date);
+  const values = Object.fromEntries(parts.filter((part) => part.type !== 'literal').map((part) => [part.type, part.value]));
+  return `${values.day}/${values.month}/${values.year} ${values.hour}:${values.minute} ${values.dayPeriod.toUpperCase()}`;
 }
 
 export function formatCatWeekday(value, locale = 'en') {

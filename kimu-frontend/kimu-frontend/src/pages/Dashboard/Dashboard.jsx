@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { dashboardApi } from '../../services/api';
-import { catDateKey, catHour, formatCatDate, formatCatWeekday } from '../../utils/catTime';
+import { catDateKey, catHour, formatCatDate, formatCatWeekday, formatTimeRange } from '../../utils/catTime';
 import './Dashboard.css';
 
 const LESSONS = ['GPS', 'PARKING', 'CIRCULATION'];
@@ -13,7 +13,7 @@ export default function Dashboard() {
   const { user } = useAuth();
   const [summary, setSummary] = useState(null);
   const [error, setError] = useState('');
-  const today = formatCatDate(new Date(), 'en-RW', { weekday: 'long', month: 'long', day: 'numeric' });
+  const today = formatCatDate(new Date());
 
   useEffect(() => {
     dashboardApi.summary()
@@ -90,13 +90,13 @@ export default function Dashboard() {
           </div>
         </article>
         <article className="kimu-panel kimu-dashboard__shifts">
-          <div className="kimu-dashboard__panel-head"><div><p className="kimu-eyebrow">TODAY&apos;S SCHEDULE</p><h3>By CAT shift</h3></div></div>
-          <Breakdown rows={SHIFTS.map((shift) => ({ label: shift, value: data.attendanceByShift?.[shift] || 0 }))} loading={!summary} />
+          <div className="kimu-dashboard__panel-head"><div><p className="kimu-eyebrow">TODAY&apos;S SCHEDULE</p><h3>By shift</h3></div></div>
+          <Breakdown rows={SHIFTS.map((shift) => ({ label: formatTimeRange(shift), value: data.attendanceByShift?.[shift] || 0 }))} loading={!summary} />
         </article>
       </aside>
     </div>
 
-    <footer className="kimu-dashboard__footer"><span>Live operational totals · CAT (UTC+02:00)</span><Link to="/maitrise-report">Create daily class report <span aria-hidden="true">&rarr;</span></Link></footer>
+    <footer className="kimu-dashboard__footer"><span>Live operational totals</span><Link to="/maitrise-report">Create daily class report <span aria-hidden="true">&rarr;</span></Link></footer>
   </div>;
 }
 
@@ -133,7 +133,7 @@ function CalendarPanel() {
         return <span key={key} className={`kimu-dashboard__calendar-day ${day ? '' : 'is-empty'} ${isToday ? 'is-today' : ''}`} aria-current={isToday ? 'date' : undefined}>{day || ''}</span>;
       })}
     </div>
-    <p className="kimu-dashboard__calendar-note"><span /> Today · CAT</p>
+    <p className="kimu-dashboard__calendar-note"><span /> Today</p>
   </article>;
 }
 

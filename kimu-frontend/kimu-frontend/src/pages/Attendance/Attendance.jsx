@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import api from '../../services/api';
-import { catDateKey } from '../../utils/catTime';
+import { catDateKey, formatCatDate, formatTimeRange } from '../../utils/catTime';
 import './Attendance.css';
 import '../Operations/Operations.css';
 
@@ -83,7 +83,7 @@ export default function Attendance() {
   }
 
   return <div className="kimu-operations kimu-attendance-page">
-    <div className="kimu-operations__heading"><div><p className="kimu-eyebrow">METRIZE TRAINING</p><h2>Attendance</h2><p>Record student participation by training shift and lesson. All times are CAT (UTC+02:00).</p></div></div>
+    <div className="kimu-operations__heading"><div><p className="kimu-eyebrow">METRIZE TRAINING</p><h2>Attendance</h2><p>Record student participation by training shift and lesson.</p></div></div>
     <form className="kimu-panel kimu-training-form" onSubmit={submit}>
       <h3>{editingId ? 'Edit attendance' : 'Record attendance'}</h3>
       {error && <p className="kimu-resource__error" role="alert">{error}</p>}
@@ -91,22 +91,22 @@ export default function Attendance() {
       <div className="kimu-training-form__grid">
         <label>Student<select required value={form.studentId} onChange={(event) => setForm({ ...form, studentId: event.target.value })}><option value="">Select student</option>{trainingStudents.map((student) => <option key={student._id} value={student._id}>{student.fullName}</option>)}</select></label>
         <label>Telephone<input value={selectedStudent?.phone || ''} readOnly placeholder="Filled from student record" /></label>
-        <label>Shift (CAT)<select required value={form.shift} onChange={(event) => setForm({ ...form, shift: event.target.value })}><option value="">Select shift</option>{SHIFTS.map((shift) => <option key={shift} value={shift}>{shift} CAT</option>)}</select></label>
+        <label>Shift<select required value={form.shift} onChange={(event) => setForm({ ...form, shift: event.target.value })}><option value="">Select shift</option>{SHIFTS.map((shift) => <option key={shift} value={shift}>{formatTimeRange(shift)}</option>)}</select></label>
         <label>Lesson<select required value={form.lesson} onChange={(event) => setForm({ ...form, lesson: event.target.value })}><option value="">Select lesson</option>{LESSONS.map((lesson) => <option key={lesson} value={lesson}>{lesson}</option>)}</select></label>
-        <label>Attendance date<input required type="date" value={date} onChange={(event) => setDate(event.target.value)} /></label>
+        <label>Attendance date<input required type="date" lang="en-GB" value={date} onChange={(event) => setDate(event.target.value)} /></label>
       </div>
       <div className="kimu-training-form__actions"><button className="kimu-btn kimu-btn--primary" disabled={saving || trainingStudents.length === 0}>{saving ? 'Saving...' : editingId ? 'Update attendance' : 'Record attendance'}</button>{editingId && <button className="kimu-btn kimu-btn--secondary" type="button" onClick={cancelEdit}>Cancel</button>}</div>
     </form>
     <section className="kimu-panel kimu-operations__list kimu-attendance-list">
-      <div className="kimu-attendance-list__heading"><div><h3>Attendance records</h3><span>{records.length} records for {date}</span></div></div>
+      <div className="kimu-attendance-list__heading"><div><h3>Attendance records</h3><span>{records.length} records for {formatCatDate(date)}</span></div></div>
       <div className="kimu-list-toolbar kimu-attendance-filters">
-        <label>Day<input type="date" value={date} onChange={(event) => setDate(event.target.value)} /></label>
+        <label>Day<input type="date" lang="en-GB" value={date} onChange={(event) => setDate(event.target.value)} /></label>
         <label>Student<select value={studentFilter} onChange={(event) => setStudentFilter(event.target.value)}><option value="">All students</option>{students.map((student) => <option key={student._id} value={student._id}>{student.fullName}</option>)}</select></label>
-        <label>Shift (CAT)<select value={shiftFilter} onChange={(event) => setShiftFilter(event.target.value)}><option value="">All shifts</option>{SHIFTS.map((shift) => <option key={shift} value={shift}>{shift} CAT</option>)}</select></label>
+        <label>Shift<select value={shiftFilter} onChange={(event) => setShiftFilter(event.target.value)}><option value="">All shifts</option>{SHIFTS.map((shift) => <option key={shift} value={shift}>{formatTimeRange(shift)}</option>)}</select></label>
         <label>Lesson<select value={lessonFilter} onChange={(event) => setLessonFilter(event.target.value)}><option value="">All lessons</option>{LESSONS.map((lesson) => <option key={lesson} value={lesson}>{lesson}</option>)}</select></label>
       </div>
       <div className="kimu-resource__table-wrap"><table><thead><tr><th>NO.</th><th>NAME</th><th>TEL</th><th>SHIFT</th><th>LESSON</th><th>Actions</th></tr></thead><tbody>
-        {records.length === 0 ? <tr><td colSpan="6">No attendance records for the selected filters.</td></tr> : records.map((record, index) => <tr key={record._id}><td>{index + 1}</td><td className="kimu-name-cell">{record.studentName}{(record.editedAt || (record.updatedAt && record.createdAt && new Date(record.updatedAt) > new Date(record.createdAt))) && <span className="kimu-attendance-edited">This record is edited</span>}</td><td>{record.telephone || '-'}</td><td>{record.shift}</td><td>{record.lesson}</td><td className="kimu-attendance-actions">{students.some((student) => student._id === record.studentId && isTrainingStudent(student)) && <button className="kimu-link-button" type="button" onClick={() => editRecord(record)}>Edit</button>}<button className="kimu-link-button kimu-attendance-delete" type="button" onClick={() => deleteRecord(record)}>Delete</button></td></tr>)}
+        {records.length === 0 ? <tr><td colSpan="6">No attendance records for the selected filters.</td></tr> : records.map((record, index) => <tr key={record._id}><td>{index + 1}</td><td className="kimu-name-cell">{record.studentName}{(record.editedAt || (record.updatedAt && record.createdAt && new Date(record.updatedAt) > new Date(record.createdAt))) && <span className="kimu-attendance-edited">This record is edited</span>}</td><td>{record.telephone || '-'}</td><td>{formatTimeRange(record.shift)}</td><td>{record.lesson}</td><td className="kimu-attendance-actions">{students.some((student) => student._id === record.studentId && isTrainingStudent(student)) && <button className="kimu-link-button" type="button" onClick={() => editRecord(record)}>Edit</button>}<button className="kimu-link-button kimu-attendance-delete" type="button" onClick={() => deleteRecord(record)}>Delete</button></td></tr>)}
       </tbody></table></div>
     </section>
   </div>;

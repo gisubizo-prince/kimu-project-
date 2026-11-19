@@ -62,7 +62,7 @@ export default function Contacts() {
                 <th>Training interest</th>
                 <th>Experience</th>
                 <th>Preferred contact</th>
-                <th>Received (CAT)</th>
+                <th>Received</th>
               </tr>
             </thead>
             <tbody>

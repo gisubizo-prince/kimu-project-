@@ -3,6 +3,7 @@ import { jsPDF } from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import api from '../../services/api';
 import kimuLogo from '../../assets/LETTER HEAD.png';
+import { formatCatDate, formatTimeValue } from '../../utils/catTime';
 import './MaitriseReport.css';
 
 const CARS = [
@@ -193,8 +194,8 @@ export default function MaitriseReport() {
       'KM zakozwe': formatKilometers(car.km_used),
       'Imiterere yo gutangira': translateCondition(car.condition_start),
       'Imiterere yo kurangiza': translateCondition(car.condition_end),
-      'Igihe cyo gutangira (CAT)': car.start_time || '-',
-      'Igihe cyo kurangiza (CAT)': car.end_time || '-',
+      'Igihe cyo gutangira': formatTimeValue(car.start_time),
+      'Igihe cyo kurangiza': formatTimeValue(car.end_time),
       'Amasaha yakoreshejwe': Number(car.hours_worked).toFixed(2),
       'Imikoreshereze': car.status === 'Not used' ? 'Ntiyakoreshejwe' : 'Yarakoreshejwe',
     }));
@@ -224,14 +225,14 @@ export default function MaitriseReport() {
     {view === 'history' ? <section className="maitrise-report__panel">
       <div className="maitrise-report__section-heading"><div><h2>Saved daily reports</h2><p>Latest 100 reports</p></div><button className="kimu-btn kimu-btn--primary" onClick={startNewReport}>New report</button></div>
       <div className="maitrise-report__table-wrap"><table><thead><tr><th>Date</th><th>Class/group</th><th>Attended</th><th>Missed</th><th>Registered</th><th>Abashoferi bashya</th><th>KM used</th><th>Hours</th><th>Reported by</th><th></th></tr></thead><tbody>
-        {history.length === 0 ? <tr><td colSpan="10">No saved reports yet.</td></tr> : history.map((report) => <tr key={report._id}><td>{report.date}</td><td>{report.class_group}</td><td>{report.students.attended}</td><td>{report.students.missed}</td><td>{report.students.total_registered}</td><td>{report.new_students_attended ?? 0}</td><td>{formatKilometers(report.totals.km_used)}</td><td>{Number(report.totals.hours_worked).toFixed(2)}</td><td>{report.reported_by}</td><td><button className="maitrise-report__text-button" onClick={() => openSavedReport(report._id)}>Open</button></td></tr>)}
+        {history.length === 0 ? <tr><td colSpan="10">No saved reports yet.</td></tr> : history.map((report) => <tr key={report._id}><td>{formatCatDate(report.date)}</td><td>{report.class_group}</td><td>{report.students.attended}</td><td>{report.students.missed}</td><td>{report.students.total_registered}</td><td>{report.new_students_attended ?? 0}</td><td>{formatKilometers(report.totals.km_used)}</td><td>{Number(report.totals.hours_worked).toFixed(2)}</td><td>{report.reported_by}</td><td><button className="maitrise-report__text-button" onClick={() => openSavedReport(report._id)}>Open</button></td></tr>)}
       </tbody></table></div>
     </section> : step === 6 && savedReport ? <GeneratedReport report={savedReport} onNew={startNewReport} onPdf={() => downloadPdf(savedReport)} onJson={() => downloadJson(savedReport)} onExcel={() => downloadExcel(savedReport)} /> : <>
       <nav className="maitrise-report__progress" aria-label="Report steps">{stepNames.map((name, index) => <div key={name} className={index === step ? 'is-current' : index < step ? 'is-complete' : ''}><span>{index + 1}</span>{name}</div>)}</nav>
       <section className="maitrise-report__panel">
         <div className="maitrise-report__section-heading"><div><p className="kimu-eyebrow">STEP {step + 1} OF 6</p><h2>{step === 2 ? `Vehicle ${carIndex + 1} of ${CAR_NAMES.length}: ${currentCar.car} (${currentCar.plate})` : title}</h2></div></div>
         {step === 0 && <div className="maitrise-report__form-grid">
-          <label>Training date<input type="date" value={form.date} onChange={(event) => updateForm('date', event.target.value)} /></label>
+          <label>Training date<input type="date" lang="en-GB" value={form.date} onChange={(event) => updateForm('date', event.target.value)} /></label>
           <label>Class or group<input value={form.class_group} onChange={(event) => updateForm('class_group', event.target.value)} placeholder="e.g. MAITRISE GROUP A" /></label>
         </div>}
 
@@ -287,8 +288,8 @@ function VehicleStep({ car, updateCar }) {
         <label>KM at end<input type="number" min="0" step="any" value={car.km_end} onChange={(event) => updateCar('km_end', event.target.value)} /></label>
         <label>Condition at start<select value={car.condition_start} onChange={(event) => updateCar('condition_start', event.target.value)}><option value="">Choose condition</option>{CONDITIONS.map((condition) => <option key={condition}>{condition}</option>)}</select></label>
         <label>Condition at end<select value={car.condition_end} onChange={(event) => updateCar('condition_end', event.target.value)}><option value="">Choose condition</option>{CONDITIONS.map((condition) => <option key={condition}>{condition}</option>)}</select></label>
-        <label>Class start time (CAT)<input type="time" lang="en-GB" step="60" value={car.start_time} onChange={(event) => updateCar('start_time', event.target.value)} /></label>
-        <label>Class end time (CAT)<input type="time" lang="en-GB" step="60" value={car.end_time} onChange={(event) => updateCar('end_time', event.target.value)} /></label>
+        <label>Class start time<input type="time" lang="en-US" step="60" value={car.start_time} onChange={(event) => updateCar('start_time', event.target.value)} /></label>
+        <label>Class end time<input type="time" lang="en-US" step="60" value={car.end_time} onChange={(event) => updateCar('end_time', event.target.value)} /></label>
       </div>
       {(car.condition_start === 'Problem' || car.condition_end === 'Problem') && <label className="maitrise-report__full-field">Describe the vehicle problem<textarea rows="3" value={car.problem_details} onChange={(event) => updateCar('problem_details', event.target.value)} /></label>}
       <div className="maitrise-report__vehicle-calculation"><span>KM used so far: <strong>{Math.max(kmUsed, 0)}</strong></span><span>Hours so far: <strong>{hours.toFixed(2)}</strong></span></div>
@@ -302,9 +303,9 @@ function ReviewSummary({ data, onEdit }) {
   const vehiclesWithProblems = data.cars.filter((car) => car.problem_details);
 
   return <div className="maitrise-report__review">
-    <section><div className="maitrise-report__review-heading"><h3>Class details</h3><button onClick={() => onEdit(0)}>Edit</button></div><p>Date: {data.date} · Class/group: {data.class_group}</p></section>
+    <section><div className="maitrise-report__review-heading"><h3>Class details</h3><button onClick={() => onEdit(0)}>Edit</button></div><p>Date: {formatCatDate(data.date)} · Class/group: {data.class_group}</p></section>
     <section><div className="maitrise-report__review-heading"><h3>Student attendance</h3><button onClick={() => onEdit(1)}>Edit</button></div><p>Attended {data.students.attended} · Missed {data.students.missed} · Total registered {data.students.total_registered} · Abashoferi bashya {data.new_students_attended}</p></section>
-    <section><div className="maitrise-report__review-heading"><h3>Vehicle utilization</h3><button onClick={() => onEdit(2, 0)}>Edit</button></div><div className="maitrise-report__table-wrap"><table><thead><tr><th>Imodoca</th><th>Teacher</th><th>KM start</th><th>KM end</th><th>KM used</th><th>Condition</th><th>Start (CAT)</th><th>End (CAT)</th><th>Hours</th></tr></thead><tbody>{data.cars.map((car) => <tr key={car.car}><td>{formatVehicleName(car)}</td>{car.status === 'Not used' ? <td colSpan="8">NOT USED</td> : <><td>{car.teacher}</td><td>{formatKilometers(car.km_start)}</td><td>{formatKilometers(car.km_end)}</td><td>{formatKilometers(car.km_used)}</td><td>{translateCondition(car.condition_start)} / {translateCondition(car.condition_end)}</td><td>{car.start_time}</td><td>{car.end_time}</td><td>{car.hours_worked.toFixed(2)}</td></>}</tr>)}</tbody></table></div></section>
+    <section><div className="maitrise-report__review-heading"><h3>Vehicle utilization</h3><button onClick={() => onEdit(2, 0)}>Edit</button></div><div className="maitrise-report__table-wrap"><table><thead><tr><th>Imodoca</th><th>Teacher</th><th>KM start</th><th>KM end</th><th>KM used</th><th>Condition</th><th>Start</th><th>End</th><th>Hours</th></tr></thead><tbody>{data.cars.map((car) => <tr key={car.car}><td>{formatVehicleName(car)}</td>{car.status === 'Not used' ? <td colSpan="8">NOT USED</td> : <><td>{car.teacher}</td><td>{formatKilometers(car.km_start)}</td><td>{formatKilometers(car.km_end)}</td><td>{formatKilometers(car.km_used)}</td><td>{translateCondition(car.condition_start)} / {translateCondition(car.condition_end)}</td><td>{formatTimeValue(car.start_time)}</td><td>{formatTimeValue(car.end_time)}</td><td>{car.hours_worked.toFixed(2)}</td></>}</tr>)}</tbody></table></div></section>
     {vehiclesWithProblems.length > 0 && <section><div className="maitrise-report__review-heading"><h3>Vehicle condition notes</h3><button onClick={() => onEdit(2, data.cars.findIndex((car) => car.problem_details))}>Edit</button></div>{vehiclesWithProblems.map((car) => <p key={car.car}><strong>{formatVehicleName(car)}:</strong> {car.problem_details}</p>)}</section>}
     {data.ikitonderwa && <section><div className="maitrise-report__review-heading"><h3>Ikitonderwa</h3><button onClick={() => onEdit(3)}>Edit</button></div><p className="maitrise-report__preserve-lines">{data.ikitonderwa}</p></section>}
     <section><div className="maitrise-report__review-heading"><h3>Reported by</h3><button onClick={() => onEdit(4)}>Edit</button></div><p>{data.reported_by}</p></section>
@@ -314,7 +315,7 @@ function ReviewSummary({ data, onEdit }) {
 function GeneratedReport({ report, onNew, onPdf, onJson, onExcel }) {
   const data = exportableReport(report);
   return <section className="maitrise-report__panel">
-    <div className="maitrise-report__section-heading"><div><p className="kimu-eyebrow">RAPORO YABITSWE</p><h2>Raporo y'amasomo y'umunsi yarakozwe</h2><p>{report.date}</p></div><button className="kimu-btn kimu-btn--secondary" onClick={onNew}>Tangira indi raporo</button></div>
+    <div className="maitrise-report__section-heading"><div><p className="kimu-eyebrow">RAPORO YABITSWE</p><h2>Raporo y'amasomo y'umunsi yarakozwe</h2><p>{formatCatDate(report.date)}</p></div><button className="kimu-btn kimu-btn--secondary" onClick={onNew}>Tangira indi raporo</button></div>
     <ReportDocument report={data} />
     <div className="maitrise-report__export-actions"><button className="kimu-btn kimu-btn--primary" onClick={onPdf}>Kuramo PDF</button><button className="kimu-btn kimu-btn--secondary" onClick={onExcel}>Ohereza muri Excel</button><button className="kimu-btn kimu-btn--secondary" onClick={onJson}>Kuramo JSON</button></div>
     <details className="maitrise-report__json"><summary>Reba raporo mu miterere ya JSON</summary><pre>{JSON.stringify(kinyarwandaReport(data), null, 2)}</pre></details>
@@ -327,7 +328,7 @@ function ReportDocument({ report }) {
       <img className="maitrise-report__document-logo" src={kimuLogo} alt="Kimu Transport logo" />
       <header className="maitrise-report__document-heading">
         <div><p>MAITRISE · DAILY TRAINING REPORT</p><h2>Raporo y'umunsi</h2></div>
-        <div><strong>{report.date}</strong></div>
+        <div><strong>{formatCatDate(report.date)}</strong></div>
       </header>
       <div className="maitrise-report__executive-summary">
         <div><span>Abitabiriye</span><strong>{report.students.attended}</strong></div>
@@ -337,8 +338,8 @@ function ReportDocument({ report }) {
       </div>
       <div className="maitrise-report__table-wrap">
         <table className="maitrise-report__vehicle-table">
-          <thead><tr><th>No.</th><th>Imodoka</th><th>Umwarimu</th><th>KM gutangira</th><th>KM gusoza</th><th>KM zakozwe</th><th>Imiterere (intangiriro / isoza)</th><th>Amasaha (CAT, intangiriro - isoza)</th><th>Igiteranyo</th></tr></thead>
-          <tbody>{report.cars.map((car, index) => <tr key={car.car}><td>{index + 1}</td><td>{formatVehicleName(car)}</td>{car.status === 'Not used' ? <td colSpan="7">Ntiyakoreshejwe</td> : <><td>{car.teacher}</td><td>{formatKilometers(car.km_start)}</td><td>{formatKilometers(car.km_end)}</td><td>{formatKilometers(car.km_used)}</td><td>{translateCondition(car.condition_start)} / {translateCondition(car.condition_end)}</td><td>{car.start_time} - {car.end_time} CAT</td><td>{Number(car.hours_worked).toFixed(2)} h</td></>}</tr>)}</tbody>
+          <thead><tr><th>No.</th><th>Imodoka</th><th>Umwarimu</th><th>KM gutangira</th><th>KM gusoza</th><th>KM zakozwe</th><th>Imiterere (intangiriro / isoza)</th><th>Amasaha (intangiriro - isoza)</th><th>Igiteranyo</th></tr></thead>
+          <tbody>{report.cars.map((car, index) => <tr key={car.car}><td>{index + 1}</td><td>{formatVehicleName(car)}</td>{car.status === 'Not used' ? <td colSpan="7">Ntiyakoreshejwe</td> : <><td>{car.teacher}</td><td>{formatKilometers(car.km_start)}</td><td>{formatKilometers(car.km_end)}</td><td>{formatKilometers(car.km_used)}</td><td>{translateCondition(car.condition_start)} / {translateCondition(car.condition_end)}</td><td>{formatTimeValue(car.start_time)} - {formatTimeValue(car.end_time)}</td><td>{Number(car.hours_worked).toFixed(2)} h</td></>}</tr>)}</tbody>
         </table>
       </div>
           {report.ikitonderwa && <section className="maitrise-report__executive-note"><h3>Icyitonderwa</h3><p className="maitrise-report__preserve-lines">{report.ikitonderwa}</p></section>}
@@ -398,8 +399,8 @@ function kinyarwandaReport(report) {
       km_zakozwe: roundKilometers(car.km_used),
       imiterere_yo_gutangira: translateCondition(car.condition_start),
       imiterere_yo_kurangiza: translateCondition(car.condition_end),
-      igihe_cyo_gutangira: car.start_time || '-',
-      igihe_cyo_kurangiza: car.end_time || '-',
+      igihe_cyo_gutangira: formatTimeValue(car.start_time),
+      igihe_cyo_kurangiza: formatTimeValue(car.end_time),
       amasaha_yakoreshejwe: Number(car.hours_worked).toFixed(2),
       uko_ikinyabiziga_cyakoreshejwe: car.status === 'Not used' ? 'Ntiyakoreshejwe' : 'Cyakoreshejwe',
     })),
@@ -453,7 +454,7 @@ async function buildPdf(sourceReport) {
   doc.text("MAITRISE | RAPORO Y'UMUNSI", margin, headingY);
   doc.setFont('helvetica', 'normal');
   doc.setFontSize(9);
-  doc.text(`Itariki: ${report.date}`, pageWidth - margin - pageWidth * 0.1, headingY, { align: 'right' });
+  doc.text(`Itariki: ${formatCatDate(report.date)}`, pageWidth - margin - pageWidth * 0.1, headingY, { align: 'right' });
 
   autoTable(doc, {
     theme: 'grid',
@@ -473,14 +474,14 @@ async function buildPdf(sourceReport) {
     car.status === 'Used' ? formatKilometers(car.km_end) : '-',
     car.status === 'Used' ? formatKilometers(car.km_used) : '-',
     car.status === 'Used' ? `${translateCondition(car.condition_start)} / ${translateCondition(car.condition_end)}` : '-',
-    car.status === 'Used' ? `${car.start_time} - ${car.end_time}` : '-',
+    car.status === 'Used' ? `${formatTimeValue(car.start_time)} - ${formatTimeValue(car.end_time)}` : '-',
     car.status === 'Used' ? `${Number(car.hours_worked).toFixed(2)} h` : '-',
   ]);
   autoTable(doc, {
     theme: 'grid',
     startY: doc.lastAutoTable.finalY + 4,
     margin: { left: margin, right: margin, bottom: 8 },
-    head: [['NO.', 'IMODOKA', 'UMWARIMU', 'KM YO GUTANGIRA', 'KM YO GUSOZA', 'KM ZAKOZWE', 'IMITERERE (TANGIRA / SOZA)', 'AMASAHA (CAT, TANGIRA - SOZA)', 'IGITERANYO']],
+    head: [['NO.', 'IMODOKA', 'UMWARIMU', 'KM YO GUTANGIRA', 'KM YO GUSOZA', 'KM ZAKOZWE', 'IMITERERE (TANGIRA / SOZA)', 'AMASAHA (TANGIRA - SOZA)', 'IGITERANYO']],
     body,
     styles: { fontSize: 8, cellPadding: 2, overflow: 'linebreak', valign: 'middle', textColor: [0, 0, 0], fillColor: [255, 255, 255], lineColor: [0, 0, 0], lineWidth: 0.2 },
     headStyles: { fontSize: 7, fillColor: [235, 242, 238], textColor: [0, 0, 0], lineColor: [0, 0, 0], fontStyle: 'bold', halign: 'center' },
