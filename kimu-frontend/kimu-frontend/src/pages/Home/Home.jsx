@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import kimuLogo from '../../assets/images.jpg';
+import kimuLogo from '../../assets/LOGO WEBSITE OK.png';
 import instructorLearnerPhoto from '../../assets/hero-photos/black-woman-driver.jpg';
 import drivingLessonPhoto from '../../assets/hero-photos/adult-driving-lesson.jpg';
 import confidentDriverPhoto from '../../assets/hero-photos/smiling-driver-ethiopia.jpg';
@@ -141,7 +141,6 @@ export default function Home() {
       <header className={`maitrize-nav ${scrolled ? 'is-scrolled' : ''}`}>
         <button className="maitrize-nav__brand" onClick={() => scrollToSection('home')} aria-label="KIMU Transport home">
           <img src={kimuLogo} alt="KIMU Transport and Multiservices Ltd" />
-          <span><strong>KIMU</strong><small>TRANSPORT</small></span>
         </button>
         <nav className="maitrize-nav__links" aria-label="Main navigation">
           {t.nav.map((label, index) => (
@@ -375,7 +374,6 @@ export default function Home() {
       <footer className="maitrize-footer">
         <div className="maitrize-footer__brand">
           <img src={kimuLogo} alt="KIMU Transport" />
-          <div><strong>KIMU</strong><small>TRANSPORT &amp; MULTISERVICES</small></div>
           <p>Professional driver training focused on practical skills, navigation, road safety and professional conduct.</p>
         </div>
         <div>
