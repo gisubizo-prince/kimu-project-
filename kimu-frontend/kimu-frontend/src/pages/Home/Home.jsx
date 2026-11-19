@@ -11,18 +11,18 @@ import './Home.css';
 
 const copy = {
   en: {
-    nav: ['Home', 'About Us', 'MAITRIZE', 'Training Programme', 'Why KIMU', 'Testimonials', 'Contact'],
+    nav: ['Home', 'About Us', 'MAITRISE', 'Training Programme', 'Why KIMU', 'Testimonials', 'Contact'],
     enroll: 'ENROLL NOW',
   },
   rw: {
-    nav: ['Ahabanza', 'Twebwe', 'MAITRIZE', 'Gahunda yo Kwiga', 'Impamvu KIMU', 'Abanyeshuri', 'Twandikire'],
+    nav: ['Ahabanza', 'Twebwe', 'MAITRISE', 'Gahunda yo Kwiga', 'Impamvu KIMU', 'Abanyeshuri', 'Twandikire'],
     enroll: 'ANDIKA NONAHO',
   },
 };
 
 const slides = [
   {
-    label: 'KIMU TRANSPORT PRESENTS MAITRIZE',
+    label: 'KIMU TRANSPORT PRESENTS MAITRISE',
     title: ['FROM LEARNING TO DRIVE', 'TO BECOMING A', 'PROFESSIONAL DRIVER.'],
     text: "Your journey to professional driving starts here. Gain practical driving skills, master navigation and prepare for opportunities in Rwanda's transport industry.",
     image: instructorLearnerPhoto,
@@ -59,7 +59,7 @@ const modules = [
 ];
 
 const journey = [
-  ['01', 'Register', 'Join the MAITRIZE training programme.'],
+  ['01', 'Register', 'Join the MAITRISE training programme.'],
   ['02', 'Learn', 'Understand driving principles, road safety and professional conduct.'],
   ['03', 'Practice', 'Develop practical driving, parking and circulation skills.'],
   ['04', 'Master Navigation', 'Learn Google Maps, GPS navigation and location sharing.'],
@@ -68,11 +68,11 @@ const journey = [
 ];
 
 const faqs = [
-  ['What is MAITRIZE?', 'MAITRIZE is KIMU Transport\'s professional driver training programme, focused on practical skills, navigation, road safety and professional conduct.'],
+  ['What is MAITRISE?', 'MAITRISE is KIMU Transport\'s professional driver training programme, focused on practical skills, navigation, road safety and professional conduct.'],
   ['Who can join?', 'Eligibility details are confirmed by KIMU Transport during the application and selection process.'],
   ['Do I learn Google Maps?', 'Yes. Training includes Google Maps, GPS navigation, destination search, route planning and location sharing.'],
-  ['Do you provide practical driving lessons?', 'Practical driving is a core MAITRIZE training focus, subject to programme availability and training conditions.'],
-  ['Can graduates access job opportunities?', 'MAITRIZE aims to prepare trainees for opportunities in the transport industry. Any opportunity is subject to eligibility, selection and company terms.'],
+  ['Do you provide practical driving lessons?', 'Practical driving is a core MAITRISE training focus, subject to programme availability and training conditions.'],
+  ['Can graduates access job opportunities?', 'MAITRISE aims to prepare trainees for opportunities in the transport industry. Any opportunity is subject to eligibility, selection and company terms.'],
   ['How do I register?', 'Use the enrollment form below or contact KIMU Transport using the verified contact details listed in the footer.'],
 ];
 
@@ -229,13 +229,13 @@ export default function Home() {
             <p className="maitrize-eyebrow">WELCOME TO KIMU TRANSPORT</p>
             <h2>WE DON'T JUST TEACH YOU TO DRIVE. <span>WE PREPARE YOU FOR THE ROAD AHEAD.</span></h2>
             <p>KIMU Transport provides professional driver training focused on practical skills, navigation, road safety and professional conduct. We understand the realities of professional transport work and prepare trainees for the responsibilities that come with it.</p>
-            <button className="maitrize-text-button" onClick={() => scrollToSection('programme')}>DISCOVER MAITRIZE <span>→</span></button>
+            <button className="maitrize-text-button" onClick={() => scrollToSection('programme')}>DISCOVER MAITRISE <span>→</span></button>
           </div>
         </section>
 
         <section id="programme" className="maitrize-programme maitrize-section">
           <div className="maitrize-section-heading">
-            <p className="maitrize-eyebrow">MAITRIZE TRAINING PROGRAMME</p>
+            <p className="maitrize-eyebrow">MAITRISE TRAINING PROGRAMME</p>
             <h2>THE SKILLS THAT MAKE A <span>PROFESSIONAL DRIVER.</span></h2>
           </div>
           <div className="maitrize-module-grid">
@@ -287,9 +287,9 @@ export default function Home() {
           <div className="maitrize-careers__copy">
             <p className="maitrize-eyebrow maitrize-eyebrow--light">EMPLOYMENT OPPORTUNITIES</p>
             <h2>LEARN TO DRIVE. DEVELOP YOUR SKILLS. <span>MOVE TOWARDS YOUR CAREER.</span></h2>
-            <p>At KIMU Transport, professional training should prepare you for real opportunities. MAITRIZE develops the skills and professionalism needed to pursue opportunities within the transport industry.</p>
+            <p>At KIMU Transport, professional training should prepare you for real opportunities. MAITRISE develops the skills and professionalism needed to pursue opportunities within the transport industry.</p>
             <p className="maitrize-careers__note">Opportunities are subject to eligibility, selection and company terms. Training completion does not guarantee employment.</p>
-            <button className="maitrize-button maitrize-button--white" onClick={() => scrollToSection('contact')}>JOIN MAITRIZE TODAY</button>
+            <button className="maitrize-button maitrize-button--white" onClick={() => scrollToSection('contact')}>JOIN MAITRISE TODAY</button>
           </div>
           <div className="maitrize-careers__visual">
             <img src={confidentDriverPhoto} alt="Black woman smiling behind the wheel" loading="lazy" />
@@ -309,7 +309,7 @@ export default function Home() {
                 <p>Genuine student testimonial placeholder.</p>
                 <footer>
                   <div>{number}</div>
-                  <span><strong>Student name</strong><small>MAITRIZE student · Replace with approved testimonial</small></span>
+                  <span><strong>Student name</strong><small>MAITRISE student · Replace with approved testimonial</small></span>
                 </footer>
               </article>
             ))}
@@ -363,7 +363,7 @@ export default function Home() {
             <label>Full name<input name="name" type="text" autoComplete="name" required /></label>
             <label>Telephone number<input name="phone" type="tel" autoComplete="tel" required /></label>
             <label>Email address <small>(optional)</small><input name="email" type="email" autoComplete="email" /></label>
-            <label>Training interest<select name="interest" defaultValue="MAITRIZE"><option>MAITRIZE</option><option>Practical driving</option><option>Google Maps & navigation</option></select></label>
+            <label>Training interest<select name="interest" defaultValue="MAITRISE"><option>MAITRISE</option><option>Practical driving</option><option>Google Maps & navigation</option></select></label>
             <label>Previous driving experience<select name="experience" defaultValue="None"><option>None</option><option>Beginner</option><option>Some experience</option><option>Licensed driver</option></select></label>
             <label>Preferred contact method<select name="contactMethod" defaultValue="Telephone"><option>Telephone</option><option>Email</option><option>WhatsApp</option></select></label>
             {formState.message && <p className={`maitrize-form__message ${formState.status}`} role={formState.status === 'error' ? 'alert' : 'status'}>{formState.message}</p>}
@@ -385,7 +385,7 @@ export default function Home() {
           <button onClick={() => scrollToSection('why-kimu')}>Why KIMU</button>
         </div>
         <div>
-          <h3>MAITRIZE</h3>
+          <h3>MAITRISE</h3>
           <button onClick={() => scrollToSection('maitrize')}>Training Journey</button>
           <button onClick={() => scrollToSection('testimonials')}>Testimonials</button>
           <button onClick={() => scrollToSection('contact')}>Enroll Now</button>

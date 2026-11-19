@@ -66,7 +66,7 @@ export default function Reports() {
 
 async function buildAttendancePdf(records, date) {
   const document = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
-  const title = 'URUTONDE RWABITABIRIYE AMAHUGURWA (MAITRIZE)';
+  const title = 'URUTONDE RWABITABIRIYE AMAHUGURWA (MAITRISE)';
   const tableStart = await addReportHeader(document, title, `Tariki: ${date}`);
   autoTable(document, {
     theme: 'grid',
