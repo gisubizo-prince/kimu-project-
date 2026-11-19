@@ -70,7 +70,7 @@ function formatStatus(status) {
 async function buildStudentsPdf(students) {
   const document = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
   const logo = await loadLogo();
-  const tableStart = drawStudentsHeader(document, logo, 'REGISTERED STUDENTS');
+  const tableStart = drawStudentsHeader(document, logo, 'LIST YABASHOFERI BAHUGURWA');
 
   autoTable(document, {
     theme: 'grid',
@@ -89,7 +89,7 @@ async function buildStudentsPdf(students) {
     headStyles: { fillColor: [255, 255, 255], textColor: [0, 0, 0], lineColor: [0, 0, 0], fontStyle: 'bold' },
     columnStyles: { 0: { cellWidth: 10 }, 1: { cellWidth: 35 }, 2: { cellWidth: 43 }, 3: { cellWidth: 34 }, 4: { cellWidth: 30 }, 5: { cellWidth: 22 } },
     didDrawPage: ({ pageNumber }) => {
-      if (pageNumber > 1) drawStudentsHeader(document, logo, 'REGISTERED STUDENTS');
+      if (pageNumber > 1) drawStudentsHeader(document, logo, 'LIST YABASHOFERI BAHUGURWA');
       drawReportFooter(document);
     },
   });
