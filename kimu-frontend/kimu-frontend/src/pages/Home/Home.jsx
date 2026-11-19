@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { contactApi, testimonialApi } from '../../services/api';
+import { contactApi, testimonialApi, taxiDriverApi } from '../../services/api';
 import kimuLogo from '../../assets/LOGO WEBSITE OK.png';
 import instructorLearnerPhoto from '../../assets/hero-photos/black-woman-driver.jpg';
 import drivingLessonPhoto from '../../assets/hero-photos/adult-driving-lesson.jpg';
@@ -47,7 +47,7 @@ const slides = [
     source: 'https://www.pexels.com/photo/man-in-white-dress-shirt-driving-car-4606336/',
   },
 ];
-const navTargets = ['home', 'about', 'maitrize', 'programme', 'why-kimu', 'testimonials', 'contact'];
+const navTargets = ['home', 'about', 'maitrize', 'programme', 'drivers', 'testimonials', 'contact'];
 
 const modules = [
   ['01', 'Practical Driving', 'Vehicle handling, steering, acceleration, braking and responsible driving.', practicePhoto, 'Gustavo Fring'],
@@ -94,6 +94,9 @@ export default function Home() {
   const [testimonialsLoading, setTestimonialsLoading] = useState(true);
   const [testimonialsError, setTestimonialsError] = useState('');
   const [testimonialScroll, setTestimonialScroll] = useState({ canScrollBack: false, canScrollForward: false });
+  const driverViewport = useRef(null);
+  const [drivers, setDrivers] = useState([]);
+  const [driverScroll, setDriverScroll] = useState({ canScrollBack: false, canScrollForward: false });
 
   useEffect(() => {
     let active = true;
@@ -107,6 +110,16 @@ export default function Home() {
       .finally(() => {
         if (active) setTestimonialsLoading(false);
       });
+    return () => { active = false; };
+  }, []);
+
+  useEffect(() => {
+    let active = true;
+    taxiDriverApi.listPublished().then((response) => {
+      if (active) setDrivers(response.data.data || []);
+    }).catch(() => {
+      if (active) setDrivers([]);
+    });
     return () => { active = false; };
   }, []);
 
@@ -147,6 +160,21 @@ export default function Home() {
     };
   }, [testimonials.length]);
 
+  useEffect(() => {
+    const viewport = driverViewport.current;
+    if (!viewport) return undefined;
+    function updateDriverScroll() {
+      setDriverScroll({ canScrollBack: viewport.scrollLeft > 2, canScrollForward: viewport.scrollLeft + viewport.clientWidth < viewport.scrollWidth - 2 });
+    }
+    updateDriverScroll();
+    viewport.addEventListener('scroll', updateDriverScroll, { passive: true });
+    const observer = typeof ResizeObserver === 'undefined' ? null : new ResizeObserver(updateDriverScroll);
+    observer?.observe(viewport);
+    if (viewport.firstElementChild) observer?.observe(viewport.firstElementChild);
+    window.addEventListener('resize', updateDriverScroll);
+    return () => { viewport.removeEventListener('scroll', updateDriverScroll); observer?.disconnect(); window.removeEventListener('resize', updateDriverScroll); };
+  }, [drivers.length]);
+
   function scrollToSection(id) {
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
     setMenuOpen(false);
@@ -163,6 +191,14 @@ export default function Home() {
     if (!viewport || !card) return;
 
     const gap = Number.parseFloat(window.getComputedStyle(track).columnGap) || 0;
+    viewport.scrollBy({ left: direction * (card.getBoundingClientRect().width + gap), behavior: 'smooth' });
+  }
+
+  function scrollDrivers(direction) {
+    const viewport = driverViewport.current;
+    const card = viewport?.querySelector('.maitrize-driver-card');
+    if (!viewport || !card) return;
+    const gap = Number.parseFloat(window.getComputedStyle(viewport).columnGap) || 0;
     viewport.scrollBy({ left: direction * (card.getBoundingClientRect().width + gap), behavior: 'smooth' });
   }
 
@@ -344,6 +380,21 @@ export default function Home() {
               {['Practical, skills-focused training', 'Google Maps and GPS navigation', 'Professional driving preparation', 'Road circulation and parking', 'Road safety awareness', 'Customer service and professionalism', 'Real transport industry expectations', 'Eligible graduates may explore opportunities'].map((item) => <li key={item}><b>✓</b>{item}</li>)}
             </ul>
           </div>
+        </section>
+
+        <section id="drivers" className="maitrize-drivers maitrize-section">
+          <div className="maitrize-drivers__heading">
+            <div className="maitrize-section-heading">
+              <p className="maitrize-eyebrow">YOUR JOURNEY, IN GOOD HANDS</p>
+              <h2>MEET YOUR <span>KIMU DRIVER.</span></h2>
+              <p className="maitrize-drivers__intro">Get to know the people behind the wheel and the vehicles ready for your Kigali journey.</p>
+            </div>
+            {drivers.length > 1 && <div className="maitrize-drivers__controls" aria-label="Driver carousel controls"><button type="button" onClick={() => scrollDrivers(-1)} disabled={!driverScroll.canScrollBack} aria-label="Show previous drivers">←</button><button type="button" onClick={() => scrollDrivers(1)} disabled={!driverScroll.canScrollForward} aria-label="Show more drivers">→</button></div>}
+          </div>
+          {drivers.length ? <div className="maitrize-driver-viewport" ref={driverViewport} role="region" aria-roledescription="carousel" aria-label="KIMU taxi drivers" tabIndex="0"><div className="maitrize-driver-track">{drivers.map((driver, index) => <button className="maitrize-driver-card" type="button" key={driver._id} onClick={() => navigate(`/taxi-drivers/${driver._id}`)} aria-label={`View ${driver.fullName}'s driver and vehicle profile`}>
+            <span className="maitrize-driver-card__photos"><img className="maitrize-driver-card__portrait" src={driver.profileImage} alt={`${driver.fullName}`} loading="lazy"/><img className="maitrize-driver-card__car" src={driver.carImages?.[0] || drivingLessonPhoto} alt={driver.carImages?.length ? `${driver.fullName}'s car` : 'KIMU vehicle'} loading="lazy"/><span className="maitrize-driver-card__index">{String(index + 1).padStart(2, '0')}</span></span>
+            <span className="maitrize-driver-card__details"><span className="maitrize-driver-card__location"><i/> {driver.location || 'Kigali, Rwanda'}</span><strong>{driver.fullName}</strong><span className="maitrize-driver-card__vehicle">{driver.car?.make} {driver.car?.model}{driver.car?.year ? ` · ${driver.car.year}` : ''}</span><span className="maitrize-driver-card__cta">VIEW DRIVER <b>↗</b></span></span>
+          </button>)}</div></div> : <div className="maitrize-drivers__empty"><span>✳</span><strong>Our Kigali drivers are getting ready.</strong><p>Meet the KIMU team here soon.</p></div>}
         </section>
 
         <section id="maitrize" className="maitrize-journey maitrize-section">

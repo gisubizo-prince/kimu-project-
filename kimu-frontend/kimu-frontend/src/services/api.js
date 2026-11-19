@@ -107,5 +107,14 @@ export const testimonialApi = {
   remove: (id) => api.delete(`/testimonials/${id}`),
 };
 
+export const taxiDriverApi = {
+  listPublished: () => api.get('/taxi-drivers'),
+  getPublished: (id) => api.get(`/taxi-drivers/${id}`),
+  listForManagement: () => api.get('/taxi-drivers/manage'),
+  create: (payload) => api.post('/taxi-drivers', payload),
+  update: (id, payload) => api.put(`/taxi-drivers/${id}`, payload),
+  remove: (id) => api.delete(`/taxi-drivers/${id}`),
+};
+
 export { TOKEN_KEY };
 export default api;

@@ -11,6 +11,7 @@ const NAV_ITEMS = [
   { to: '/maitrise-report', label: 'MAITRISE REPORT', icon: ReportIcon },
   { to: '/contacts', label: 'Contact', icon: ContactIcon },
   { to: '/testimonials/manage', label: 'Testimonials', icon: TestimonialIcon, roles: ['super_admin', 'admin'] },
+  { to: '/taxi-drivers/manage', label: 'Taxi drivers', icon: SteeringIcon, roles: ['super_admin', 'admin'] },
   { href: 'https://kimucertverify.vercel.app/admin', label: 'Certificate', icon: BadgeIcon, external: true },
   { to: '/settings', label: 'Settings', icon: GearIcon },
 ];

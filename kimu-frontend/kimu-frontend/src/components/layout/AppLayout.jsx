@@ -15,6 +15,7 @@ const PAGE_TITLES = {
   '/notifications': 'Notifications',
   '/contacts': 'Contact',
   '/testimonials/manage': 'Testimonials',
+  '/taxi-drivers/manage': 'Taxi drivers',
   '/settings': 'Settings',
   '/settings/admin': 'System Controls',
 };

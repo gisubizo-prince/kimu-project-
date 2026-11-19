@@ -17,6 +17,8 @@ import MaitriseReport from './pages/MaitriseReport/MaitriseReport';
 import Home from './pages/Home/Home';
 import Contacts from './pages/Contacts/Contacts';
 import Testimonials from './pages/Testimonials/Testimonials';
+import TaxiDrivers from './pages/TaxiDrivers/TaxiDrivers';
+import TaxiDriverDetails from './pages/TaxiDrivers/TaxiDriverDetails';
 
 export default function App() {
   return (
@@ -47,9 +49,11 @@ export default function App() {
             <Route path="/settings" element={<Settings />} />
             <Route path="/settings/admin" element={<ProtectedRoute roles={['super_admin', 'admin']}><AdminControls /></ProtectedRoute>} />
             <Route path="/testimonials/manage" element={<ProtectedRoute roles={['super_admin', 'admin']}><Testimonials /></ProtectedRoute>} />
+            <Route path="/taxi-drivers/manage" element={<ProtectedRoute roles={['super_admin', 'admin']}><TaxiDrivers /></ProtectedRoute>} />
           </Route>
 
           <Route path="/" element={<Home />} />
+          <Route path="/taxi-drivers/:id" element={<TaxiDriverDetails />} />
           <Route path="*" element={<Navigate to="/dashboard" replace />} />
         </Routes>
       </AuthProvider>
