@@ -12,11 +12,11 @@ import './Home.css';
 
 const copy = {
   en: {
-    nav: ['Home', 'About Us', 'MAITRISE', 'Training Programme', 'Why KIMU', 'Testimonials', 'Contact'],
+    nav: ['Home', 'About Us', 'MAITRISE', 'Training Programme', 'Meet Your Kimu Driver', 'Testimonials', 'Contact'],
     enroll: 'ENROLL NOW',
   },
   rw: {
-    nav: ['Ahabanza', 'Twebwe', 'MAITRISE', 'Gahunda yo Kwiga', 'Impamvu KIMU', 'Abanyeshuri', 'Twandikire'],
+    nav: ['Ahabanza', 'Twebwe', 'MAITRISE', 'Gahunda yo Kwiga', 'Hura Umushoferi wa KIMU', 'Abanyeshuri', 'Twandikire'],
     enroll: 'ANDIKA NONAHO',
   },
 };
@@ -47,6 +47,7 @@ const slides = [
     source: 'https://www.pexels.com/photo/man-in-white-dress-shirt-driving-car-4606336/',
   },
 ];
+const navTargets = ['home', 'about', 'maitrize', 'programme', 'why-kimu', 'testimonials', 'contact'];
 
 const modules = [
   ['01', 'Practical Driving', 'Vehicle handling, steering, acceleration, braking and responsible driving.', practicePhoto, 'Gustavo Fring'],
@@ -223,7 +224,7 @@ export default function Home() {
         </button>
         <nav className="maitrize-nav__links" aria-label="Main navigation">
           {t.nav.map((label, index) => (
-            <button key={label} onClick={() => scrollToSection(['home', 'about', 'maitrize', 'programme', 'why-kimu', 'testimonials', 'contact'][index])}>
+            <button key={label} onClick={() => scrollToSection(navTargets[index])}>
               {label}
             </button>
           ))}
@@ -241,7 +242,7 @@ export default function Home() {
         {menuOpen && (
           <nav className="maitrize-mobile-menu" aria-label="Mobile navigation">
             {t.nav.map((label, index) => (
-              <button key={label} onClick={() => scrollToSection(['home', 'about', 'maitrize', 'programme', 'why-kimu', 'testimonials', 'contact'][index])}>
+              <button key={label} onClick={() => scrollToSection(navTargets[index])}>
                 {label}
               </button>
             ))}
