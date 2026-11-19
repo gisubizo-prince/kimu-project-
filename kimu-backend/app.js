@@ -60,11 +60,14 @@ app.get('/api/dashboard/summary', require('./middleware/auth').protect, async (r
     const todayDate = dateKeyAsUtcDate(today);
     const weekStart = new Date(todayDate);
     weekStart.setUTCDate(weekStart.getUTCDate() - 6);
-    const [totalStudents, activeStudents, attendanceWeek] = await Promise.all([
+    const [totalStudents, traineeStudents, passStudents, repeatStudents, attendanceWeek] = await Promise.all([
       Student.countDocuments(),
-      Student.countDocuments({ isActive: true }),
+      Student.countDocuments({ $or: [{ status: 'trainee' }, { status: { $exists: false } }] }),
+      Student.countDocuments({ status: 'pass' }),
+      Student.countDocuments({ status: 'repeat' }),
       Attendance.find({ date: { $gte: weekStart, $lte: todayDate }, studentId: { $exists: true } }).select('date studentId lesson shift').lean(),
     ]);
+    const trainingStudents = traineeStudents + repeatStudents;
     const attendanceToday = attendanceWeek.filter((record) => record.date.toISOString().slice(0, 10) === today);
     const lessons = ['GPS', 'PARKING', 'CIRCULATION'];
     const shifts = Attendance.SHIFTS;
@@ -85,8 +88,10 @@ app.get('/api/dashboard/summary', require('./middleware/auth').protect, async (r
       success: true,
       data: {
         totalStudents,
-        activeStudents,
-        inactiveStudents: totalStudents - activeStudents,
+        traineeStudents,
+        passStudents,
+        repeatStudents,
+        trainingStudents,
         sessionsToday: attendanceToday.length,
         sessionsLast7Days: attendanceWeek.length,
         studentsAttendedToday,

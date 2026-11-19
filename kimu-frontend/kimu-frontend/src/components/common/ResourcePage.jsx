@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import api from '../../services/api';
 import './ResourcePage.css';
 
-export default function ResourcePage({ title, description, endpoint, columns, fields, resourceClassName = '', statusEndpoint, allowDelete = false, deleteConfirmation, headerActions, headerError }) {
+export default function ResourcePage({ title, description, endpoint, columns, fields, resourceClassName = '', statusEndpoint, statusOptions = [], allowDelete = false, deleteConfirmation, headerActions, headerError }) {
   const [items, setItems] = useState([]);
   const [search, setSearch] = useState('');
   const [form, setForm] = useState({});
@@ -55,10 +55,11 @@ export default function ResourcePage({ title, description, endpoint, columns, fi
     }
     catch (requestError) { setError(requestError.message); }
   }
-  async function toggleStatus(item) {
+  async function changeStatus(item, status) {
+    if (status === item.status) return;
     try {
-      await api.patch(`${endpoint}/${item._id}/${statusEndpoint}`, { isActive: !item.isActive });
-      setSuccess(`Student ${item.isActive ? 'deactivated' : 'activated'} successfully.`);
+      await api.patch(`${endpoint}/${item._id}/${statusEndpoint}`, { status });
+      setSuccess(`${item.fullName || 'Student'} status updated to ${status}.`);
       await loadItems();
     } catch (requestError) { setError(requestError.message); }
   }
@@ -76,7 +77,7 @@ export default function ResourcePage({ title, description, endpoint, columns, fi
           {error && <p className="kimu-resource__error" role="alert">{error}</p>}
           {success && <p className="kimu-resource__success" role="status">{success}</p>}
           <div className="kimu-resource__table-wrap"><table><thead><tr>{columns.map((column) => <th key={column.key}>{column.label}</th>)}<th>Actions</th></tr></thead><tbody>
-            {loading ? <tr><td colSpan={columns.length + 1}>Loading records...</td></tr> : items.length === 0 ? <tr><td colSpan={columns.length + 1}>No records found.</td></tr> : items.map((item) => <tr key={item._id}>{columns.map((column) => <td data-label={column.label} key={column.key}>{column.render ? column.render(item) : item[column.key] || '-'}</td>)}<td data-label="Actions" className="kimu-resource__actions"><button type="button" onClick={() => beginEdit(item)}>Edit</button>{statusEndpoint ? <><button type="button" onClick={() => toggleStatus(item)}>{item.isActive ? 'Deactivate' : 'Activate'}</button>{allowDelete && <button type="button" onClick={() => remove(item)}>Delete</button>}</> : <button type="button" onClick={() => remove(item)}>Delete</button>}</td></tr>)}
+            {loading ? <tr><td colSpan={columns.length + 1}>Loading records...</td></tr> : items.length === 0 ? <tr><td colSpan={columns.length + 1}>No records found.</td></tr> : items.map((item) => <tr key={item._id}>{columns.map((column) => <td data-label={column.label} key={column.key}>{column.render ? column.render(item) : item[column.key] || '-'}</td>)}<td data-label="Actions" className="kimu-resource__actions"><button type="button" onClick={() => beginEdit(item)}>Edit</button>{statusEndpoint ? <>{statusOptions.length > 0 && <select value={item.status || statusOptions[0].value} onChange={(event) => changeStatus(item, event.target.value)} aria-label={`Set status for ${item.fullName || 'student'}`}>{statusOptions.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}</select>}{allowDelete && <button type="button" onClick={() => remove(item)}>Delete</button>}</> : <button type="button" onClick={() => remove(item)}>Delete</button>}</td></tr>)}
           </tbody></table></div>
         </section>
         <form className="kimu-panel kimu-resource__form" onSubmit={save}><h3>{editingId ? 'Edit record' : 'Add record'}</h3>{success && <p className="kimu-resource__success" role="status">{success}</p>}{fields.map((field) => <label key={field.name}>{field.label}<input required={field.required !== false} type={field.type || 'text'} name={field.name} value={form[field.name] || ''} onChange={changeField} /></label>)}<div className="kimu-resource__form-actions"><button className="kimu-btn kimu-btn--primary" disabled={saving}>{saving ? 'Saving...' : editingId ? 'Update record' : 'Add record'}</button>{editingId && <button className="kimu-btn kimu-btn--secondary" type="button" onClick={resetForm}>Cancel</button>}</div></form>

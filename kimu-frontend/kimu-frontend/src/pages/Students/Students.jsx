@@ -16,7 +16,13 @@ const columns = [
   { key: 'fullName', label: 'Name' },
   { key: 'phone', label: 'Telephone' },
   { key: 'registrationDate', label: 'Registered', render: (student) => new Date(student.registrationDate).toLocaleDateString() },
-  { key: 'isActive', label: 'Status', render: (student) => student.isActive ? 'Active' : 'Inactive' },
+  { key: 'status', label: 'Status', render: (student) => formatStatus(student.status) },
+];
+
+const statusOptions = [
+  { value: 'trainee', label: 'Trainee' },
+  { value: 'pass', label: 'Pass' },
+  { value: 'repeat', label: 'Repeat' },
 ];
 
 export default function Students() {
@@ -49,11 +55,16 @@ export default function Students() {
     fields={fields}
     columns={columns}
     statusEndpoint="status"
+    statusOptions={statusOptions}
     allowDelete={canDelete}
     deleteConfirmation={(student) => `Are you sure you want to delete ${student.fullName}?`}
     headerActions={<div className="kimu-resource__intro-actions"><button className="kimu-btn kimu-btn--primary" type="button" onClick={downloadStudents} disabled={downloading}>{downloading ? 'Preparing PDF...' : 'Download PDF'}</button></div>}
     headerError={downloadError}
   />;
+}
+
+function formatStatus(status) {
+  return statusOptions.find((option) => option.value === status)?.label || 'Trainee';
 }
 
 async function buildStudentsPdf(students) {
@@ -72,7 +83,7 @@ async function buildStudentsPdf(students) {
       student.fullName || '-',
       student.phone || '-',
       formatRegistrationDate(student.registrationDate),
-      student.isActive ? 'Active' : 'Inactive',
+      formatStatus(student.status),
     ]),
     styles: { fontSize: 8, cellPadding: 2, overflow: 'linebreak', valign: 'middle', textColor: [0, 0, 0], fillColor: [255, 255, 255], lineColor: [0, 0, 0], lineWidth: 0.1 },
     headStyles: { fillColor: [255, 255, 255], textColor: [0, 0, 0], lineColor: [0, 0, 0], fontStyle: 'bold' },

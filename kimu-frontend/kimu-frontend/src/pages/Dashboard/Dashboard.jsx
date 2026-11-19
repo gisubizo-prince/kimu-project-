@@ -6,7 +6,7 @@ import './Dashboard.css';
 
 const LESSONS = ['GPS', 'PARKING', 'CIRCULATION'];
 const SHIFTS = ['09:00 - 11:30', '11:30 - 14:00', '14:30 - 16:00', '16:00 - 18:30'];
-const EMPTY_SUMMARY = { totalStudents: 0, activeStudents: 0, inactiveStudents: 0, sessionsToday: 0, sessionsLast7Days: 0, studentsAttendedToday: 0, attendanceByLesson: {}, attendanceByShift: {}, dailyAttendanceTrend: [] };
+const EMPTY_SUMMARY = { totalStudents: 0, traineeStudents: 0, passStudents: 0, repeatStudents: 0, trainingStudents: 0, sessionsToday: 0, sessionsLast7Days: 0, studentsAttendedToday: 0, attendanceByLesson: {}, attendanceByShift: {}, dailyAttendanceTrend: [] };
 
 export default function Dashboard() {
   const { user } = useAuth();
@@ -21,10 +21,10 @@ export default function Dashboard() {
   }, []);
 
   const data = summary || EMPTY_SUMMARY;
-  const attendanceRate = data.activeStudents ? Math.round((data.studentsAttendedToday / data.activeStudents) * 100) : 0;
+  const attendanceRate = data.trainingStudents ? Math.round((data.studentsAttendedToday / data.trainingStudents) * 100) : 0;
   const metrics = [
-    { label: 'Registered students', value: data.totalStudents, detail: `${data.activeStudents} active · ${data.inactiveStudents} inactive`, to: '/students', tone: 'students' },
-    { label: 'Active students', value: data.activeStudents, detail: 'Available for training', to: '/students', tone: 'active' },
+    { label: 'Registered students', value: data.totalStudents, detail: `${data.traineeStudents} trainee · ${data.passStudents} pass · ${data.repeatStudents} repeat`, to: '/students', tone: 'students' },
+    { label: 'In training', value: data.trainingStudents, detail: `${data.traineeStudents} trainee · ${data.repeatStudents} repeat`, to: '/students', tone: 'active' },
     { label: 'Sessions today', value: data.sessionsToday, detail: `${data.studentsAttendedToday} students attended`, to: '/attendance', tone: 'today' },
     { label: 'Sessions this week', value: data.sessionsLast7Days, detail: 'Last 7 days', to: '/reports', tone: 'week' },
   ];
@@ -52,9 +52,9 @@ export default function Dashboard() {
       </article>
       <article className="kimu-panel kimu-dashboard__coverage">
         <div className="kimu-dashboard__panel-head"><div><p className="kimu-eyebrow">TODAY</p><h3>Student coverage</h3></div></div>
-        <div className="kimu-dashboard__coverage-value"><strong>{summary ? `${attendanceRate}%` : '—'}</strong><span>of active students attended</span></div>
-        <div className="kimu-dashboard__coverage-track" role="img" aria-label={`${attendanceRate}% of active students attended today`}><span style={{ width: `${attendanceRate}%` }} /></div>
-        <div className="kimu-dashboard__coverage-meta"><span>Attended</span><strong>{summary ? data.studentsAttendedToday : '—'}</strong><span>Active</span><strong>{summary ? data.activeStudents : '—'}</strong></div>
+        <div className="kimu-dashboard__coverage-value"><strong>{summary ? `${attendanceRate}%` : '—'}</strong><span>of training students attended</span></div>
+        <div className="kimu-dashboard__coverage-track" role="img" aria-label={`${attendanceRate}% of training students attended today`}><span style={{ width: `${attendanceRate}%` }} /></div>
+        <div className="kimu-dashboard__coverage-meta"><span>Attended</span><strong>{summary ? data.studentsAttendedToday : '—'}</strong><span>In training</span><strong>{summary ? data.trainingStudents : '—'}</strong></div>
         <Link className="kimu-dashboard__text-link" to="/attendance">Open attendance <span aria-hidden="true">&rarr;</span></Link>
       </article>
     </section>

@@ -48,8 +48,11 @@ async function record(req, res, next) {
     const dateKey = req.body.date || getLocalDateKey(new Date(), company?.timezone || 'Africa/Kigali');
     const day = parseDateKey(dateKey);
     if (!day) return res.status(400).json({ success: false, message: 'Invalid attendance date.' });
-    const student = await Student.findOne({ _id: studentId, isActive: true }).lean();
-    if (!student) return res.status(404).json({ success: false, message: 'Active student not found.' });
+    const student = await Student.findOne({
+      _id: studentId,
+      $or: [{ status: { $in: ['trainee', 'repeat'] } }, { status: { $exists: false } }],
+    }).lean();
+    if (!student) return res.status(404).json({ success: false, message: 'Training student not found.' });
     const duplicate = await Attendance.findOne({
       date: day,
       $or: [{ studentId: student._id }, { studentName: student.fullName }],

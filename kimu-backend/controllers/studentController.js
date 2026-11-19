@@ -12,8 +12,12 @@ async function list(req, res, next) {
         { registrationNumber: { $regex: escapeRegex(search), $options: 'i' } },
       ];
     }
-    if (req.query.active === 'true') filter.isActive = true;
-    if (req.query.active === 'false') filter.isActive = false;
+    if (req.query.status) {
+      if (!STUDENT_STATUSES.includes(req.query.status)) {
+        return res.status(400).json({ success: false, message: 'Select a valid student status.' });
+      }
+      filter.status = req.query.status;
+    }
     const students = await Student.find(filter)
       .sort({ fullName: 1 })
       .collation({ locale: 'en', strength: 2 });
@@ -32,6 +36,7 @@ async function create(req, res, next) {
       normalizedName: normalizeNameKey(fullName),
       phone: req.body.phone,
       registrationNumber: createRegistrationNumber(),
+      status: 'trainee',
     });
     res.status(201).json({ success: true, data: student });
   } catch (error) {
@@ -71,10 +76,10 @@ async function update(req, res, next) {
 
 async function setStatus(req, res, next) {
   try {
-    if (typeof req.body.isActive !== 'boolean') {
-      return res.status(400).json({ success: false, message: 'Student status must be active or inactive.' });
+    if (!STUDENT_STATUSES.includes(req.body.status)) {
+      return res.status(400).json({ success: false, message: 'Select a valid student status.' });
     }
-    const student = await Student.findByIdAndUpdate(req.params.id, { isActive: req.body.isActive }, { new: true });
+    const student = await Student.findByIdAndUpdate(req.params.id, { status: req.body.status }, { new: true, runValidators: true });
     if (!student) return res.status(404).json({ success: false, message: 'Student not found.' });
     res.json({ success: true, data: student });
   } catch (error) { next(error); }
@@ -87,6 +92,8 @@ async function remove(req, res, next) {
     res.json({ success: true, message: 'Student deleted successfully.' });
   } catch (error) { next(error); }
 }
+
+const STUDENT_STATUSES = ['trainee', 'pass', 'repeat'];
 
 function createRegistrationNumber() {
   const date = new Date().toISOString().slice(0, 10).replace(/-/g, '');

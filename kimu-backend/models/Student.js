@@ -7,7 +7,7 @@ const studentSchema = new mongoose.Schema(
     normalizedName: { type: String },
     phone: { type: String, required: true, trim: true },
     registrationDate: { type: Date, default: Date.now },
-    isActive: { type: Boolean, default: true },
+    status: { type: String, enum: ['trainee', 'pass', 'repeat'], default: 'trainee' },
   },
   { timestamps: true }
 );
