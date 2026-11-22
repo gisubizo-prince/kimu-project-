@@ -1,6 +1,6 @@
+
 const { test } = require('node:test');
 const assert = require('node:assert/strict');
-const path = require('node:path');
 const { validateProductionEnv } = require('../config/validateProductionEnv');
 const { rateLimit } = require('../middleware/rateLimit');
 const AuditLog = require('../models/AuditLog');
@@ -11,20 +11,71 @@ const Employee = require('../models/Employee');
 const { sanitizePayload } = require('../controllers/resourceController');
 const { errorHandler, notFound } = require('../middleware/errorHandler');
 
-test('production configuration fails closed for unsafe secret, Mongo, origins and proxy policy', () => {
-  assert.throws(() => validateProductionEnv({ NODE_ENV: 'production' }), /JWT_SECRET/);
-  assert.doesNotThrow(() => validateProductionEnv({
-    NODE_ENV: 'production', JWT_SECRET: 'unique-random-secret-material-123456',
-    JWT_EXPIRES_IN: '15m', MONGO_URI: 'mongodb+srv://user:pass@cluster.example/db',
-    CLIENT_URL: 'https://staff.example.org', PUBLIC_APP_URL: 'https://staff.example.org', TRUST_PROXY_HOPS: '1',
-    CERTIFICATE_STORAGE_DIR: path.resolve('secure-certificates'),
-  }));
-  assert.throws(() => validateProductionEnv({
-    NODE_ENV: 'production', JWT_SECRET: 'unique-random-secret-material-123456',
-    JWT_EXPIRES_IN: '7d', MONGO_URI: 'mongodb://db.example/db',
-    CLIENT_URL: 'http://staff.example.org', PUBLIC_APP_URL: 'http://staff.example.org', TRUST_PROXY_HOPS: '1',
-    CERTIFICATE_STORAGE_DIR: path.resolve('secure-certificates'),
-  }), /TLS|HTTPS|24 hours/);
+test('production configuration fails closed for unsafe secret, Mongo, origins, proxy policy and B2 storage', () => {
+  assert.throws(
+    () => validateProductionEnv({ NODE_ENV: 'production' }),
+    /JWT_SECRET/
+  );
+
+  const validProductionEnv = {
+    NODE_ENV: 'production',
+    JWT_SECRET: 'unique-random-secret-material-123456',
+    JWT_EXPIRES_IN: '15m',
+    MONGO_URI: 'mongodb+srv://user:pass@cluster.example/db',
+    CLIENT_URL: 'https://staff.example.org',
+    PUBLIC_APP_URL: 'https://staff.example.org',
+    TRUST_PROXY_HOPS: '1',
+    CERTIFICATE_STORAGE_PROVIDER: 'b2',
+    B2_ENDPOINT: 'https://s3.us-east-005.backblazeb2.com',
+    B2_REGION: 'us-east-005',
+    B2_BUCKET: 'certverify-pdfs-kimu-2026',
+    B2_KEY_ID: 'valid-test-key-id',
+    B2_APPLICATION_KEY: 'valid-test-application-key-secret'
+  };
+
+  assert.doesNotThrow(() => validateProductionEnv(validProductionEnv));
+
+  assert.throws(
+    () => validateProductionEnv({
+      ...validProductionEnv,
+      CERTIFICATE_STORAGE_PROVIDER: 'local'
+    }),
+    /CERTIFICATE_STORAGE_PROVIDER/
+  );
+
+  assert.throws(
+    () => validateProductionEnv({
+      ...validProductionEnv,
+      B2_APPLICATION_KEY: ''
+    }),
+    /B2_APPLICATION_KEY/
+  );
+
+  assert.throws(
+    () => validateProductionEnv({
+      ...validProductionEnv,
+      B2_ENDPOINT: 'http://s3.us-east-005.backblazeb2.com'
+    }),
+    /B2_ENDPOINT/
+  );
+
+  assert.throws(
+    () => validateProductionEnv({
+      ...validProductionEnv,
+      JWT_EXPIRES_IN: '7d'
+    }),
+    /24 hours/
+  );
+
+  assert.throws(
+    () => validateProductionEnv({
+      ...validProductionEnv,
+      MONGO_URI: 'mongodb://db.example/db',
+      CLIENT_URL: 'http://staff.example.org',
+      PUBLIC_APP_URL: 'http://staff.example.org'
+    }),
+    /TLS|HTTPS/
+  );
 });
 
 test('JWT uses fixed algorithm, issuer, audience and configured expiration', () => {
