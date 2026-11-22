@@ -34,9 +34,11 @@ QR placement settings:
 | Variable | Default | Allowed values |
 |---|---:|---|
 | `PDF_QR_PAGE` | `1` | One-based page number present in the source PDF |
-| `PDF_QR_SIZE_MM` | `28` | 18–60 millimetres |
-| `PDF_QR_MARGIN_MM` | `10` | 0–100 millimetres |
+| `PDF_QR_SIZE_MM` | `21.87` | 18–60 millimetres |
+| `PDF_QR_MARGIN_MM` | `33.1` | 0–100 millimetres; measured to the outer white backing |
 | `PDF_QR_CORNER` | `bottom-right` | `top-left`, `top-right`, `bottom-left`, `bottom-right` |
+
+These defaults match the supplied landscape A4 certificate: page 1, bottom-right, a 21.87 mm QR image, and approximately 35 mm from the QR image to the bottom and right page edges. The placement routine adds a 2 mm white backing around the QR, so its configured 33.1 mm margin is measured to that backing; the QR image itself sits about 35.1 mm from each edge. Explicit environment values override these defaults and must use the same values to preserve this layout.
 
 Public PDF policy uses the existing `ALLOW_PUBLIC_PDF_WHEN_REVOKED` setting (default false). `ALLOW_PUBLIC_DOWNLOAD=false` disables the public attachment/download response while leaving inline display available. Every verification and PDF response is sent with `Cache-Control: no-store`.
 

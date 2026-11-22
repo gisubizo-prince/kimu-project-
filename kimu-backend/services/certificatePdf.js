@@ -6,8 +6,8 @@ const CORNERS = new Set(['top-left', 'top-right', 'bottom-left', 'bottom-right']
 
 function getPlacement(pageCount) {
   const page = Number.parseInt(process.env.PDF_QR_PAGE || '1', 10);
-  const sizeMm = Number.parseFloat(process.env.PDF_QR_SIZE_MM || '28');
-  const marginMm = Number.parseFloat(process.env.PDF_QR_MARGIN_MM || '10');
+  const sizeMm = Number.parseFloat(process.env.PDF_QR_SIZE_MM || '21.87');
+  const marginMm = Number.parseFloat(process.env.PDF_QR_MARGIN_MM || '33.1');
   const corner = process.env.PDF_QR_CORNER || 'bottom-right';
   if (!Number.isInteger(page) || page < 1 || page > pageCount) throw Object.assign(new Error(`PDF_QR_PAGE must be between 1 and ${pageCount}.`), { status: 400 });
   if (!Number.isFinite(sizeMm) || sizeMm < 18 || sizeMm > 60) throw Object.assign(new Error('PDF_QR_SIZE_MM must be between 18 and 60.'), { status: 400 });
