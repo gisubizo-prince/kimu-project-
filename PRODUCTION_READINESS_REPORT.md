@@ -97,6 +97,21 @@ The reported response `Route not found: /api/certificates?page=1&limit=10` is pr
 
 The canonical implementation persists certificate metadata/audit events in MongoDB, but keeps original and printable PDF bytes in `CERTIFICATE_STORAGE_DIR`. A hosted service needs the current backend revision, an Atlas `MONGO_URI`, and a persistent private volume. No Atlas credentials were read, no live Atlas connection was made, and no Atlas data or hosted service was changed. See [ATLAS_CERTIFICATES.md](ATLAS_CERTIFICATES.md) for backend configuration and safe post-deploy checks. The hosted route and Atlas persistence remain **NOT TESTED**; the overall decision remains **NO-GO**.
 
+### Public deployment check — 2026-11-22
+
+Read-only requests to the user-provided Vercel site and its configured API host confirmed the mismatch:
+
+| Check | Observed result |
+|---|---|
+| `https://kimutransport.vercel.app/certverify` | HTTP 200; page loads the `Certverify` chunk. Its published shared JS client is compiled with API base `https://kimu-transport-api.onrender.com/api`. |
+| `https://kimutransport.vercel.app/api/certificates?page=1&limit=10` | HTTP 200 HTML (`index.html`) from Vercel's SPA rewrite. Vercel is not the API host. |
+| `https://kimu-transport-api.onrender.com/api/health` | HTTP 200 with legacy body `{"success":true,"message":"METRIZE Training API is running."}`. Current canonical backend returns `{ "success": true, "status": "ready" }` only when MongoDB is ready. |
+| `https://kimu-transport-api.onrender.com/api/certificates?page=1&limit=10` | HTTP 404 with `Route not found: /api/certificates?page=1&limit=10`. |
+
+The current local `main` tree contains the route mount in `kimu-backend/app.js`, model, controller/router, and canonical server startup. Therefore the deployed Render service is serving an older revision or a different repository/branch/configuration. A Vercel frontend deployment alone does not update the separate Render API. The Render service needs to deploy the latest repository revision with root directory `kimu-backend`, build command `npm ci`, and start command `npm start`; its secret configuration must include the Atlas `MONGO_URI` and the production settings in `ATLAS_CERTIFICATES.md`. After that deploy, unauthenticated `GET /api/certificates?page=1&limit=10` should be **401** (authentication required), not **404**; an authorized staff request should return the register. The health route should show ready only after the API connects to Atlas.
+
+This workspace has no Render deployment session or CLI credentials, so the live Render service could not be redeployed from here. No production deployment or Atlas write was made. The live route remains a blocker until Render deploys the correct backend and the post-deploy checks pass.
+
 ## Requirement-by-requirement status
 
 **Historical baseline:** The tables in this section reflect the 2026-11-21 inspection. For current status after code changes, use the 2026-11-22 remediation update and current blocker list above; those supersede any matching historical row below.
