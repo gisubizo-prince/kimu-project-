@@ -12,7 +12,7 @@ const NAV_ITEMS = [
   { to: '/contacts', label: 'Contact', icon: ContactIcon },
   { to: '/testimonials/manage', label: 'Testimonials', icon: TestimonialIcon, roles: ['super_admin', 'admin'] },
   { to: '/taxi-drivers/manage', label: 'Taxi drivers', icon: SteeringIcon, roles: ['super_admin', 'admin'] },
-  { to: '/certverify', label: 'Certverify', icon: BadgeIcon, roles: ['super_admin', 'admin'] },
+  { to: '/certverify', label: 'Certificate', icon: BadgeIcon, roles: ['super_admin', 'admin'] },
   { to: '/settings', label: 'Settings', icon: GearIcon },
 ];
 
