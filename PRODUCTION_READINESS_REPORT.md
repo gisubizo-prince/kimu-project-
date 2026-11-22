@@ -91,6 +91,12 @@ This section supersedes prior claims where newer evidence below differs. All exe
 
 **Decision: NO-GO.** Local code/build, certificate/QR flow, and an encrypted isolated backup/restore drill passed. The remaining blockers require real infrastructure identities, independent audit/alert configuration, a Docker-capable staging environment, or physical device/print checks. No deployment was performed.
 
+## Hosted certificate API 404 follow-up
+
+The reported response `Route not found: /api/certificates?page=1&limit=10` is produced by the legacy nested backend's `middleware/errorHandler.js`. The canonical backend app mounts `routes/certificateRoutes.js` at `/api/certificates`; its list route queries the Mongoose `Certificate` model, and the existing API integration test exercises access, listing, pagination, and persistence. This indicates that the hosted API is serving a stale/wrong backend entrypoint or revision, rather than that Atlas needs a route or collection manually added. MongoDB collections are created when records are first persisted.
+
+The canonical implementation persists certificate metadata/audit events in MongoDB, but keeps original and printable PDF bytes in `CERTIFICATE_STORAGE_DIR`. A hosted service needs the current backend revision, an Atlas `MONGO_URI`, and a persistent private volume. No Atlas credentials were read, no live Atlas connection was made, and no Atlas data or hosted service was changed. See [ATLAS_CERTIFICATES.md](ATLAS_CERTIFICATES.md) for backend configuration and safe post-deploy checks. The hosted route and Atlas persistence remain **NOT TESTED**; the overall decision remains **NO-GO**.
+
 ## Requirement-by-requirement status
 
 **Historical baseline:** The tables in this section reflect the 2026-11-21 inspection. For current status after code changes, use the 2026-11-22 remediation update and current blocker list above; those supersede any matching historical row below.
