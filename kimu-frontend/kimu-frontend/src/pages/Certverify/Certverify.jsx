@@ -81,18 +81,35 @@ export default function Certverify() {
     <header className="cv-heading"><div><p className="cv-eyebrow">STAFF WORKSPACE</p><h1>Certificate verification</h1><p>Register issued certificates and manage their verification status.</p></div><div className="cv-count"><strong>{summary.total}</strong><span>certificates</span><small>{summary.valid} valid · {summary.revoked} revoked</small></div></header>
     {error && <div className="cv-alert cv-alert--error" role="alert">{error}</div>}{notice && <div className="cv-alert" role="status">{notice}</div>}
     <section className="cv-card"><div className="cv-card__head"><div><h2>Register certificate</h2><p>Add certificate details and the original PDF to the staff register.</p></div></div>
-      <form className="cv-form" onSubmit={submit}>
-        <label>Certificate number <span className="cv-optional">Optional; generated if empty</span><input maxLength="64" value={form.certificateNumber} onChange={e => setForm({ ...form, certificateNumber: e.target.value })} /></label>
-        <label>Student name<input required maxLength="200" value={form.studentName} onChange={e => setForm({ ...form, studentName: e.target.value })} /></label>
-        <label>Course<input required maxLength="250" value={form.course} onChange={e => setForm({ ...form, course: e.target.value })} /></label>
-        <label>Institution<input required maxLength="250" value={form.institution} onChange={e => setForm({ ...form, institution: e.target.value })} /></label>
-        <label>Issue date<input required type="date" value={form.issueDate} onChange={e => setForm({ ...form, issueDate: e.target.value })} /></label>
-        <label>Graduation date<input type="date" value={form.graduationDate} onChange={e => setForm({ ...form, graduationDate: e.target.value })} /></label>
-        <label>Department<input maxLength="200" value={form.department} onChange={e => setForm({ ...form, department: e.target.value })} /></label>
-        <label>Academic year<input maxLength="40" value={form.academicYear} onChange={e => setForm({ ...form, academicYear: e.target.value })} /></label>
-        <label className="cv-form__wide">Notes<textarea maxLength="2000" rows="2" value={form.notes} onChange={e => setForm({ ...form, notes: e.target.value })} /></label>
-        <label className="cv-form__wide cv-upload">Original certificate PDF<input required type="file" accept="application/pdf,.pdf" onChange={e => setFile(e.target.files?.[0] || null)} /><small>PDF only, up to 10 MB. The uploaded file is available to staff.</small></label>
-        <div className="cv-form__wide cv-actions"><button disabled={busy} className="cv-primary">{busy ? 'Registering…' : 'Register certificate'}</button></div>
+      <form className="cv-form cv-form--register" onSubmit={submit}>
+        <section className="cv-form-section" aria-labelledby="cv-details-title">
+          <div className="cv-form-section__heading"><span className="cv-form-section__number">01</span><div><h3 id="cv-details-title">Certificate details</h3><p>Enter the information that appears on the certificate.</p></div></div>
+          <div className="cv-form-grid">
+            <label>Certificate number <span className="cv-optional">Optional</span><input placeholder="Leave blank to generate one" maxLength="64" value={form.certificateNumber} onChange={e => setForm({ ...form, certificateNumber: e.target.value })} /><small className="cv-field-help">You can use an existing reference number.</small></label>
+            <label>Institution <span className="cv-required" aria-hidden="true">*</span><input required maxLength="250" autoComplete="organization" value={form.institution} onChange={e => setForm({ ...form, institution: e.target.value })} /></label>
+            <label>Course or programme <span className="cv-required" aria-hidden="true">*</span><input required maxLength="250" placeholder="e.g. Professional Driver Training" value={form.course} onChange={e => setForm({ ...form, course: e.target.value })} /></label>
+            <label>Department <span className="cv-optional">Optional</span><input maxLength="200" placeholder="Department or faculty" value={form.department} onChange={e => setForm({ ...form, department: e.target.value })} /></label>
+            <label>Academic year <span className="cv-optional">Optional</span><input maxLength="40" placeholder="e.g. 2025-2026" value={form.academicYear} onChange={e => setForm({ ...form, academicYear: e.target.value })} /></label>
+          </div>
+        </section>
+        <section className="cv-form-section" aria-labelledby="cv-recipient-title">
+          <div className="cv-form-section__heading"><span className="cv-form-section__number">02</span><div><h3 id="cv-recipient-title">Recipient and dates</h3><p>Use the student name and dates printed on the document.</p></div></div>
+          <div className="cv-form-grid cv-form-grid--three">
+            <label className="cv-form-grid__full">Student name <span className="cv-required" aria-hidden="true">*</span><input required maxLength="200" autoComplete="name" placeholder="Full name as printed on the certificate" value={form.studentName} onChange={e => setForm({ ...form, studentName: e.target.value })} /></label>
+            <label>Issue date <span className="cv-required" aria-hidden="true">*</span><input required type="date" value={form.issueDate} onChange={e => setForm({ ...form, issueDate: e.target.value })} /></label>
+            <label>Graduation date <span className="cv-optional">Optional</span><input type="date" value={form.graduationDate} onChange={e => setForm({ ...form, graduationDate: e.target.value })} /></label>
+          </div>
+        </section>
+        <section className="cv-form-section" aria-labelledby="cv-notes-title">
+          <div className="cv-form-section__heading"><span className="cv-form-section__number">03</span><div><h3 id="cv-notes-title">Internal notes <span className="cv-optional">Optional</span></h3><p>For staff use only; notes are not shown on the public verification page.</p></div></div>
+          <label className="cv-notes-field"><span className="cv-sr-only">Internal notes</span><textarea maxLength="2000" rows="3" placeholder="Add any relevant staff notes..." value={form.notes} onChange={e => setForm({ ...form, notes: e.target.value })} /></label>
+        </section>
+        <section className="cv-form-section cv-form-section--upload" aria-labelledby="cv-upload-title">
+          <div className="cv-form-section__heading"><span className="cv-form-section__number">04</span><div><h3 id="cv-upload-title">Upload certificate PDF <span className="cv-required" aria-hidden="true">*</span></h3><p>Choose the original PDF to attach to this record.</p></div></div>
+          <label className="cv-upload-panel"><span className="cv-upload-panel__icon" aria-hidden="true">+</span><span className="cv-upload-panel__copy"><strong>{file ? file.name : 'Choose a PDF from your device'}</strong><small>{file ? (file.size / (1024 * 1024)).toFixed(2) + ' MB - Ready to upload' : 'PDF format - Maximum file size 10 MB'}</small></span><span className="cv-upload-panel__button">Browse files</span><input required type="file" accept="application/pdf,.pdf" onChange={e => setFile(e.target.files?.[0] || null)} /></label>
+          <p className="cv-upload-note">The original is kept for staff. A separate printable copy includes the verification QR code.</p>
+        </section>
+        <div className="cv-form-submit"><p>Fields marked <span className="cv-required" aria-hidden="true">*</span> are required.</p><button disabled={busy} className="cv-primary">{busy ? 'Registering...' : 'Register certificate'}</button></div>
       </form>
     </section>
     <section className="cv-card cv-register"><div className="cv-card__head"><div><h2>Certificate register</h2><p>Search records, check status, and retrieve the stored PDF.</p></div><div className="cv-filters"><input className="cv-search" aria-label="Search certificates" placeholder="Search name or ID" value={query} onChange={e => { setPage(1); setQuery(e.target.value); }} /><select className="cv-search" aria-label="Filter by status" value={statusFilter} onChange={e => { setPage(1); setStatusFilter(e.target.value); }}><option value="">All statuses</option><option value="valid">Valid</option><option value="revoked">Revoked</option></select></div></div>
