@@ -1,0 +1,15 @@
+{$PUBLIC_DOMAIN} {
+  encode zstd gzip
+  @metrics path /api/metrics
+  respond @metrics 404
+  @api path /api/*
+  reverse_proxy @api api:5000
+  reverse_proxy web:80
+  header {
+    X-Content-Type-Options nosniff
+    X-Frame-Options DENY
+    Referrer-Policy no-referrer
+    Permissions-Policy "camera=(), microphone=(), geolocation=()"
+    Content-Security-Policy "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'"
+  }
+}

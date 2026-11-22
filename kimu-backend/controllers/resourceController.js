@@ -7,9 +7,11 @@ function createResourceController(Model, options = {}) {
   return {
     list: async (req, res, next) => {
       try {
+        const search = typeof req.query.search === 'string' ? req.query.search.trim() : '';
+        if (search.length > 100) return res.status(400).json({ success: false, message: 'Search term is too long.' });
         const filter = {};
-        if (req.query.search && searchable.length) {
-          filter.$or = searchable.map((field) => ({ [field]: { $regex: req.query.search, $options: 'i' } }));
+        if (search && searchable.length) {
+          filter.$or = searchable.map((field) => ({ [field]: { $regex: escapeRegex(search), $options: 'i' } }));
         }
         if (req.query.status) filter.status = req.query.status;
         const items = await Model.find(filter)
@@ -21,22 +23,26 @@ function createResourceController(Model, options = {}) {
     },
     create: async (req, res, next) => {
       try {
+        const payload = sanitizePayload(Model, req.body);
+        if (payload.error) return res.status(400).json({ success: false, message: payload.error });
         if (uniqueFields.length) {
-          const duplicate = await Model.findOne({ $or: uniqueFields.filter((field) => req.body[field]).map((field) => ({ [field]: { $regex: `^${escapeRegex(String(req.body[field]).trim())}$`, $options: 'i' } })) }).lean();
+          const duplicate = await Model.findOne({ $or: uniqueFields.filter((field) => payload.data[field]).map((field) => ({ [field]: { $regex: `^${escapeRegex(String(payload.data[field]).trim())}$`, $options: 'i' } })) }).lean();
           if (duplicate) return res.status(409).json({ success: false, message: 'An employee with the same name or employee number already exists.' });
         }
-        const item = await Model.create(req.body);
+        const item = await Model.create(payload.data);
         if (options.activity) await recordActivity({ user: req.user, ...options.activity.create(item), recordId: item._id });
         res.status(201).json({ success: true, data: item });
       } catch (error) { next(error); }
     },
     update: async (req, res, next) => {
       try {
+        const payload = sanitizePayload(Model, req.body);
+        if (payload.error) return res.status(400).json({ success: false, message: payload.error });
         if (uniqueFields.length) {
-          const duplicate = await Model.findOne({ _id: { $ne: req.params.id }, $or: uniqueFields.filter((field) => req.body[field]).map((field) => ({ [field]: { $regex: `^${escapeRegex(String(req.body[field]).trim())}$`, $options: 'i' } })) }).lean();
+          const duplicate = await Model.findOne({ _id: { $ne: req.params.id }, $or: uniqueFields.filter((field) => payload.data[field]).map((field) => ({ [field]: { $regex: `^${escapeRegex(String(payload.data[field]).trim())}$`, $options: 'i' } })) }).lean();
           if (duplicate) return res.status(409).json({ success: false, message: 'An employee with the same name or employee number already exists.' });
         }
-        const item = await Model.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true }).populate(options.populate || []);
+        const item = await Model.findByIdAndUpdate(req.params.id, { $set: payload.data }, { new: true, runValidators: true }).populate(options.populate || []);
         if (!item) return res.status(404).json({ success: false, message: 'Record not found.' });
         if (options.activity) await recordActivity({ user: req.user, ...options.activity.update(item), recordId: item._id });
         res.json({ success: true, data: item });
@@ -53,8 +59,17 @@ function createResourceController(Model, options = {}) {
   };
 }
 
+function sanitizePayload(Model, body) {
+  if (!body || typeof body !== 'object' || Array.isArray(body)) return { error: 'Request body must be an object.' };
+  const allowed = new Set(Object.keys(Model.schema.paths).filter((field) => !['_id', '__v', 'createdAt', 'updatedAt'].includes(field)));
+  const keys = Object.keys(body);
+  if (keys.some((field) => !allowed.has(field) || field.startsWith('$') || field.includes('.'))) return { error: 'Request contains unsupported fields.' };
+  return { data: body };
+}
+
 function escapeRegex(value) {
   return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
 module.exports = createResourceController;
+module.exports.sanitizePayload = sanitizePayload;

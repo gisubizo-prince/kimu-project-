@@ -1,6 +1,7 @@
 import axios from 'axios';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+const API_URL = import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://localhost:5000/api' : '');
+if (!API_URL) throw new Error('VITE_API_URL must be set for production builds.');
 const TOKEN_KEY = 'kimu_token';
 let pendingRequests = 0;
 let loadingTimer;
@@ -114,6 +115,22 @@ export const taxiDriverApi = {
   create: (payload) => api.post('/taxi-drivers', payload),
   update: (id, payload) => api.put(`/taxi-drivers/${id}`, payload),
   remove: (id) => api.delete(`/taxi-drivers/${id}`),
+};
+
+export const certificateApi = {
+  list: (params) => api.get('/certificates', { params }),
+  create: (metadata, file, confirmDuplicate = false) => api.post('/certificates', { ...metadata, confirmDuplicate, pdf: file.name, pdfBase64: file.data }),
+  updateStatus: (id, status, reason) => api.patch(`/certificates/${id}/status`, { status, reason }),
+  update: (id, payload) => api.patch(`/certificates/${id}`, payload),
+  detail: (id) => api.get(`/certificates/${id}`),
+  audit: (id) => api.get(`/certificates/${id}/audit`),
+  archive: (id) => api.delete(`/certificates/${id}`, { params: { confirm: true } }),
+  stats: () => api.get('/certificates/stats'),
+  replacePdf: (id, file) => api.post(`/certificates/${id}/pdf`, { confirm: true, pdf: file.name, pdfBase64: file.data }),
+  regeneratePdf: (id) => api.post(`/certificates/${id}/pdf/regenerate`, {}),
+  qr: (id, format = 'png') => api.get(`/certificates/${id}/qr`, { params: { format, download: 1 }, responseType: 'blob' }),
+  printablePdf: (id) => api.get(`/certificates/${id}/printable-pdf`, { responseType: 'blob' }),
+  originalPdf: (id) => api.get(`/certificates/${id}/original-pdf`, { responseType: 'blob' }),
 };
 
 export { TOKEN_KEY };

@@ -1,13 +1,15 @@
 {
   "name": "kimu-transport-backend",
   "version": "1.0.0",
-  "description": "Kimu Transport Management System - Backend API",
+  "description": "Legacy launcher for the canonical Kimu backend in the parent directory",
   "main": "server.js",
   "type": "commonjs",
+  "private": true,
+  "engines": { "node": ">=22.12 <23" },
   "scripts": {
-    "start": "node server.js",
-    "dev": "nodemon server.js",
-    "seed:admin": "node utils/seedAdmin.js"
+    "start": "node ../server.js",
+    "dev": "nodemon ../server.js",
+    "seed:admin": "node ../utils/seedAdmin.js"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
@@ -16,7 +18,10 @@
     "express": "^4.19.2",
     "express-validator": "^7.1.0",
     "jsonwebtoken": "^9.0.2",
-    "mongoose": "^8.5.0"
+    "mongoose": "^8.5.0",
+    "nodemailer": "^10.0.0",
+    "pdf-lib": "^1.17.1",
+    "qrcode": "^1.5.4"
   },
   "devDependencies": {
     "nodemon": "^3.1.4"

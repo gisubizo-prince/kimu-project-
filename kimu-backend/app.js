@@ -1,6 +1,8 @@
 const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
+const crypto = require('crypto');
+const { apiLimit, loginLimit } = require('./middleware/rateLimit');
 mongoose.set('bufferCommands', false);
 const { errorHandler, notFound } = require('./middleware/errorHandler');
 const authRoutes = require('./routes/authRoutes');
@@ -20,27 +22,70 @@ const maitriseReportRoutes = require('./routes/maitriseReportRoutes');
 const contactRoutes = require('./routes/contactRoutes');
 const testimonialRoutes = require('./routes/testimonialRoutes');
 const taxiDriverRoutes = require('./routes/taxiDriverRoutes');
+const certificateRoutes = require('./routes/certificateRoutes');
 
 const app = express();
-const allowedOrigins = new Set([process.env.CLIENT_URL || 'http://localhost:5173']);
+if (process.env.TRUST_PROXY_HOPS && /^(?:0|[1-9]\d*)$/.test(process.env.TRUST_PROXY_HOPS)) app.set('trust proxy', Number(process.env.TRUST_PROXY_HOPS));
+const configuredClientOrigin = process.env.CLIENT_URL ? (() => { try { return new URL(process.env.CLIENT_URL).origin; } catch { return process.env.CLIENT_URL; } })() : 'http://localhost:5173';
+const allowedOrigins = new Set([configuredClientOrigin]);
 if (process.env.NODE_ENV !== 'production') {
   allowedOrigins.add('http://localhost:5173');
   allowedOrigins.add('http://127.0.0.1:5173');
 }
 
 // --- Core middleware ---
+app.use((req, res, next) => {
+  req.requestId = crypto.randomUUID();
+  res.set('X-Request-Id', req.requestId);
+  res.set({
+    'X-Content-Type-Options': 'nosniff',
+    'X-Frame-Options': 'DENY',
+    'Referrer-Policy': 'no-referrer',
+    'Permissions-Policy': 'camera=(), microphone=(), geolocation=()',
+    'Cross-Origin-Resource-Policy': 'same-origin',
+  });
+  if (process.env.NODE_ENV === 'production') res.set('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
+  next();
+});
+app.use((req, res, next) => {
+  const origin = req.get('Origin');
+  if (origin && !allowedOrigins.has(origin)) return res.status(403).json({ success: false, message: 'Origin is not allowed.', requestId: req.requestId });
+  next();
+});
 app.use(
   cors({
     origin: (origin, callback) => callback(null, !origin || allowedOrigins.has(origin)),
-    credentials: true,
+    credentials: false,
   })
 );
-app.use(express.json({ limit: '50mb' }));
-app.use(express.urlencoded({ extended: true, limit: '50mb' }));
+app.use('/api', apiLimit);
+app.use('/api/auth/login', loginLimit);
+app.use(express.json({ limit: '15mb' }));
+app.use(express.urlencoded({ extended: true, limit: '1mb', parameterLimit: 100 }));
 
 // --- Health check ---
 app.get('/api/health', (req, res) => {
-  res.status(200).json({ success: true, message: 'METRIZE Training API is running.' });
+  const ready = mongoose.connection.readyState === 1;
+  res.status(ready ? 200 : 503).json({ success: ready, status: ready ? 'ready' : 'unavailable' });
+});
+
+// Private-network scrape endpoint. The production edge only proxies /api/*;
+// this route is reachable by the internal monitoring network, not browsers.
+app.get('/internal/metrics', (req, res) => {
+  const ready = mongoose.connection.readyState === 1 ? 1 : 0;
+  const memory = process.memoryUsage();
+  res.type('text/plain; version=0.0.4; charset=utf-8').send([
+    '# HELP kimu_api_up API process is accepting requests.',
+    '# TYPE kimu_api_up gauge',
+    'kimu_api_up 1',
+    '# HELP kimu_mongodb_ready MongoDB connection readiness.',
+    '# TYPE kimu_mongodb_ready gauge',
+    `kimu_mongodb_ready ${ready}`,
+    '# HELP kimu_process_resident_memory_bytes Resident memory in bytes.',
+    '# TYPE kimu_process_resident_memory_bytes gauge',
+    `kimu_process_resident_memory_bytes ${memory.rss}`,
+    '',
+  ].join('\n'));
 });
 
 // --- Feature routes ---
@@ -57,6 +102,7 @@ app.use('/api/maitrise-reports', maitriseReportRoutes);
 app.use('/api/contacts', contactRoutes);
 app.use('/api/testimonials', testimonialRoutes);
 app.use('/api/taxi-drivers', taxiDriverRoutes);
+app.use('/api/certificates', certificateRoutes);
 app.get('/api/dashboard/summary', require('./middleware/auth').protect, async (req, res, next) => {
   try {
     const today = getLocalDateKey();

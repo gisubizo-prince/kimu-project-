@@ -1,4 +1,5 @@
 const User = require('../models/User');
+const AuditLog = require('../models/AuditLog');
 const generateToken = require('../utils/generateToken');
 
 /**
@@ -9,7 +10,7 @@ async function login(req, res, next) {
   try {
     const { email, password } = req.body;
 
-    if (!email || !password) {
+    if (typeof email !== 'string' || typeof password !== 'string' || !email || !password || email.length > 254 || password.length > 128) {
       return res.status(400).json({ success: false, message: 'Email and password are required.' });
     }
 
@@ -58,6 +59,16 @@ async function register(req, res, next) {
     if (!fullName || !email || !password) {
       return res.status(400).json({ success: false, message: 'Full name, email, and password are required.' });
     }
+    if (typeof fullName !== 'string' || fullName.length > 200 || typeof email !== 'string' || email.length > 254 || !/^\S+@\S+\.\S+$/.test(email) || typeof password !== 'string' || password.length > 128 || (phone !== undefined && (typeof phone !== 'string' || phone.length > 40))) {
+      return res.status(400).json({ success: false, message: 'User details are invalid.' });
+    }
+
+    if (role !== undefined && !['super_admin', 'admin', 'hr_staff', 'security', 'manager'].includes(role)) {
+      return res.status(400).json({ success: false, message: 'Invalid role.' });
+    }
+    if (role === 'super_admin' && req.user.role !== 'super_admin') {
+      return res.status(403).json({ success: false, message: 'Only a super administrator can assign the super administrator role.' });
+    }
 
     const existing = await User.findOne({ email: email.toLowerCase() });
     if (existing) {
@@ -65,6 +76,7 @@ async function register(req, res, next) {
     }
 
     const user = await User.create({ fullName, email, password, role, phone });
+    if (role === 'super_admin') await AuditLog.create({ user: req.user._id, action: 'assigned super_admin role', entity: 'user', recordId: String(user._id), details: { role } });
 
     res.status(201).json({
       success: true,

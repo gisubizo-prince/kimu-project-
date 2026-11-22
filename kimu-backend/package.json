@@ -4,10 +4,19 @@
   "description": "Kimu Transport Management System - Backend API",
   "main": "server.js",
   "type": "commonjs",
+  "engines": {
+    "node": ">=22.12 <23"
+  },
   "scripts": {
     "start": "node server.js",
     "dev": "nodemon server.js",
-    "seed:admin": "node utils/seedAdmin.js"
+    "seed:admin": "node utils/seedAdmin.js",
+    "test:certificates": "node --test tests/certificate-api.test.js",
+    "test:security": "node --test tests/security-config.test.js",
+    "test:operations": "node --test tests/database-backup.test.js",
+    "migrate:attendance-index": "node scripts/remove-obsolete-attendance-index.js",
+    "db:backup": "node scripts/database-backup.js",
+    "db:restore": "node scripts/database-restore.js"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
@@ -17,9 +26,12 @@
     "express-validator": "^7.1.0",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.5.0",
-    "nodemailer": "^10.0.0"
+    "nodemailer": "^10.0.0",
+    "pdf-lib": "^1.17.1",
+    "qrcode": "^1.5.4"
   },
   "devDependencies": {
+    "jsqr": "^1.4.0",
     "nodemon": "^3.1.4"
   }
 }

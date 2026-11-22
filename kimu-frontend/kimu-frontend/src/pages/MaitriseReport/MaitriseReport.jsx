@@ -169,9 +169,8 @@ export default function MaitriseReport() {
   }
 
   async function downloadExcel(report) {
-    const XLSX = await import('xlsx');
+    const { createMaitriseWorkbook } = await import('../../utils/createMaitriseWorkbook.js');
     const data = exportableReport(report);
-    const workbook = XLSX.utils.book_new();
     const summary = [
       ['RAPORO Y’UMUNSI'],
       ['Itariki', data.date],
@@ -199,9 +198,8 @@ export default function MaitriseReport() {
       'Amasaha yakoreshejwe': Number(car.hours_worked).toFixed(2),
       'Imikoreshereze': car.status === 'Not used' ? 'Ntiyakoreshejwe' : 'Yarakoreshejwe',
     }));
-    XLSX.utils.book_append_sheet(workbook, XLSX.utils.aoa_to_sheet(summary), 'Incamake');
-    XLSX.utils.book_append_sheet(workbook, XLSX.utils.json_to_sheet(vehicles), 'Ibinyabiziga');
-    XLSX.writeFile(workbook, `raporo-maitrise-${report.date}.xlsx`);
+    const bytes = await createMaitriseWorkbook(summary, vehicles);
+    downloadBlob(bytes, `raporo-maitrise-${report.date}.xlsx`, 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
   }
 
   async function downloadPdf(report) {

@@ -1,0 +1,82 @@
+name: kimu-production
+services:
+  api:
+    build:
+      context: ../../kimu-backend
+      dockerfile: ../deploy/production/Dockerfile.api
+    restart: unless-stopped
+    init: true
+    environment:
+      NODE_ENV: production
+      PORT: "5000"
+      MONGO_URI: ${MONGO_URI:?Set a TLS-enabled production MongoDB URI}
+      JWT_SECRET: ${JWT_SECRET:?Set a unique secret of at least 32 characters}
+      JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-15m}
+      CLIENT_URL: https://${PUBLIC_DOMAIN:?Set PUBLIC_DOMAIN}
+      PUBLIC_APP_URL: https://${PUBLIC_DOMAIN:?Set PUBLIC_DOMAIN}
+      TRUST_PROXY_HOPS: "1"
+      CERTIFICATE_STORAGE_DIR: /data/certificates
+    volumes:
+      - certificate_files:/data/certificates
+    expose:
+      - "5000"
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "node",
+          "-e",
+          "fetch('http://127.0.0.1:5000/api/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))",
+        ]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+    networks: [app]
+  web:
+    build:
+      context: ../../kimu-frontend/kimu-frontend
+      dockerfile: ../../deploy/production/Dockerfile.web
+      args:
+        VITE_API_URL: https://${PUBLIC_DOMAIN}/api
+    restart: unless-stopped
+    expose: ["80"]
+    networks: [app]
+  edge:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    depends_on:
+      api: { condition: service_healthy }
+      web: { condition: service_started }
+    environment:
+      PUBLIC_DOMAIN: ${PUBLIC_DOMAIN:?Set PUBLIC_DOMAIN to a DNS name pointing here}
+    ports: ["80:80", "443:443", "443:443/udp"]
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    networks: [app]
+  prometheus:
+    image: prom/prometheus:v3.5.0
+    restart: unless-stopped
+    command:
+      [
+        "--config.file=/etc/prometheus/prometheus.yml",
+        "--storage.tsdb.path=/prometheus",
+        "--storage.tsdb.retention.time=15d",
+      ]
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./alerts.yml:/etc/prometheus/alerts.yml:ro
+      - prometheus_data:/prometheus
+    networks: [app]
+  # Exactly one API instance until rate limiting uses a shared store.
+  # Prometheus and alert rules are private; connect a receiver before release.
+volumes:
+  certificate_files:
+  caddy_data:
+  caddy_config:
+  prometheus_data:
+networks:
+  app:
+    internal: false

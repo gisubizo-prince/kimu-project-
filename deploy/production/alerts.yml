@@ -1,0 +1,21 @@
+groups:
+  - name: kimu-production
+    rules:
+      - alert: KimuApiUnavailable
+        expr: up{job="kimu-api"} == 0
+        for: 2m
+        labels: { severity: critical }
+        annotations:
+          summary: Kimu API metrics endpoint unavailable
+      - alert: KimuMongoUnavailable
+        expr: kimu_mongodb_ready == 0
+        for: 1m
+        labels: { severity: critical }
+        annotations:
+          summary: Kimu API cannot reach MongoDB
+      - alert: KimuApiMemoryHigh
+        expr: kimu_process_resident_memory_bytes > 1073741824
+        for: 10m
+        labels: { severity: warning }
+        annotations:
+          summary: Kimu API resident memory exceeds 1 GiB

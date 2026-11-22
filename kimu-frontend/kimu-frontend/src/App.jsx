@@ -1,32 +1,38 @@
+import { lazy, Suspense } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import ProtectedRoute from './routes/ProtectedRoute';
 import AppLayout from './components/layout/AppLayout';
-import { NetworkLoader } from './components/common/LoadingIndicator';
+import LoadingIndicator, { NetworkLoader } from './components/common/LoadingIndicator';
 
-import Login from './pages/Login/Login';
-import Dashboard from './pages/Dashboard/Dashboard';
-import Attendance from './pages/Attendance/Attendance';
-import Visitors from './pages/Visitors/Visitors';
-import Reports from './pages/Reports/Reports';
-import Notifications from './pages/Notifications/Notifications';
-import Settings, { AdminControls } from './pages/Settings/Settings';
-import Students from './pages/Students/Students';
-import VisitorList from './pages/Visitors/VisitorList';
-import MaitriseReport from './pages/MaitriseReport/MaitriseReport';
-import Home from './pages/Home/Home';
-import Contacts from './pages/Contacts/Contacts';
-import Testimonials from './pages/Testimonials/Testimonials';
-import TaxiDrivers from './pages/TaxiDrivers/TaxiDrivers';
-import TaxiDriverDetails from './pages/TaxiDrivers/TaxiDriverDetails';
+const Login = lazy(() => import('./pages/Login/Login'));
+const Dashboard = lazy(() => import('./pages/Dashboard/Dashboard'));
+const Attendance = lazy(() => import('./pages/Attendance/Attendance'));
+const Visitors = lazy(() => import('./pages/Visitors/Visitors'));
+const Reports = lazy(() => import('./pages/Reports/Reports'));
+const Notifications = lazy(() => import('./pages/Notifications/Notifications'));
+const Settings = lazy(() => import('./pages/Settings/Settings'));
+const AdminControls = lazy(() => import('./pages/Settings/Settings').then((module) => ({ default: module.AdminControls })));
+const Students = lazy(() => import('./pages/Students/Students'));
+const VisitorList = lazy(() => import('./pages/Visitors/VisitorList'));
+const MaitriseReport = lazy(() => import('./pages/MaitriseReport/MaitriseReport'));
+const Home = lazy(() => import('./pages/Home/Home'));
+const Contacts = lazy(() => import('./pages/Contacts/Contacts'));
+const Testimonials = lazy(() => import('./pages/Testimonials/Testimonials'));
+const TaxiDrivers = lazy(() => import('./pages/TaxiDrivers/TaxiDrivers'));
+const TaxiDriverDetails = lazy(() => import('./pages/TaxiDrivers/TaxiDriverDetails'));
+const Certverify = lazy(() => import('./pages/Certverify/Certverify'));
+const VerifyCertificate = lazy(() => import('./pages/Certverify/VerifyCertificate'));
 
 export default function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
         <NetworkLoader />
+        <Suspense fallback={<LoadingIndicator />}>
         <Routes>
           <Route path="/login" element={<Login />} />
+          <Route path="/verify-certificate/:id" element={<VerifyCertificate />} />
 
           <Route
             element={
@@ -36,6 +42,7 @@ export default function App() {
             }
           >
             <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/certverify" element={<ProtectedRoute roles={['super_admin', 'admin']}><Certverify /></ProtectedRoute>} />
             <Route path="/students" element={<Students />} />
             <Route path="/employees" element={<Navigate to="/students" replace />} />
             <Route path="/attendance" element={<Attendance />} />
@@ -56,6 +63,7 @@ export default function App() {
           <Route path="/taxi-drivers/:id" element={<TaxiDriverDetails />} />
           <Route path="*" element={<Navigate to="/dashboard" replace />} />
         </Routes>
+        </Suspense>
       </AuthProvider>
     </BrowserRouter>
   );

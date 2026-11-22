@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const Attendance = require('../models/Attendance');
 
 /**
  * Connects to MongoDB using MONGO_URI from environment variables.
@@ -21,18 +20,12 @@ async function connectDB() {
       socketTimeoutMS: 10000,
     });
 
-    const attendanceIndexes = await Attendance.collection.indexes().catch(() => []);
-    const obsoleteEmployeeIndex = attendanceIndexes.find((index) =>
-      index.unique && index.key?.employeeName === 1 && index.key?.date === 1 && Object.keys(index.key).length === 2
-    );
-    if (obsoleteEmployeeIndex) await Attendance.collection.dropIndex(obsoleteEmployeeIndex.name);
-
     console.log(
       `[db] MongoDB connected: ${conn.connection.host}/${conn.connection.name}`
     );
 
     mongoose.connection.on('error', (err) => {
-      console.error('[db] MongoDB connection error:', err.message);
+      console.error('[db] MongoDB connection error:', err.name || 'database error');
     });
 
     mongoose.connection.on('disconnected', () => {
@@ -40,10 +33,10 @@ async function connectDB() {
     });
   } catch (error) {
     console.error(
-      `[db] Failed to connect to MongoDB at ${uri || 'undefined'}: ${error.message}`
+      `[db] Failed to connect to MongoDB: ${error.name || 'connection error'}`
     );
     console.error(
-      '[db] Start MongoDB on port 27017 or update MONGO_URI in .env.'
+      '[db] Check MongoDB availability and the configured MONGO_URI.'
     );
     process.exit(1);
   }

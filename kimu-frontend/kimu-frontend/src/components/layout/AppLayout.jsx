@@ -6,6 +6,7 @@ import './AppLayout.css';
 
 const PAGE_TITLES = {
   '/dashboard': 'Dashboard',
+  '/certverify': 'Certverify',
   '/students': 'Students',
   '/employees': 'Students',
   '/attendance': 'Attendance',
