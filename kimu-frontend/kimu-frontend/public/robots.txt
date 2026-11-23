@@ -1,0 +1,18 @@
+
+User-agent: *
+Allow: /
+
+Disallow: /dashboard
+Disallow: /students
+Disallow: /employees
+Disallow: /attendance
+Disallow: /visitors
+Disallow: /reports
+Disallow: /maitrise-report
+Disallow: /notifications
+Disallow: /settings
+Disallow: /certverify
+Disallow: /testimonials/manage
+Disallow: /taxi-drivers/manage
+
+Sitemap: https://www.kimudigital.com/sitemap.xml
