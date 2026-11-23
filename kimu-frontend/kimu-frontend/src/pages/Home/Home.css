@@ -28,17 +28,18 @@
   align-items:center;
   width:auto;
   height:68px;
-  padding:0;
+  box-sizing:border-box;
+  padding:3px 8px;
   border:0;
   border-radius:0;
   outline:0;
   box-shadow:none;
-  background:transparent;
+  background:#fff;
   color:#153a29;
   text-align:left;
   flex-shrink:0;
 }
-.maitrize-nav__brand img { display:block; width:170px; height:62px; object-fit:contain; mix-blend-mode:multiply; }
+.maitrize-nav__brand img { display:block; width:170px; height:62px; object-fit:contain; }
 .maitrize-nav.is-scrolled { height: 72px; background: #fff; color: #17211d; box-shadow: 0 8px 30px rgba(18,58,41,.12); border-bottom: 0; }
 .maitrize-nav__links { display: flex; align-items: center; justify-content: center; gap: clamp(10px,1.5vw,24px); flex: 1; }
 .maitrize-nav__links button, .maitrize-mobile-menu button, .maitrize-footer button {
@@ -257,7 +258,7 @@
 @media (max-width:760px) {
   .maitrize-nav { height:68px; padding:0 16px; }
   .maitrize-nav.is-scrolled { height:64px; }
-  .maitrize-nav__brand { width:auto; height:58px; padding:0; }
+  .maitrize-nav__brand { width:auto; height:58px; padding:2px 7px; }
   .maitrize-nav__brand img { width:148px; height:54px; }
   .maitrize-language { display:none; }
   .maitrize-nav__cta { display:none; }

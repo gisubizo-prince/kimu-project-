@@ -44,3 +44,64 @@
 .cv-form-submit .cv-primary:focus-visible{outline:3px solid #18764b55;outline-offset:2px}
 @media(max-width:760px){.cv-form-grid--three{grid-template-columns:repeat(2,minmax(0,1fr))}.cv-form-grid--three .cv-form-grid__full{grid-column:1/-1}}
 @media(max-width:600px){.cv-form-section{padding:18px 0}.cv-form-section__heading{gap:10px}.cv-form-grid,.cv-form-grid--three{grid-template-columns:minmax(0,1fr);padding-left:0;gap:14px}.cv-form-grid__full{grid-column:auto}.cv-notes-field,.cv-upload-panel,.cv-upload-note,.cv-form-submit{margin-left:0;padding-left:0}.cv-upload-panel{padding:12px;gap:10px}.cv-upload-panel__icon{flex-basis:36px;width:36px;height:36px}.cv-upload-panel__button{padding:7px 9px}.cv-form-submit{align-items:stretch;flex-direction:column}.cv-form-submit .cv-primary{width:100%}}
+
+/* Certificate register: calm, readable admin table with compact row controls. */
+.cv-register{overflow:visible;padding:0}
+.cv-register__header{display:flex;align-items:center;justify-content:space-between;gap:22px;padding:24px 24px 20px;border-bottom:1px solid #e8ede9}
+.cv-register__title{display:flex;align-items:center;gap:13px;min-width:260px}
+.cv-register__title-icon{display:grid;place-items:center;flex:0 0 44px;width:44px;height:44px;border:1px solid #d9eadf;border-radius:13px;background:linear-gradient(145deg,#f1f8f3,#e4f2e8);color:#18764b;font-size:1.15rem;font-weight:800}
+.cv-register__eyebrow{margin:0 0 3px;color:#18764b;font-size:.67rem;font-weight:800;letter-spacing:.13em}
+.cv-register__title h2{margin:0 0 4px;color:#1c3026;font-size:1.2rem}
+.cv-register__title p:last-child{margin:0;color:#718078;font-size:.84rem}
+.cv-register__tools{display:flex;align-items:center;justify-content:flex-end;gap:10px;width:min(100%,520px)}
+.cv-register__search{display:flex;align-items:center;gap:8px;flex:1;min-width:180px;height:42px;padding:0 12px;border:1px solid #d8e1db;border-radius:9px;background:#fff;color:#7c8b82}
+.cv-register__search:focus-within,.cv-register__filter:focus-within{border-color:#18764b;box-shadow:0 0 0 3px #18764b1c}
+.cv-register__search>span{font-size:1.1rem;line-height:1;transform:rotate(-20deg)}
+.cv-register__search input{width:100%;min-width:0;border:0;outline:0;background:transparent;color:#20352b;font:inherit;font-size:.84rem}
+.cv-register__search input::placeholder{color:#9aa79f}
+.cv-register__filter{height:42px;border:1px solid #d8e1db;border-radius:9px;background:#fff}
+.cv-register__filter select{height:100%;min-width:132px;padding:0 30px 0 11px;border:0;outline:0;background:transparent;color:#33463c;font:inherit;font-size:.84rem;cursor:pointer}
+.cv-register__summary{display:flex;align-items:center;justify-content:space-between;padding:13px 24px;color:#7b8981;font-size:.78rem}
+.cv-register__result-count{color:#43564b;font-weight:750}
+.cv-table-wrap{overflow-x:auto;border-top:1px solid #eef1ee}
+.cv-table--register{min-width:990px;border-collapse:separate;border-spacing:0;text-align:left}
+.cv-table--register thead th{padding:12px 15px;background:#f7f9f7;color:#78867e;font-size:.67rem;letter-spacing:.09em}
+.cv-table--register tbody td{padding:16px 15px;border-bottom:1px solid #edf0ed;color:#3e5046;vertical-align:middle;white-space:normal}
+.cv-table--register tbody tr{transition:background .15s ease}
+.cv-table--register tbody tr:hover{background:#fbfdfb}
+.cv-table--register tbody tr:last-child td{border-bottom:0}
+.cv-certificate-id{display:flex;align-items:center;gap:8px;white-space:nowrap}
+.cv-certificate-id strong{color:#20352b;font-size:.83rem;font-variant-numeric:tabular-nums;letter-spacing:.01em}
+.cv-certificate-id__mark{display:grid;place-items:center;width:25px;height:25px;border-radius:7px;background:#eef5f0;color:#18764b;font-size:.68rem;font-weight:850}
+.cv-verification-link{display:inline-flex;align-items:center;gap:4px;margin:6px 0 0 33px;color:#18764b;font-size:.73rem;font-weight:650;text-decoration:none}
+.cv-verification-link:hover{text-decoration:underline}
+.cv-register__student{color:#263a30;font-size:.84rem;font-weight:700}
+.cv-register__course{display:inline-block;padding:5px 9px;border:1px solid #e5ebe6;border-radius:7px;background:#f8faf8;color:#52645a;font-size:.76rem;font-weight:650}
+.cv-register__date{color:#53645a;font-size:.8rem;font-variant-numeric:tabular-nums;white-space:nowrap}
+.cv-table--register .cv-status{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border:1px solid transparent;font-size:.73rem;letter-spacing:.015em}
+.cv-table--register .cv-status--valid{border-color:#d9eddf;background:#eff8f1;color:#17643f}
+.cv-table--register .cv-status--revoked{border-color:#f4d8d6;background:#fff4f3;color:#a73434}
+.cv-status__dot{width:7px;height:7px;border-radius:50%;background:currentColor}
+.cv-table__actions-cell{min-width:205px}
+.cv-table__actions{display:flex;align-items:center;gap:7px;white-space:nowrap}
+.cv-action-button,.cv-actions-menu>summary{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:34px;padding:7px 10px;border:1px solid #dbe5dd;border-radius:8px;background:#fff;color:#3b5144;font:inherit;font-size:.73rem;font-weight:700;cursor:pointer;list-style:none}
+.cv-action-button:hover,.cv-actions-menu>summary:hover{border-color:#a8c8b2;background:#f6faf7;color:#17643f}
+.cv-action-button--primary{border-color:#18764b;background:#18764b;color:#fff}
+.cv-action-button--primary:hover{border-color:#12633e;background:#12633e;color:#fff}
+.cv-action-button--primary>span{font-size:.95rem}
+.cv-actions-menu{position:relative}
+.cv-actions-menu>summary::-webkit-details-marker{display:none}
+.cv-actions-menu>summary::marker{content:""}
+.cv-actions-menu>summary>span{font-size:1rem;line-height:.7}
+.cv-actions-menu[open]{align-self:flex-start}
+.cv-actions-menu__panel{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin-top:9px;padding:10px;border:1px solid #e0e8e2;border-radius:10px;background:#fff;box-shadow:0 8px 24px #18251f12;white-space:normal}
+.cv-actions-menu__panel button,.cv-actions-menu__file{min-height:34px;padding:8px 9px;border:1px solid #e7ece8;border-radius:7px;background:#fbfcfb;color:#3d5145;text-align:left;font:inherit;font-size:.73rem;font-weight:650;cursor:pointer}
+.cv-actions-menu__panel button:hover,.cv-actions-menu__file:hover{border-color:#bdd5c4;background:#f3f8f4;color:#17643f}
+.cv-actions-menu__panel .cv-actions-menu__danger{color:#a73434}
+.cv-actions-menu__file{position:relative;overflow:hidden}
+.cv-actions-menu__file input{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer}
+.cv-pagination--register{margin:0 24px;padding:15px 0 18px;border-top:1px solid #edf0ed}
+.cv-pagination--register button{min-width:82px;font-weight:650}
+.cv-table--register .cv-empty{padding:38px 16px!important;color:#718078;font-size:.87rem}
+@media(max-width:900px){.cv-register__header{align-items:flex-start;flex-direction:column}.cv-register__tools{width:100%;max-width:none}}
+@media(max-width:600px){.cv-register__header{padding:19px 16px 16px}.cv-register__title{align-items:flex-start;min-width:0}.cv-register__title-icon{flex-basis:38px;width:38px;height:38px}.cv-register__title h2{font-size:1.08rem}.cv-register__tools{align-items:stretch;flex-direction:column}.cv-register__search{min-height:42px}.cv-register__filter select{width:100%}.cv-register__summary{padding:12px 16px}.cv-pagination--register{align-items:flex-start;flex-direction:column;gap:12px;margin:0 16px}.cv-pagination--register>div{width:100%}.cv-pagination--register button{flex:1}.cv-actions-menu__panel{grid-template-columns:1fr}}
