@@ -17,7 +17,8 @@ const publicOrigin = () => {
   if (!configured) throw pdfError('PUBLIC_APP_URL must be configured in production.', 500);
   try { return new URL(configured).origin; } catch { throw pdfError('PUBLIC_APP_URL must be a valid public application URL.', 500); }
 };
-const verificationUrl = (certificate) => `${publicOrigin()}/verify-certificate/${certificate.verificationToken || certificate.certificateId}`;
+const publicVerificationUrl = (identifier) => `${publicOrigin()}/verify-certificate/${encodeURIComponent(identifier)}`;
+const verificationUrl = (certificate) => publicVerificationUrl(certificate.verificationToken || certificate.certificateId);
 const view = (doc) => ({
   certificateId: doc.certificateId, studentName: doc.studentName, course: doc.course,
   institution: doc.institution, issueDate: doc.issueDate, graduationDate: doc.graduationDate,
@@ -128,7 +129,7 @@ router.post('/', async (req, res, next) => {
     const certificateId = suppliedId || `CERT-${new Date().getFullYear()}-${crypto.randomBytes(5).toString('hex').toUpperCase()}`;
     if (await Certificate.exists({ certificateId })) return res.status(409).json({ success: false, code: 'CERTIFICATE_NUMBER_EXISTS', message: 'That certificate number is already in use.' });
     const token = crypto.randomBytes(32).toString('base64url');
-    const files = await storePdfPair(bytes, `${publicOrigin()}/verify-certificate/${token}`);
+    const files = await storePdfPair(bytes, publicVerificationUrl(token));
     let certificate;
     try {
       certificate = await Certificate.create({

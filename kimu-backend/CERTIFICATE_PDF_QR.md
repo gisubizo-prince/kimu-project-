@@ -25,7 +25,7 @@ Install from the backend folder with `npm ci`. The lockfile includes the depende
 
 Set `CERTIFICATE_STORAGE_DIR` to an absolute, private, persistent directory on the backend host. Production startup fails if this is missing or relative. In development, unset files go to `backend/storage/certificates`, which is ignored by Git and never served as static content. Keep the volume private and include it in coordinated backup/restore procedures. Files use opaque random names; on POSIX systems the directory is set to mode `0700` and files use mode `0600`. Verify ACLs and persistence on the actual host; this has not been tested on a production volume.
 
-Set `PUBLIC_APP_URL` to the public SPA origin (for example, `https://certificates.example.org`). It takes precedence over `CLIENT_URL`; development falls back to `http://localhost:5173`. The QR code points to the SPA route, which fetches the live public verification endpoint.
+Set `PUBLIC_APP_URL` and `CLIENT_URL` to the public SPA origin `https://www.kimudigital.com` in production; development falls back to `http://localhost:5173`. The QR code points to `/verify-certificate/{token}`, which fetches the live public verification endpoint.
 
 In production, `PUBLIC_APP_URL` and `CLIENT_URL` must both be configured as HTTPS origins. `TRUST_PROXY_HOPS` must be set to the exact trusted proxy count; incorrect trust can allow spoofed client IPs to bypass IP-based rate limits.
 
