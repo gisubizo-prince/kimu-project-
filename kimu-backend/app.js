@@ -27,7 +27,12 @@ const certificateRoutes = require('./routes/certificateRoutes');
 const app = express();
 if (process.env.TRUST_PROXY_HOPS && /^(?:0|[1-9]\d*)$/.test(process.env.TRUST_PROXY_HOPS)) app.set('trust proxy', Number(process.env.TRUST_PROXY_HOPS));
 const configuredClientOrigin = process.env.CLIENT_URL ? (() => { try { return new URL(process.env.CLIENT_URL).origin; } catch { return process.env.CLIENT_URL; } })() : 'http://localhost:5173';
-const allowedOrigins = new Set([configuredClientOrigin]);
+const allowedOrigins = new Set([
+  configuredClientOrigin,
+  'https://www.kimudigital.com',
+  'https://kimudigital.com',
+  'https://kimutransport.vercel.app',
+]);
 if (process.env.NODE_ENV !== 'production') {
   allowedOrigins.add('http://localhost:5173');
   allowedOrigins.add('http://127.0.0.1:5173');
