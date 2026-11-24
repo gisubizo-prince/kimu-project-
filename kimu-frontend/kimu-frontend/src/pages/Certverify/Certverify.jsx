@@ -2,7 +2,17 @@ import { useCallback, useEffect, useState } from 'react';
 import { certificateApi } from '../../services/api';
 import './Certverify.css';
 
-const empty = { certificateNumber: '', studentName: '', course: '', institution: 'KIMU TRANSPORT', issueDate: '', graduationDate: '', department: '', academicYear: '', notes: '' };
+const empty = {
+  certificateNumber: '',
+  studentName: '',
+  course: 'MAITRISE TRAINING',
+  institution: 'KIMU TRANSPORT AND MULTISERVICES',
+  issueDate: '',
+  graduationDate: '',
+  department: 'TRANSPORT DEPARTMENT',
+  academicYear: '2026-2027',
+  notes: "Turabashimira! Iki cyemezo cy'amahugurwa ni umwimerere kandi cyagenzuwe neza, gisangwa mu bubiko bw'amakuru yemewe bw'ikigo cyacu. Amakuru agaragazwa haruguru ahuye n'ibiri mu nyandiko zemewe z'ikigo cyacu.",
+};
 const messageOf = (error) => error?.message || 'Unable to complete the request. Please try again.';
 
 export default function Certverify() {
