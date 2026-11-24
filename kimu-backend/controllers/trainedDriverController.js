@@ -1,5 +1,6 @@
 const TrainedDriver = require('../models/TrainedDriver');
 const Student = require('../models/Student');
+const DRIVER_STATUSES = ['Arimukazi', 'Yavuye mukazi', 'Ntarabona imodoka'];
 
 async function list(req, res, next) {
   try {
@@ -40,6 +41,22 @@ async function update(req, res, next) {
   } catch (error) { next(error); }
 }
 
+async function updateStatus(req, res, next) {
+  try {
+    const { status, description = '' } = req.body;
+    if (!DRIVER_STATUSES.includes(status)) return res.status(400).json({ success: false, message: 'Hitamo status yemewe.' });
+    const cleanDescription = typeof description === 'string' ? description.trim() : '';
+    if (status === 'Yavuye mukazi' && !cleanDescription) {
+      return res.status(400).json({ success: false, message: 'Sobanura impamvu umushoferi yavuye mukazi.' });
+    }
+    const driver = await TrainedDriver.findByIdAndUpdate(req.params.id, {
+      status, statusDescription: status === 'Yavuye mukazi' ? cleanDescription : '',
+    }, { new: true, runValidators: true });
+    if (!driver) return res.status(404).json({ success: false, message: 'Umushoferi ntabonetse.' });
+    res.json({ success: true, data: driver });
+  } catch (error) { next(error); }
+}
+
 async function remove(req, res, next) {
   try {
     const driver = await TrainedDriver.findOneAndDelete({ _id: req.params.id, sourceStudentId: { $exists: false } });
@@ -49,4 +66,4 @@ async function remove(req, res, next) {
 }
 
 function escapeRegex(value) { return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }
-module.exports = { list, create, update, remove };
+module.exports = { list, create, update, updateStatus, remove };

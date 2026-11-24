@@ -16,6 +16,7 @@ const AdminControls = lazy(() => import('./pages/Settings/Settings').then((modul
 const Students = lazy(() => import('./pages/Students/Students'));
 const VisitorList = lazy(() => import('./pages/Visitors/VisitorList'));
 const MaitriseReport = lazy(() => import('./pages/MaitriseReport/MaitriseReport'));
+const AdminReport = lazy(() => import('./pages/AdminReport/AdminReport'));
 const Home = lazy(() => import('./pages/Home/Home'));
 const Contacts = lazy(() => import('./pages/Contacts/Contacts'));
 const Testimonials = lazy(() => import('./pages/Testimonials/Testimonials'));
@@ -53,6 +54,7 @@ export default function App() {
             <Route path="/visitors/list" element={<VisitorList />} />
             <Route path="/reports" element={<Reports />} />
             <Route path="/maitrise-report" element={<MaitriseReport />} />
+            <Route path="/admin-report" element={<ProtectedRoute roles={['super_admin', 'admin']}><AdminReport /></ProtectedRoute>} />
             <Route path="/notifications" element={<Notifications />} />
             <Route path="/contacts" element={<Contacts />} />
             <Route path="/settings" element={<Settings />} />

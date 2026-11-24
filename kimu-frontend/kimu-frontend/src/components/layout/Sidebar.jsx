@@ -5,11 +5,12 @@ import './Sidebar.css';
 
 const NAV_ITEMS = [
   { to: '/dashboard', label: 'Dashboard', icon: GridIcon },
-  { to: '/students', label: 'Students', icon: UsersIcon },
+  { to: '/students', label: 'Abashoferi', icon: UsersIcon },
   { to: '/trained-drivers', label: 'Abashoferi bahuguwe', icon: SteeringIcon, roles: ['super_admin', 'admin', 'hr_staff', 'manager'] },
   { to: '/attendance', label: 'Attendance', icon: ClockIcon },
   { to: '/reports', label: 'Daily Reports', icon: ChartIcon },
   { to: '/maitrise-report', label: 'MAITRISE REPORT', icon: ReportIcon },
+  { to: '/admin-report', label: 'Admin Report', icon: ReportIcon, roles: ['super_admin', 'admin'] },
   { to: '/contacts', label: 'Contact', icon: ContactIcon },
   { to: '/testimonials/manage', label: 'Testimonials', icon: TestimonialIcon, roles: ['super_admin', 'admin'] },
   { to: '/taxi-drivers/manage', label: 'Taxi drivers', icon: SteeringIcon, roles: ['super_admin', 'admin'] },

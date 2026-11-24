@@ -121,6 +121,7 @@ export const trainedDriverApi = {
   list: (params) => api.get('/trained-drivers', { params }),
   create: (payload) => api.post('/trained-drivers', payload),
   update: (id, payload) => api.put(`/trained-drivers/${id}`, payload),
+  updateStatus: (id, payload) => api.patch(`/trained-drivers/${id}/status`, payload),
   remove: (id) => api.delete(`/trained-drivers/${id}`),
 };
 
