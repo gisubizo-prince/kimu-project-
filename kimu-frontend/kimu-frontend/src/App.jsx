@@ -21,6 +21,7 @@ const Contacts = lazy(() => import('./pages/Contacts/Contacts'));
 const Testimonials = lazy(() => import('./pages/Testimonials/Testimonials'));
 const TaxiDrivers = lazy(() => import('./pages/TaxiDrivers/TaxiDrivers'));
 const TaxiDriverDetails = lazy(() => import('./pages/TaxiDrivers/TaxiDriverDetails'));
+const TrainedDrivers = lazy(() => import('./pages/TrainedDrivers/TrainedDrivers'));
 const Certverify = lazy(() => import('./pages/Certverify/Certverify'));
 const VerifyCertificate = lazy(() => import('./pages/Certverify/VerifyCertificate'));
 
@@ -44,6 +45,7 @@ export default function App() {
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/certverify" element={<ProtectedRoute roles={['super_admin', 'admin']}><Certverify /></ProtectedRoute>} />
             <Route path="/students" element={<Students />} />
+            <Route path="/trained-drivers" element={<ProtectedRoute roles={['super_admin', 'admin', 'hr_staff', 'manager']}><TrainedDrivers /></ProtectedRoute>} />
             <Route path="/employees" element={<Navigate to="/students" replace />} />
             <Route path="/attendance" element={<Attendance />} />
             <Route path="/attendance/list" element={<Navigate to="/attendance" replace />} />

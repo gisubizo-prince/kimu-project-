@@ -1,5 +1,6 @@
 const crypto = require('crypto');
 const Student = require('../models/Student');
+const TrainedDriver = require('../models/TrainedDriver');
 const { getLocalDateKey } = require('../utils/localTime');
 
 async function list(req, res, next) {
@@ -66,6 +67,9 @@ async function update(req, res, next) {
     }
     const student = await Student.findByIdAndUpdate(req.params.id, updates, { new: true, runValidators: true });
     if (!student) return res.status(404).json({ success: false, message: 'Student not found.' });
+    if (student.status === 'pass') {
+      await TrainedDriver.updateOne({ sourceStudentId: student._id }, { $set: { fullName: student.fullName, phone: student.phone } });
+    }
     res.json({ success: true, data: student });
   } catch (error) {
     if (error.code === 11000 && error.keyPattern?.normalizedName) {
@@ -82,6 +86,15 @@ async function setStatus(req, res, next) {
     }
     const student = await Student.findByIdAndUpdate(req.params.id, { status: req.body.status }, { new: true, runValidators: true });
     if (!student) return res.status(404).json({ success: false, message: 'Student not found.' });
+    if (student.status === 'pass') {
+      await TrainedDriver.findOneAndUpdate(
+        { sourceStudentId: student._id },
+        { $set: { fullName: student.fullName, phone: student.phone }, $setOnInsert: { startedAt: new Date() } },
+        { upsert: true, new: true, runValidators: true, setDefaultsOnInsert: true }
+      );
+    } else {
+      await TrainedDriver.deleteOne({ sourceStudentId: student._id });
+    }
     res.json({ success: true, data: student });
   } catch (error) { next(error); }
 }
@@ -90,6 +103,7 @@ async function remove(req, res, next) {
   try {
     const student = await Student.findByIdAndDelete(req.params.id);
     if (!student) return res.status(404).json({ success: false, message: 'Student not found.' });
+    await TrainedDriver.deleteOne({ sourceStudentId: student._id });
     res.json({ success: true, message: 'Student deleted successfully.' });
   } catch (error) { next(error); }
 }

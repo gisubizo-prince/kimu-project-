@@ -22,6 +22,7 @@ const maitriseReportRoutes = require('./routes/maitriseReportRoutes');
 const contactRoutes = require('./routes/contactRoutes');
 const testimonialRoutes = require('./routes/testimonialRoutes');
 const taxiDriverRoutes = require('./routes/taxiDriverRoutes');
+const trainedDriverRoutes = require('./routes/trainedDriverRoutes');
 const certificateRoutes = require('./routes/certificateRoutes');
 
 const app = express();
@@ -107,6 +108,7 @@ app.use('/api/maitrise-reports', maitriseReportRoutes);
 app.use('/api/contacts', contactRoutes);
 app.use('/api/testimonials', testimonialRoutes);
 app.use('/api/taxi-drivers', taxiDriverRoutes);
+app.use('/api/trained-drivers', trainedDriverRoutes);
 app.use('/api/certificates', certificateRoutes);
 app.get('/api/dashboard/summary', require('./middleware/auth').protect, async (req, res, next) => {
   try {

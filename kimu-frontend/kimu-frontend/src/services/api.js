@@ -117,6 +117,13 @@ export const taxiDriverApi = {
   remove: (id) => api.delete(`/taxi-drivers/${id}`),
 };
 
+export const trainedDriverApi = {
+  list: (params) => api.get('/trained-drivers', { params }),
+  create: (payload) => api.post('/trained-drivers', payload),
+  update: (id, payload) => api.put(`/trained-drivers/${id}`, payload),
+  remove: (id) => api.delete(`/trained-drivers/${id}`),
+};
+
 export const certificateApi = {
   list: (params) => api.get('/certificates', { params }),
   create: (metadata, file, confirmDuplicate = false) => api.post('/certificates', { ...metadata, confirmDuplicate, pdf: file.name, pdfBase64: file.data }),

@@ -6,6 +6,7 @@ import './Sidebar.css';
 const NAV_ITEMS = [
   { to: '/dashboard', label: 'Dashboard', icon: GridIcon },
   { to: '/students', label: 'Students', icon: UsersIcon },
+  { to: '/trained-drivers', label: 'Abashoferi bahuguwe', icon: SteeringIcon, roles: ['super_admin', 'admin', 'hr_staff', 'manager'] },
   { to: '/attendance', label: 'Attendance', icon: ClockIcon },
   { to: '/reports', label: 'Daily Reports', icon: ChartIcon },
   { to: '/maitrise-report', label: 'MAITRISE REPORT', icon: ReportIcon },
