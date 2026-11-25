@@ -268,7 +268,7 @@
   .maitrize-nav__cta { display:none; }
   .maitrize-nav__login { display:none; }
   .maitrize-hero { display:flex; flex-direction:column; align-items:stretch; justify-content:flex-start; margin-top:0; padding:68px 0 28px; height:auto; min-height:0; background:#10281d; }
-  .maitrize-hero__backdrop { top:100px; bottom:auto; height:66.75vw; background:#10281d; }
+  .maitrize-hero__backdrop { top:30px; bottom:auto; height:66.75vw; background:#10281d; }
   .maitrize-hero__backdrop > img { object-fit:contain; object-position:center top; }
   .maitrize-hero__shade { top:100px; bottom:auto; height:66.75vw; background:linear-gradient(0deg,rgba(5,20,38,.2),transparent 45%); }
   .maitrize-hero__content { width:calc(100% - 36px); margin:calc(66.75vw + 50px) auto 0 14px; padding:6px 4px; }
