@@ -347,8 +347,8 @@ export default function Home() {
             <button className="maitrize-button maitrize-button--outline" onClick={() => scrollToSection('programme')}>EXPLORE OUR PROGRAMME</button>
           </div>
         </div>
-        <button className="maitrize-hero__arrow maitrize-hero__arrow--left" onClick={() => changeSlide(-1)} aria-label="Previous slide">â€¹</button>
-        <button className="maitrize-hero__arrow maitrize-hero__arrow--right" onClick={() => changeSlide(1)} aria-label="Next slide">â€º</button>
+        <button className="maitrize-hero__arrow maitrize-hero__arrow--left" onClick={() => changeSlide(-1)} aria-label="Previous slide">&#8249;</button>
+        <button className="maitrize-hero__arrow maitrize-hero__arrow--right" onClick={() => changeSlide(1)} aria-label="Next slide">&#8250;</button>
         <div className="maitrize-hero__dots" aria-label="Slide controls">
           {slides.map((item, index) => (
             <button key={item.label} className={index === slide ? 'active' : ''} onClick={() => setSlide(index)} aria-label={`Go to slide ${index + 1}`} aria-current={index === slide ? 'true' : undefined} />
@@ -356,7 +356,7 @@ export default function Home() {
           <span className="maitrize-hero__slide-count"><strong>0{slide + 1}</strong> / 0{slides.length}</span>
         </div>
         <a className="maitrize-hero__photo-credit" href={current.source} target="_blank" rel="noreferrer">
-          Illustrative stock photo Â· Photo by {current.credit} on Pexels
+          Illustrative stock photo · Photo by {current.credit} on Pexels
         </a>
       </section>
 
@@ -365,13 +365,13 @@ export default function Home() {
           <div className="maitrize-intro__visual">
             <img src={drivingLessonPhoto} alt="Black learner discussing driving practice with an instructor" loading="lazy" />
             <div className="maitrize-intro__stamp">MAI<br /><strong>TRIZE</strong></div>
-            <a className="maitrize-image-credit" href="https://www.pexels.com/photo/man-in-white-hoodie-sitting-inside-car-with-a-woman-6817037/" target="_blank" rel="noreferrer">Illustrative photo Â· Gustavo Fring / Pexels</a>
+            <a className="maitrize-image-credit" href="https://www.pexels.com/photo/man-in-white-hoodie-sitting-inside-car-with-a-woman-6817037/" target="_blank" rel="noreferrer">Illustrative photo · Gustavo Fring / Pexels</a>
           </div>
           <div className="maitrize-intro__copy">
             <p className="maitrize-eyebrow">WELCOME TO KIMU TRANSPORT</p>
             <h2>WE DON\'T JUST TEACH YOU TO DRIVE. <span>WE PREPARE YOU FOR THE ROAD AHEAD.</span></h2>
             <p>KIMU Transport provides professional driver training focused on practical skills, navigation, road safety and professional conduct. We understand the realities of professional transport work and prepare trainees for the responsibilities that come with it.</p>
-            <button className="maitrize-text-button" onClick={() => scrollToSection('programme')}>DISCOVER MAITRISE <span>â†’</span></button>
+            <button className="maitrize-text-button" onClick={() => scrollToSection('programme')}>DISCOVER MAITRISE <span>&#8594;</span></button>
           </div>
         </section>
 
@@ -398,13 +398,13 @@ export default function Home() {
         <section id="why-kimu" className="maitrize-why">
           <div className="maitrize-why__visual">
             <img src={blackMaleDriverPhoto} alt="Black professional driver behind the wheel" loading="lazy" />
-            <a className="maitrize-image-credit" href="https://www.pexels.com/photo/man-in-white-dress-shirt-driving-car-4606336/" target="_blank" rel="noreferrer">Illustrative photo Â· cottonbro studio / Pexels</a>
+            <a className="maitrize-image-credit" href="https://www.pexels.com/photo/man-in-white-dress-shirt-driving-car-4606336/" target="_blank" rel="noreferrer">Illustrative photo · cottonbro studio / Pexels</a>
           </div>
           <div className="maitrize-why__copy">
             <p className="maitrize-eyebrow maitrize-eyebrow--light">WHY CHOOSE KIMU</p>
             <h2>YOUR FUTURE DESERVES <span>PROFESSIONAL TRAINING.</span></h2>
             <ul>
-              {['Practical, skills-focused training', 'Google Maps and GPS navigation', 'Professional driving preparation', 'Road circulation and parking', 'Road safety awareness', 'Customer service and professionalism', 'Real transport industry expectations', 'Eligible graduates may explore opportunities'].map((item) => <li key={item}><b>âœ“</b>{item}</li>)}
+              {['Practical, skills-focused training', 'Google Maps and GPS navigation', 'Professional driving preparation', 'Road circulation and parking', 'Road safety awareness', 'Customer service and professionalism', 'Real transport industry expectations', 'Eligible graduates may explore opportunities'].map((item) => <li key={item}><b>&#10003;</b>{item}</li>)}
             </ul>
           </div>
         </section>
@@ -416,12 +416,12 @@ export default function Home() {
               <h2>MEET YOUR <span>KIMU DRIVER.</span></h2>
               <p className="maitrize-drivers__intro">Get to know the people behind the wheel and the vehicles ready for your Kigali journey.</p>
             </div>
-            {drivers.length > 1 && <div className="maitrize-drivers__controls" aria-label="Driver carousel controls"><button type="button" onClick={() => scrollDrivers(-1)} disabled={!driverScroll.canScrollBack} aria-label="Show previous drivers">â†</button><button type="button" onClick={() => scrollDrivers(1)} disabled={!driverScroll.canScrollForward} aria-label="Show more drivers">â†’</button></div>}
+            {drivers.length > 1 && <div className="maitrize-drivers__controls" aria-label="Driver carousel controls"><button type="button" onClick={() => scrollDrivers(-1)} disabled={!driverScroll.canScrollBack} aria-label="Show previous drivers">&#8592;</button><button type="button" onClick={() => scrollDrivers(1)} disabled={!driverScroll.canScrollForward} aria-label="Show more drivers">&#8594;</button></div>}
           </div>
           {drivers.length ? <div className="maitrize-driver-viewport" ref={driverViewport} role="region" aria-roledescription="carousel" aria-label="KIMU taxi drivers" tabIndex="0"><div className="maitrize-driver-track">{drivers.map((driver, index) => <button className="maitrize-driver-card" type="button" key={driver._id} onClick={() => navigate(`/taxi-drivers/${driver._id}`)} aria-label={`View ${driver.fullName}'s driver and vehicle profile`}>
             <span className="maitrize-driver-card__photos"><img className="maitrize-driver-card__portrait" src={driver.profileImage} alt={`${driver.fullName}`} loading="lazy"/><img className="maitrize-driver-card__car" src={driver.carImages?.[0] || drivingLessonPhoto} alt={driver.carImages?.length ? `${driver.fullName}'s car` : 'KIMU vehicle'} loading="lazy"/><span className="maitrize-driver-card__index">{String(index + 1).padStart(2, '0')}</span></span>
-            <span className="maitrize-driver-card__details"><span className="maitrize-driver-card__location"><i/> {driver.location || 'Kigali, Rwanda'}</span><strong>{driver.fullName}</strong><span className="maitrize-driver-card__vehicle">{driver.car?.make} {driver.car?.model}{driver.car?.year ? ` Â· ${driver.car.year}` : ''}</span><span className="maitrize-driver-card__cta">VIEW DRIVER <b>â†—</b></span></span>
-          </button>)}</div></div> : <div className="maitrize-drivers__empty"><span>âœ³</span><strong>Our Kigali drivers are getting ready.</strong><p>Meet the KIMU team here soon.</p></div>}
+            <span className="maitrize-driver-card__details"><span className="maitrize-driver-card__location"><i/> {driver.location || 'Kigali, Rwanda'}</span><strong>{driver.fullName}</strong><span className="maitrize-driver-card__vehicle">{driver.car?.make} {driver.car?.model}{driver.car?.year ? ` · ${driver.car.year}` : ''}</span><span className="maitrize-driver-card__cta">VIEW DRIVER <b>&#8599;</b></span></span>
+          </button>)}</div></div> : <div className="maitrize-drivers__empty"><span>✳</span><strong>Our Kigali drivers are getting ready.</strong><p>Meet the KIMU team here soon.</p></div>}
         </section>
 
         <section id="maitrize" className="maitrize-journey maitrize-section">
@@ -450,7 +450,7 @@ export default function Home() {
           </div>
           <div className="maitrize-careers__visual">
             <img src={confidentDriverPhoto} alt="Black woman smiling behind the wheel" loading="lazy" />
-            <a className="maitrize-image-credit" href="https://www.pexels.com/photo/young-woman-driving-a-car-and-smiling-17164787/" target="_blank" rel="noreferrer">Illustrative photo Â· Abiy Fikru / Pexels</a>
+            <a className="maitrize-image-credit" href="https://www.pexels.com/photo/young-woman-driving-a-car-and-smiling-17164787/" target="_blank" rel="noreferrer">Illustrative photo · Abiy Fikru / Pexels</a>
           </div>
         </section>
 
@@ -478,14 +478,14 @@ export default function Home() {
                     <span className="maitrize-testimonial__label">STUDENT STORY</span>
                   </div>
                   <div className="maitrize-testimonial__rule" />
-                  <div className="maitrize-testimonial__quote-mark" aria-hidden="true">â€œ</div>
+                  <div className="maitrize-testimonial__quote-mark" aria-hidden="true">&#8220;</div>
                   <p>{testimonial.message}</p>
-                  <footer>MAITRISE <span>Â·</span> KIMU TRANSPORT</footer>
+                  <footer>MAITRISE <span>·</span> KIMU TRANSPORT</footer>
                   <span className="maitrize-testimonial__number" aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>
                 </article>
               ))}
             </div>
-            {testimonialsLoading && <div className="maitrize-testimonials__empty" role="status"><span>Loading student storiesâ€¦</span></div>}
+            {testimonialsLoading && <div className="maitrize-testimonials__empty" role="status"><span>Loading student stories&#8230;</span></div>}
             {!testimonialsLoading && testimonials.length === 0 && (
               <div className="maitrize-testimonials__empty" role={testimonialsError ? 'alert' : 'status'}>
                 <span className="maitrize-testimonials__empty-icon"><QuoteIcon /></span>
@@ -511,7 +511,7 @@ export default function Home() {
             ].map(([title, image, photographer, source], index) => (
               <figure key={title} className={`maitrize-gallery__item maitrize-gallery__item--${index + 1}`}>
                 <img src={image} alt={title} loading="lazy" />
-                <figcaption><strong>{title}</strong><a href={source} target="_blank" rel="noreferrer">Illustrative photo Â· {photographer} / Pexels</a></figcaption>
+                <figcaption><strong>{title}</strong><a href={source} target="_blank" rel="noreferrer">Illustrative photo · {photographer} / Pexels</a></figcaption>
               </figure>
             ))}
           </div>
@@ -526,7 +526,7 @@ export default function Home() {
             {t.faqs.map(([question, answer], index) => (
               <article key={question}>
                 <button onClick={() => setOpenFaq(openFaq === index ? -1 : index)} aria-expanded={openFaq === index}>
-                  <span>{question}</span><b>{openFaq === index ? 'âˆ’' : '+'}</b>
+                  <span>{question}</span><b>{openFaq === index ? '−' : '+'}</b>
                 </button>
                 {openFaq === index && <p>{answer}</p>}
               </article>
@@ -576,7 +576,7 @@ export default function Home() {
           <p>Telephone: <a href="tel:+250794388376">0794388376</a></p>
         </div>
         <div className="maitrize-footer__bottom">
-          <span>Â© {new Date().getFullYear()} KIMU TRANSPORT AND MULTISERVICES LTD</span>
+          <span>© {new Date().getFullYear()} KIMU TRANSPORT AND MULTISERVICES LTD</span>
           <a href="/login">Staff login</a>
         </div>
       </footer>
