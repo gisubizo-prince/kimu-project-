@@ -545,14 +545,26 @@ export default function Home() {
         </div>
         <div>
           <h3>Contact</h3>
-          <p>Website: <a href="https://www.kimutransport.com" target="_blank" rel="noreferrer">kimutransport.com</a></p>
-          <p>Telephone: <a href="tel:+250793999">+250 793 999</a></p>
+          <p>Website: <a href="https://kimudigital.com" target="_blank" rel="noreferrer">kimudigital.com</a></p>
+          <p>Telephone: <a href="tel:+250794388376">0794388376</a></p>
         </div>
         <div className="maitrize-footer__bottom">
           <span>© {new Date().getFullYear()} KIMU TRANSPORT AND MULTISERVICES LTD</span>
           <a href="/login">Staff login</a>
         </div>
       </footer>
+      <a
+        className="maitrize-whatsapp"
+        href="https://wa.me/250782739381"
+        target="_blank"
+        rel="noreferrer"
+        aria-label="Chat on WhatsApp at 0782739381"
+      >
+        <svg viewBox="0 0 32 32" aria-hidden="true">
+          <path d="M16.02 3.2A12.7 12.7 0 0 0 5.1 22.38L3.4 28.6l6.37-1.67A12.7 12.7 0 1 0 16.02 3.2Zm0 23.1c-1.9 0-3.76-.51-5.4-1.48l-.39-.23-3.78.99 1.01-3.68-.25-.4a10.37 10.37 0 1 1 8.81 4.8Zm5.7-7.77c-.31-.16-1.84-.91-2.13-1.02-.29-.1-.5-.15-.71.16-.2.3-.81 1.02-.99 1.22-.18.21-.36.23-.67.08-.31-.16-1.3-.48-2.47-1.53-.91-.81-1.53-1.82-1.71-2.13-.18-.31-.02-.48.14-.64.14-.14.31-.36.46-.54.15-.18.2-.31.31-.51.1-.21.05-.39-.03-.54-.08-.16-.71-1.7-.97-2.32-.26-.61-.52-.52-.71-.53h-.61c-.21 0-.54.08-.82.39-.28.31-1.07 1.05-1.07 2.57s1.1 2.98 1.25 3.19c.15.2 2.16 3.3 5.24 4.63.73.32 1.3.51 1.75.65.74.23 1.41.2 1.94.12.59-.09 1.84-.75 2.1-1.48.26-.72.26-1.34.18-1.48-.08-.13-.28-.21-.59-.36Z" />
+        </svg>
+        <span>0782739381</span>
+      </a>
     </div>
   );
 }
