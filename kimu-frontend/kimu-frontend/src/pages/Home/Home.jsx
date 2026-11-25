@@ -10,22 +10,13 @@ import blackMaleDriverPhoto from '../../assets/hero-photos/black-man-driver.jpg'
 import gpsPhoto from '../../assets/hero-photos/gps-navigation.jpg';
 import './Home.css';
 
-const copy = {
-  en: {
-    nav: ['Home', 'About Us', 'MAITRISE', 'Training Programme', 'Meet Your Kimu Driver', 'Testimonials', 'Contact'],
-    enroll: 'ENROLL NOW',
-  },
-  rw: {
-    nav: ['Ahabanza', 'Twebwe', 'MAITRISE', 'Gahunda yo Kwiga', 'Hura Umushoferi wa KIMU', 'Abanyeshuri', 'Twandikire'],
-    enroll: 'ANDIKA NONAHO',
-  },
-};
+
 
 const slides = [
   {
     label: 'KIMU TRANSPORT PRESENTS MAITRISE',
     title: ['FROM LEARNING TO DRIVE', 'TO BECOMING A', 'PROFESSIONAL DRIVER.'],
-    text: "Your journey to professional driving starts here. Gain practical driving skills, master navigation and prepare for opportunities in Rwanda's transport industry.",
+    text: "Your journey to professional driving starts here. Gain practical driving skills, master navigation and prepare for opportunities in Rwanda\'s transport industry.",
     image: instructorLearnerPhoto,
     credit: 'Gustavo Fring',
     source: 'https://www.pexels.com/photo/smiling-woman-at-steering-wheel-in-car-6817008/',
@@ -78,13 +69,49 @@ const faqs = [
   ['How do I register?', 'Use the enrollment form below or contact KIMU Transport using the verified contact details listed in the footer.'],
 ];
 
+const copy = {
+  en: {
+    nav: ['Home', 'About Us', 'MAITRISE', 'Training Programme', 'Meet Your Kimu Driver', 'Testimonials', 'Contact'],
+    enroll: 'ENROLL NOW',
+    login: 'STAFF LOGIN',
+    mobileLogin: 'Staff / Admin Login',
+    slides: slides,
+    modules,
+    journey,
+    faqs,
+  },
+  rw: {
+    nav: ['Ahabanza', 'Twebwe', 'MAITRISE', 'Gahunda yo Kwiga', 'Hura Umushoferi wa KIMU', 'Abanyeshuri', 'Twandikire'],
+    enroll: 'ANDIKA NONAHO',
+    login: 'ABAKOZI BINJIRE',
+    mobileLogin: 'Abakozi / Abayobozi binjire',
+    slides: [
+      { ...slides[0], label: 'KIMU TRANSPORT IKEREKANA MAITRISE', title: ['KUVA KU KWIGA', 'GUTWARA IKINYABIZIGA', 'KUGERA KU BUSHOFERI BW\'UMWUGA.'], text: 'Urugendo rwawe rwo kuba umushoferi w\'umwuga rutangirira hano. Wunguka ubumenyi ngiro bwo gutwara, kumenya inzira no kwitegura amahirwe mu rwego rw\'ubwikorezi mu Rwanda.' },
+      { ...slides[1], label: 'ABASHOFERI BIZEYE KANDI B\'UMWUGA', title: ['IGA UYOBOWE.', 'TWARA WIZEYE.'], text: 'Wunguka ubumenyi ngiro bwo gutwara ukoresheje inyigisho zisobanutse, imyitozo yibanda ku byo ukeneye n\'ubuyobozi bw\'abanyamwuga.' },
+      { ...slides[2], label: 'URUGENDO RWAWE RUHEREYE HANO', title: ['IGICE GISHYA', 'GITANGIRA UHEREYE KU MUHANDA.'], text: 'Witegure kuba umushoferi w\'umwuga wunguka ubumenyi ngiro, kumenya umutekano wo mu muhanda no kugira icyizere cyo gutera intambwe ikurikira.' },
+    ],
+    modules: [
+      ['01', 'Gutwara ikinyabiziga mu buryo ngiro', 'Kumenya ikinyabiziga, kuyobora, kwihutisha, gufata feri no gutwara witonze.', ...modules[0].slice(3)],
+      ['02', 'Google Maps na GPS', 'Gushaka aho ujya, gusobanukirwa inzira, kohereza aho uri no kuyobora abakiriya.', ...modules[1].slice(3)],
+      ['03', 'Kugendera mu muhanda', 'Ibyapa, imirongo, amategeko y\'umuhanda, amasangano, kuguma mu murongo no kugendera mu mutekano.', ...modules[2].slice(3)],
+      ['04', 'Guhagarika ikinyabiziga kinyamwuga', 'Guhagarika mu mutekano, gusubira inyuma, guhagarika iruhande rw\'umuhanda no kugihagarika neza.', ...modules[3].slice(3)],
+      ['05', 'Umutekano wo mu muhanda', 'Kumenya ibyateza impanuka, kwirinda ibyago, gusiga intera ihagije no gutwara witonze.', ...modules[4].slice(3)],
+      ['06', 'Kinyamwuga mu gutwara tagisi', 'Kwita ku bakiriya, kuvugana neza, kubahiriza igihe no gutanga serivisi nziza.', ...modules[5].slice(3)],
+      ['07', 'Kugenzura ikinyabiziga', 'Kugenzura ibanze, isuku, kwita ku mikorere no kumenyesha ibibazo.', ...modules[6].slice(3)],
+      ['08', 'Kwitegura akazi nyakuri', 'Kunguka icyizere n\'imyitwarire ikenewe mu kazi k\'ubwikorezi kinyamwuga.', ...modules[7].slice(3)],
+    ],
+    journey: [['01', 'Kwiyandikisha', 'Iyandikishe muri gahunda y\'amahugurwa ya MAITRISE.'], ['02', 'Kwiga', 'Sobanukirwa amahame yo gutwara, umutekano wo mu muhanda n\'imyitwarire y\'akazi.'], ['03', 'Gukora imyitozo', 'Kunguka ubumenyi bwo gutwara, guhagarika ikinyabiziga no kugendera mu muhanda.'], ['04', 'Kumenya inzira', 'Iga gukoresha Google Maps, GPS no kohereza aho uherereye.'], ['05', 'Kwitegura', 'Kunguka icyizere gitegerejwe ku bashoferi b\'umwuga.'], ['06', 'Gushaka amahirwe', 'Menya amahirwe bitewe n\'ibisabwa n\'uko gutoranywa bikorwa.']],
+    faqs: [['MAITRISE ni iki?', 'MAITRISE ni gahunda ya KIMU Transport yo guhugura abashoferi b\'umwuga, yibanda ku bumenyi ngiro, kumenya inzira, umutekano wo mu muhanda n\'imyitwarire y\'akazi.'], ['Ni nde ushobora kwitabira?', 'Ibisabwa byemezwa na KIMU Transport mu gihe cyo gusaba no gutoranya abazitabira.'], ['Ese nziga gukoresha Google Maps?', 'Yego. Amahugurwa akubiyemo Google Maps, GPS, gushaka aho ujya, gutegura inzira no kohereza aho uherereye.'], ['Ese mutanga amasomo yo gutwara ikinyabiziga mu buryo ngiro?', 'Imyitozo yo gutwara ni ingenzi muri MAITRISE, bitewe n\'uko gahunda ihagaze n\'ibisabwa mu mahugurwa.'], ['Abasoje amahugurwa babona akazi?', 'MAITRISE igamije gutegura abahugurwa ku mahirwe mu rwego rw\'ubwikorezi. Amahirwe ashingira ku bisabwa, gutoranywa n\'amabwiriza ya sosiyete.'], ['Nakora nte ngo niyandikishe?', 'Koresha urupapuro rwo kwiyandikisha rukurikira cyangwa uhamagare KIMU Transport ukoresheje amakuru ari ku mpera y\'urubuga.']],
+  },
+};
+
 export default function Home() {
   const navigate = useNavigate();
   const [slide, setSlide] = useState(0);
   const [paused, setPaused] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const [language, setLanguage] = useState('en');
+  const [language, setLanguage] = useState(() => localStorage.getItem('kimu-language') === 'rw' ? 'rw' : 'en');
   const [openFaq, setOpenFaq] = useState(0);
   const [formState, setFormState] = useState({ status: '', message: '' });
   const [submitting, setSubmitting] = useState(false);
@@ -250,7 +277,7 @@ export default function Home() {
   }
 
   const t = copy[language];
-  const current = slides[slide];
+  const current = t.slides[slide];
 
   return (
     <div className="maitrize-home">
@@ -266,10 +293,10 @@ export default function Home() {
           ))}
         </nav>
         <div className="maitrize-nav__actions">
-          <button className="maitrize-language" onClick={() => setLanguage((value) => (value === 'en' ? 'rw' : 'en'))} aria-label="Change language">
+          <button className="maitrize-language" onClick={() => setLanguage((value) => { const next = value === 'en' ? 'rw' : 'en'; localStorage.setItem('kimu-language', next); return next; })} aria-label="Change language">
             {language === 'en' ? 'RW' : 'EN'}
           </button>
-          <button className="maitrize-nav__login" onClick={() => navigate('/login')}>STAFF LOGIN</button>
+          <button className="maitrize-nav__login" onClick={() => navigate('/login')}>{t.login}</button>
           <button className="maitrize-nav__cta" onClick={() => scrollToSection('contact')}>{t.enroll}</button>
           <button className="maitrize-menu" onClick={() => setMenuOpen((open) => !open)} aria-expanded={menuOpen} aria-label="Toggle navigation">
             <span /><span />
@@ -282,7 +309,7 @@ export default function Home() {
                 {label}
               </button>
             ))}
-            <button className="maitrize-mobile-menu__login" onClick={() => navigate('/login')}>Staff / Admin Login</button>
+            <button className="maitrize-mobile-menu__login" onClick={() => navigate('/login')}>{t.mobileLogin}</button>
           </nav>
         )}
       </header>
@@ -320,8 +347,8 @@ export default function Home() {
             <button className="maitrize-button maitrize-button--outline" onClick={() => scrollToSection('programme')}>EXPLORE OUR PROGRAMME</button>
           </div>
         </div>
-        <button className="maitrize-hero__arrow maitrize-hero__arrow--left" onClick={() => changeSlide(-1)} aria-label="Previous slide">‹</button>
-        <button className="maitrize-hero__arrow maitrize-hero__arrow--right" onClick={() => changeSlide(1)} aria-label="Next slide">›</button>
+        <button className="maitrize-hero__arrow maitrize-hero__arrow--left" onClick={() => changeSlide(-1)} aria-label="Previous slide">â€¹</button>
+        <button className="maitrize-hero__arrow maitrize-hero__arrow--right" onClick={() => changeSlide(1)} aria-label="Next slide">â€º</button>
         <div className="maitrize-hero__dots" aria-label="Slide controls">
           {slides.map((item, index) => (
             <button key={item.label} className={index === slide ? 'active' : ''} onClick={() => setSlide(index)} aria-label={`Go to slide ${index + 1}`} aria-current={index === slide ? 'true' : undefined} />
@@ -329,7 +356,7 @@ export default function Home() {
           <span className="maitrize-hero__slide-count"><strong>0{slide + 1}</strong> / 0{slides.length}</span>
         </div>
         <a className="maitrize-hero__photo-credit" href={current.source} target="_blank" rel="noreferrer">
-          Illustrative stock photo · Photo by {current.credit} on Pexels
+          Illustrative stock photo Â· Photo by {current.credit} on Pexels
         </a>
       </section>
 
@@ -338,13 +365,13 @@ export default function Home() {
           <div className="maitrize-intro__visual">
             <img src={drivingLessonPhoto} alt="Black learner discussing driving practice with an instructor" loading="lazy" />
             <div className="maitrize-intro__stamp">MAI<br /><strong>TRIZE</strong></div>
-            <a className="maitrize-image-credit" href="https://www.pexels.com/photo/man-in-white-hoodie-sitting-inside-car-with-a-woman-6817037/" target="_blank" rel="noreferrer">Illustrative photo · Gustavo Fring / Pexels</a>
+            <a className="maitrize-image-credit" href="https://www.pexels.com/photo/man-in-white-hoodie-sitting-inside-car-with-a-woman-6817037/" target="_blank" rel="noreferrer">Illustrative photo Â· Gustavo Fring / Pexels</a>
           </div>
           <div className="maitrize-intro__copy">
             <p className="maitrize-eyebrow">WELCOME TO KIMU TRANSPORT</p>
-            <h2>WE DON'T JUST TEACH YOU TO DRIVE. <span>WE PREPARE YOU FOR THE ROAD AHEAD.</span></h2>
+            <h2>WE DON\'T JUST TEACH YOU TO DRIVE. <span>WE PREPARE YOU FOR THE ROAD AHEAD.</span></h2>
             <p>KIMU Transport provides professional driver training focused on practical skills, navigation, road safety and professional conduct. We understand the realities of professional transport work and prepare trainees for the responsibilities that come with it.</p>
-            <button className="maitrize-text-button" onClick={() => scrollToSection('programme')}>DISCOVER MAITRISE <span>→</span></button>
+            <button className="maitrize-text-button" onClick={() => scrollToSection('programme')}>DISCOVER MAITRISE <span>â†’</span></button>
           </div>
         </section>
 
@@ -354,7 +381,7 @@ export default function Home() {
             <h2>THE SKILLS THAT MAKE A <span>PROFESSIONAL DRIVER.</span></h2>
           </div>
           <div className="maitrize-module-grid">
-            {modules.map(([number, title, text, image, photographer], index) => (
+            {t.modules.map(([number, title, text, image, photographer], index) => (
               <article className={`maitrize-module maitrize-module--${index + 1}`} key={title}>
                 <div className="maitrize-module__photo">
                   <img src={image} alt="" loading="lazy" />
@@ -371,13 +398,13 @@ export default function Home() {
         <section id="why-kimu" className="maitrize-why">
           <div className="maitrize-why__visual">
             <img src={blackMaleDriverPhoto} alt="Black professional driver behind the wheel" loading="lazy" />
-            <a className="maitrize-image-credit" href="https://www.pexels.com/photo/man-in-white-dress-shirt-driving-car-4606336/" target="_blank" rel="noreferrer">Illustrative photo · cottonbro studio / Pexels</a>
+            <a className="maitrize-image-credit" href="https://www.pexels.com/photo/man-in-white-dress-shirt-driving-car-4606336/" target="_blank" rel="noreferrer">Illustrative photo Â· cottonbro studio / Pexels</a>
           </div>
           <div className="maitrize-why__copy">
             <p className="maitrize-eyebrow maitrize-eyebrow--light">WHY CHOOSE KIMU</p>
             <h2>YOUR FUTURE DESERVES <span>PROFESSIONAL TRAINING.</span></h2>
             <ul>
-              {['Practical, skills-focused training', 'Google Maps and GPS navigation', 'Professional driving preparation', 'Road circulation and parking', 'Road safety awareness', 'Customer service and professionalism', 'Real transport industry expectations', 'Eligible graduates may explore opportunities'].map((item) => <li key={item}><b>✓</b>{item}</li>)}
+              {['Practical, skills-focused training', 'Google Maps and GPS navigation', 'Professional driving preparation', 'Road circulation and parking', 'Road safety awareness', 'Customer service and professionalism', 'Real transport industry expectations', 'Eligible graduates may explore opportunities'].map((item) => <li key={item}><b>âœ“</b>{item}</li>)}
             </ul>
           </div>
         </section>
@@ -389,12 +416,12 @@ export default function Home() {
               <h2>MEET YOUR <span>KIMU DRIVER.</span></h2>
               <p className="maitrize-drivers__intro">Get to know the people behind the wheel and the vehicles ready for your Kigali journey.</p>
             </div>
-            {drivers.length > 1 && <div className="maitrize-drivers__controls" aria-label="Driver carousel controls"><button type="button" onClick={() => scrollDrivers(-1)} disabled={!driverScroll.canScrollBack} aria-label="Show previous drivers">←</button><button type="button" onClick={() => scrollDrivers(1)} disabled={!driverScroll.canScrollForward} aria-label="Show more drivers">→</button></div>}
+            {drivers.length > 1 && <div className="maitrize-drivers__controls" aria-label="Driver carousel controls"><button type="button" onClick={() => scrollDrivers(-1)} disabled={!driverScroll.canScrollBack} aria-label="Show previous drivers">â†</button><button type="button" onClick={() => scrollDrivers(1)} disabled={!driverScroll.canScrollForward} aria-label="Show more drivers">â†’</button></div>}
           </div>
           {drivers.length ? <div className="maitrize-driver-viewport" ref={driverViewport} role="region" aria-roledescription="carousel" aria-label="KIMU taxi drivers" tabIndex="0"><div className="maitrize-driver-track">{drivers.map((driver, index) => <button className="maitrize-driver-card" type="button" key={driver._id} onClick={() => navigate(`/taxi-drivers/${driver._id}`)} aria-label={`View ${driver.fullName}'s driver and vehicle profile`}>
             <span className="maitrize-driver-card__photos"><img className="maitrize-driver-card__portrait" src={driver.profileImage} alt={`${driver.fullName}`} loading="lazy"/><img className="maitrize-driver-card__car" src={driver.carImages?.[0] || drivingLessonPhoto} alt={driver.carImages?.length ? `${driver.fullName}'s car` : 'KIMU vehicle'} loading="lazy"/><span className="maitrize-driver-card__index">{String(index + 1).padStart(2, '0')}</span></span>
-            <span className="maitrize-driver-card__details"><span className="maitrize-driver-card__location"><i/> {driver.location || 'Kigali, Rwanda'}</span><strong>{driver.fullName}</strong><span className="maitrize-driver-card__vehicle">{driver.car?.make} {driver.car?.model}{driver.car?.year ? ` · ${driver.car.year}` : ''}</span><span className="maitrize-driver-card__cta">VIEW DRIVER <b>↗</b></span></span>
-          </button>)}</div></div> : <div className="maitrize-drivers__empty"><span>✳</span><strong>Our Kigali drivers are getting ready.</strong><p>Meet the KIMU team here soon.</p></div>}
+            <span className="maitrize-driver-card__details"><span className="maitrize-driver-card__location"><i/> {driver.location || 'Kigali, Rwanda'}</span><strong>{driver.fullName}</strong><span className="maitrize-driver-card__vehicle">{driver.car?.make} {driver.car?.model}{driver.car?.year ? ` Â· ${driver.car.year}` : ''}</span><span className="maitrize-driver-card__cta">VIEW DRIVER <b>â†—</b></span></span>
+          </button>)}</div></div> : <div className="maitrize-drivers__empty"><span>âœ³</span><strong>Our Kigali drivers are getting ready.</strong><p>Meet the KIMU team here soon.</p></div>}
         </section>
 
         <section id="maitrize" className="maitrize-journey maitrize-section">
@@ -403,7 +430,7 @@ export default function Home() {
             <h2>FROM BEGINNER TO <span>PROFESSIONAL.</span></h2>
           </div>
           <div className="maitrize-timeline">
-            {journey.map(([number, title, text]) => (
+            {t.journey.map(([number, title, text]) => (
               <article key={title}>
                 <div className="maitrize-timeline__dot">{number}</div>
                 <h3>{title}</h3>
@@ -423,7 +450,7 @@ export default function Home() {
           </div>
           <div className="maitrize-careers__visual">
             <img src={confidentDriverPhoto} alt="Black woman smiling behind the wheel" loading="lazy" />
-            <a className="maitrize-image-credit" href="https://www.pexels.com/photo/young-woman-driving-a-car-and-smiling-17164787/" target="_blank" rel="noreferrer">Illustrative photo · Abiy Fikru / Pexels</a>
+            <a className="maitrize-image-credit" href="https://www.pexels.com/photo/young-woman-driving-a-car-and-smiling-17164787/" target="_blank" rel="noreferrer">Illustrative photo Â· Abiy Fikru / Pexels</a>
           </div>
         </section>
 
@@ -451,14 +478,14 @@ export default function Home() {
                     <span className="maitrize-testimonial__label">STUDENT STORY</span>
                   </div>
                   <div className="maitrize-testimonial__rule" />
-                  <div className="maitrize-testimonial__quote-mark" aria-hidden="true">“</div>
+                  <div className="maitrize-testimonial__quote-mark" aria-hidden="true">â€œ</div>
                   <p>{testimonial.message}</p>
-                  <footer>MAITRISE <span>·</span> KIMU TRANSPORT</footer>
+                  <footer>MAITRISE <span>Â·</span> KIMU TRANSPORT</footer>
                   <span className="maitrize-testimonial__number" aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>
                 </article>
               ))}
             </div>
-            {testimonialsLoading && <div className="maitrize-testimonials__empty" role="status"><span>Loading student stories…</span></div>}
+            {testimonialsLoading && <div className="maitrize-testimonials__empty" role="status"><span>Loading student storiesâ€¦</span></div>}
             {!testimonialsLoading && testimonials.length === 0 && (
               <div className="maitrize-testimonials__empty" role={testimonialsError ? 'alert' : 'status'}>
                 <span className="maitrize-testimonials__empty-icon"><QuoteIcon /></span>
@@ -484,7 +511,7 @@ export default function Home() {
             ].map(([title, image, photographer, source], index) => (
               <figure key={title} className={`maitrize-gallery__item maitrize-gallery__item--${index + 1}`}>
                 <img src={image} alt={title} loading="lazy" />
-                <figcaption><strong>{title}</strong><a href={source} target="_blank" rel="noreferrer">Illustrative photo · {photographer} / Pexels</a></figcaption>
+                <figcaption><strong>{title}</strong><a href={source} target="_blank" rel="noreferrer">Illustrative photo Â· {photographer} / Pexels</a></figcaption>
               </figure>
             ))}
           </div>
@@ -496,10 +523,10 @@ export default function Home() {
             <h2>QUESTIONS BEFORE <span>YOU BEGIN.</span></h2>
           </div>
           <div className="maitrize-accordion">
-            {faqs.map(([question, answer], index) => (
+            {t.faqs.map(([question, answer], index) => (
               <article key={question}>
                 <button onClick={() => setOpenFaq(openFaq === index ? -1 : index)} aria-expanded={openFaq === index}>
-                  <span>{question}</span><b>{openFaq === index ? '−' : '+'}</b>
+                  <span>{question}</span><b>{openFaq === index ? 'âˆ’' : '+'}</b>
                 </button>
                 {openFaq === index && <p>{answer}</p>}
               </article>
@@ -549,7 +576,7 @@ export default function Home() {
           <p>Telephone: <a href="tel:+250794388376">0794388376</a></p>
         </div>
         <div className="maitrize-footer__bottom">
-          <span>© {new Date().getFullYear()} KIMU TRANSPORT AND MULTISERVICES LTD</span>
+          <span>Â© {new Date().getFullYear()} KIMU TRANSPORT AND MULTISERVICES LTD</span>
           <a href="/login">Staff login</a>
         </div>
       </footer>
