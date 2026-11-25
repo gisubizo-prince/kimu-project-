@@ -1,13 +1,14 @@
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { contactApi, testimonialApi, taxiDriverApi } from '../../services/api';
-import kimuLogo from '../../assets/LOGO WEBSITE OK.png';
+import kimuLogo from '../../assets/kimu-digital-logo.png';
 import instructorLearnerPhoto from '../../assets/hero-photos/black-woman-driver.jpg';
 import drivingLessonPhoto from '../../assets/hero-photos/adult-driving-lesson.jpg';
 import confidentDriverPhoto from '../../assets/hero-photos/smiling-driver-ethiopia.jpg';
 import practicePhoto from '../../assets/hero-photos/black-woman-practice.jpg';
 import blackMaleDriverPhoto from '../../assets/hero-photos/black-man-driver.jpg';
 import gpsPhoto from '../../assets/hero-photos/gps-navigation.jpg';
+import kimuTrainingHero from '../../assets/kimu-training-hero.png';
 import './Home.css';
 
 
@@ -17,25 +18,17 @@ const slides = [
     label: 'KIMU TRANSPORT PRESENTS MAITRISE',
     title: ['FROM LEARNING TO DRIVE', 'TO BECOMING A', 'PROFESSIONAL DRIVER.'],
     text: "Your journey to professional driving starts here. Gain practical driving skills, master navigation and prepare for opportunities in Rwanda\'s transport industry.",
-    image: instructorLearnerPhoto,
-    credit: 'Gustavo Fring',
-    source: 'https://www.pexels.com/photo/smiling-woman-at-steering-wheel-in-car-6817008/',
+    image: kimuTrainingHero,
+    credit: 'KIMU Transport',
+    source: '',
   },
   {
     label: 'CONFIDENT, PROFESSIONAL DRIVERS',
     title: ['LEARN WITH GUIDANCE.', 'DRIVE WITH CONFIDENCE.'],
     text: 'Build practical driving skills with clear instruction, focused practice and professional guidance.',
-    image: practicePhoto,
-    credit: 'Gustavo Fring',
-    source: 'https://www.pexels.com/photo/a-young-woman-behind-the-steering-wheel-6816982/',
-  },
-  {
-    label: 'YOUR JOURNEY STARTS HERE',
-    title: ['YOUR NEXT CHAPTER', 'STARTS BEHIND THE WHEEL.'],
-    text: 'Prepare for professional driving with practical skills, road awareness and the confidence to take the next step.',
     image: blackMaleDriverPhoto,
-    credit: 'cottonbro studio',
-    source: 'https://www.pexels.com/photo/man-in-white-dress-shirt-driving-car-4606336/',
+    credit: 'KIMU Transport',
+    source: '',
   },
 ];
 const navTargets = ['home', 'about', 'maitrize', 'programme', 'drivers', 'testimonials', 'contact'];
@@ -88,7 +81,6 @@ const copy = {
     slides: [
       { ...slides[0], label: 'KIMU TRANSPORT IKEREKANA MAITRISE', title: ['KUVA KU KWIGA', 'GUTWARA IKINYABIZIGA', 'KUGERA KU BUSHOFERI BW\'UMWUGA.'], text: 'Urugendo rwawe rwo kuba umushoferi w\'umwuga rutangirira hano. Wunguka ubumenyi ngiro bwo gutwara, kumenya inzira no kwitegura amahirwe mu rwego rw\'ubwikorezi mu Rwanda.' },
       { ...slides[1], label: 'ABASHOFERI BIZEYE KANDI B\'UMWUGA', title: ['IGA UYOBOWE.', 'TWARA WIZEYE.'], text: 'Wunguka ubumenyi ngiro bwo gutwara ukoresheje inyigisho zisobanutse, imyitozo yibanda ku byo ukeneye n\'ubuyobozi bw\'abanyamwuga.' },
-      { ...slides[2], label: 'URUGENDO RWAWE RUHEREYE HANO', title: ['IGICE GISHYA', 'GITANGIRA UHEREYE KU MUHANDA.'], text: 'Witegure kuba umushoferi w\'umwuga wunguka ubumenyi ngiro, kumenya umutekano wo mu muhanda no kugira icyizere cyo gutera intambwe ikurikira.' },
     ],
     modules: [
       ['01', 'Gutwara ikinyabiziga mu buryo ngiro', 'Kumenya ikinyabiziga, kuyobora, kwihutisha, gufata feri no gutwara witonze.', ...modules[0].slice(3)],
@@ -282,8 +274,8 @@ export default function Home() {
   return (
     <div className="maitrize-home">
       <header className={`maitrize-nav ${scrolled ? 'is-scrolled' : ''}`}>
-        <button className="maitrize-nav__brand" onClick={() => scrollToSection('home')} aria-label="KIMU Transport home">
-          <img src={kimuLogo} alt="KIMU Transport and Multiservices Ltd" />
+        <button className="maitrize-nav__brand" onClick={() => scrollToSection('home')} aria-label="KIMU Digital home">
+          <img src={kimuLogo} alt="KIMU Digital" />
         </button>
         <nav className="maitrize-nav__links" aria-label="Main navigation">
           {t.nav.map((label, index) => (
@@ -355,9 +347,9 @@ export default function Home() {
           ))}
           <span className="maitrize-hero__slide-count"><strong>0{slide + 1}</strong> / 0{slides.length}</span>
         </div>
-        <a className="maitrize-hero__photo-credit" href={current.source} target="_blank" rel="noreferrer">
+        {current.source && <a className="maitrize-hero__photo-credit" href={current.source} target="_blank" rel="noreferrer">
           Illustrative stock photo · Photo by {current.credit} on Pexels
-        </a>
+        </a>}
       </section>
 
       <main>
@@ -555,7 +547,7 @@ export default function Home() {
 
       <footer className="maitrize-footer">
         <div className="maitrize-footer__brand">
-          <img src={kimuLogo} alt="KIMU Transport" />
+          <img src={kimuLogo} alt="KIMU Digital" />
           <p>Professional driver training focused on practical skills, navigation, road safety and professional conduct.</p>
         </div>
         <div>
