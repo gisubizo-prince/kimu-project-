@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate, useLocation, Navigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import kimuLogo from '../../assets/LOGO WEBSITE OK.png';
@@ -15,6 +15,19 @@ export default function Login() {
   const [remember, setRemember] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
+
+  useEffect(() => {
+    const previousTitle = document.title;
+    const robots = document.createElement('meta');
+    robots.name = 'robots';
+    robots.content = 'noindex,nofollow';
+    document.head.appendChild(robots);
+    document.title = 'Staff Login | KIMU Digital';
+    return () => {
+      robots.remove();
+      document.title = previousTitle;
+    };
+  }, []);
 
   if (!authLoading && isAuthenticated) {
     const redirectTo = location.state?.from?.pathname || '/dashboard';
