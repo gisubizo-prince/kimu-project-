@@ -81,6 +81,7 @@ export default function App() {
           </Route>
 
           <Route path="/" element={<Home />} />
+          <Route path="/index.html" element={<Navigate to="/" replace />} />
           <Route path="/taxi-drivers/:id" element={<TaxiDriverDetails />} />
           <Route path="*" element={<Navigate to="/dashboard" replace />} />
         </Routes>
