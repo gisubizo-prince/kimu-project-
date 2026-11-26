@@ -34,7 +34,7 @@ Email report delivery additionally requires `MAIL_HOST`, `MAIL_PORT`, `MAIL_SECU
 
 Frontend builds require `VITE_API_URL=https://<api-host>/api`. It is public client configuration, not a secret. The production build deliberately fails when this value is missing, HTTP, localhost, or missing `/api`.
 
-Deploy the frontend from `kimu-frontend/kimu-frontend` with its `vercel.json`. Keep `kimutransport.vercel.app` assigned as an alias to that Vercel project so the host-based redirect can forward legacy links to `https://www.kimudigital.com` with their paths intact. After deployment, verify an old-host certificate URL redirects to the official host and that `/cerificate/<id>` opens the public verifier. A 404 from the old hostname means the alias or redirect deployment is not active.
+Deploy the backend compatibility routes first, then deploy the frontend from `kimu-frontend/kimu-frontend` with its `vercel.json`. Keep `kimutransport.vercel.app` assigned as an alias to that Vercel project so the host-based redirect can forward legacy links to `https://www.kimudigital.com` with their paths intact. After deployment, verify an old-host certificate URL redirects to the official host and that `/cerificate/<id>` opens the public verifier using the ID lookup. A 404 from the old hostname means the alias or redirect deployment is not active.
 
 For the one-time admin bootstrap, configure `SEED_ADMIN_EMAIL`, a unique `SEED_ADMIN_PASSWORD` of at least 12 characters, and `SEED_ADMIN_NAME`; set `SEED_ADMIN_ALLOW=true` for only the approved one-time production run, then unset it and rotate/remove the bootstrap credential. Do not leave the seed flag enabled.
 

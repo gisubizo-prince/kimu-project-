@@ -230,6 +230,12 @@ test('certificate API persistence, authorization, validation, lifecycle and audi
     assert.equal('revocationReason' in result, false);
     assert.equal(result.pdfAvailable, true);
     assert.equal((await get(`${root}/verify/${created.certificateId}`, null)).status, 404);
+    const legacyIdVerificationResponse = await get(`${root}/verify-legacy/${created.certificateId}`, null);
+    assert.equal(legacyIdVerificationResponse.status, 200);
+    assert.equal((await legacyIdVerificationResponse.json()).certificate.certificateId, created.certificateId);
+    const legacyIdPdfResponse = await get(`${root}/verify-legacy/${created.certificateId}/pdf`, null);
+    assert.equal(legacyIdPdfResponse.status, 200);
+    assert.equal(await scanQrInPdf(Buffer.from(await legacyIdPdfResponse.arrayBuffer())), created.verificationUrl);
     const publicPdf = await get(`${root}/verify/${token}/pdf?download=1`, null);
     assert.equal(publicPdf.status, 200);
     assert.equal(publicPdf.headers.get('cache-control'), 'no-store');

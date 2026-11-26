@@ -5,20 +5,21 @@ import letterhead from '../../assets/LETTER HEAD.png';
 import letterheadFooter from '../../assets/LETTER HEAD d.png';
 import './Certverify.css';
 
-export default function VerifyCertificate() {
+export default function VerifyCertificate({ legacy = false } = {}) {
   const { id } = useParams();
   const [state, setState] = useState({ loading: true, certificate: null, error: '' });
+  const verifyPath = legacy ? 'verify-legacy' : 'verify';
 
   useEffect(() => {
     let live = true;
-    api.get(`/certificates/verify/${encodeURIComponent(id)}`)
+    api.get(`/certificates/${verifyPath}/${encodeURIComponent(id)}`)
       .then(({ data }) => { if (live) setState({ loading: false, certificate: data.certificate, error: '' }); })
       .catch((error) => { if (live) setState({ loading: false, certificate: null, error: error.status === 404 ? 'Certificate not found.' : error.message }); });
     return () => { live = false; };
-  }, [id]);
+  }, [id, verifyPath]);
 
   const certificate = state.certificate;
-  const pdfUrl = `${api.defaults.baseURL}/certificates/verify/${encodeURIComponent(id)}/pdf?download=1`;
+  const pdfUrl = `${api.defaults.baseURL}/certificates/${verifyPath}/${encodeURIComponent(id)}/pdf?download=1`;
   const issueDate = certificate?.issueDate ? new Date(certificate.issueDate).toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' }) : '';
 
   return (

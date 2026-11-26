@@ -55,11 +55,15 @@ async function audit(req, action, certificate, details = {}) {
   try { await AuditLog.create({ user: req.user?._id, action, entity: 'certificate', recordId: certificate.certificateId, details }); } catch (error) { console.error('Certificate audit log failed:', error.message); }
 }
 
-router.get('/verify/:id', publicVerificationLimit, async (req, res, next) => {
+function findVerificationCertificate(supplied, allowCertificateId) {
+  const byId = { certificateId: supplied.toUpperCase() };
+  if (!allowCertificateId) byId.verificationToken = { $exists: false };
+  return Certificate.findOne({ archivedAt: null, $or: [{ verificationToken: supplied }, byId] });
+}
+const verificationHandler = (allowCertificateId) => async (req, res, next) => {
   try {
     res.set('Cache-Control', 'no-store');
-    const supplied = clean(req.params.id);
-    const certificate = await Certificate.findOne({ archivedAt: null, $or: [{ verificationToken: supplied }, { certificateId: supplied.toUpperCase(), verificationToken: { $exists: false } }] });
+    const certificate = await findVerificationCertificate(clean(req.params.id), allowCertificateId);
     if (!certificate) return res.status(404).json({ success: false, code: 'CERTIFICATE_NOT_FOUND', message: 'Certificate not found.' });
     const pdfAllowed = Boolean(certificate.printableStorageKey) && (certificate.status !== 'revoked' || process.env.ALLOW_PUBLIC_PDF_WHEN_REVOKED === 'true');
     res.json({ success: true, certificate: { certificateId: certificate.certificateId, studentName: certificate.studentName,
@@ -67,12 +71,11 @@ router.get('/verify/:id', publicVerificationLimit, async (req, res, next) => {
       graduationDate: certificate.graduationDate, academicYear: certificate.academicYear,
       status: certificate.status, revokedAt: certificate.revokedAt, pdfAvailable: pdfAllowed } });
   } catch (error) { next(error); }
-});
-router.get('/verify/:id/pdf', publicVerificationLimit, async (req, res, next) => {
+};
+const verificationPdfHandler = (allowCertificateId) => async (req, res, next) => {
   try {
     res.set({ 'Cache-Control': 'no-store', 'X-Content-Type-Options': 'nosniff' });
-    const supplied = clean(req.params.id);
-    const certificate = await Certificate.findOne({ archivedAt: null, $or: [{ verificationToken: supplied }, { certificateId: supplied.toUpperCase(), verificationToken: { $exists: false } }] });
+    const certificate = await findVerificationCertificate(clean(req.params.id), allowCertificateId);
     if (!certificate || !certificate.printableStorageKey) return res.status(404).json({ success: false, code: 'CERTIFICATE_PDF_UNAVAILABLE', message: 'Printable certificate PDF is unavailable.' });
     if (certificate.status === 'revoked' && process.env.ALLOW_PUBLIC_PDF_WHEN_REVOKED !== 'true') return res.status(404).json({ success: false, code: 'CERTIFICATE_PDF_UNAVAILABLE', message: 'Printable certificate PDF is unavailable.' });
     const download = req.query.download === '1';
@@ -80,7 +83,11 @@ router.get('/verify/:id/pdf', publicVerificationLimit, async (req, res, next) =>
     const bytes = await storage.get(certificate.printableStorageKey);
     res.type('application/pdf').set('Content-Disposition', `${download ? 'attachment' : 'inline'}; filename="certificate-${certificate.certificateId}-verified.pdf"`).send(bytes);
   } catch (error) { next(error); }
-});
+};
+router.get('/verify/:id', publicVerificationLimit, verificationHandler(false));
+router.get('/verify/:id/pdf', publicVerificationLimit, verificationPdfHandler(false));
+router.get('/verify-legacy/:id', publicVerificationLimit, verificationHandler(true));
+router.get('/verify-legacy/:id/pdf', publicVerificationLimit, verificationPdfHandler(true));
 
 router.use(protect, authorize('super_admin', 'admin'));
 router.get('/stats', async (req, res, next) => {
