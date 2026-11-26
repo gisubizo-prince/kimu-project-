@@ -8,7 +8,7 @@ import confidentDriverPhoto from '../../assets/hero-photos/smiling-driver-ethiop
 import practicePhoto from '../../assets/hero-photos/black-woman-practice.jpg';
 import blackMaleDriverPhoto from '../../assets/hero-photos/black-man-driver.jpg';
 import gpsPhoto from '../../assets/hero-photos/gps-navigation.jpg';
-import kimuTrainingHero from '../../assets/kimu-training-hero.png';
+import kimuMaitriseTransformation from '../../assets/hero-photos/kimu-maitrise-transformation.jpg';
 import './Home.css';
 
 
@@ -18,7 +18,9 @@ const slides = [
     label: 'KIMU TRANSPORT PRESENTS MAITRISE',
     title: ['FROM LEARNING TO DRIVE', 'TO BECOMING A', 'PROFESSIONAL DRIVER.'],
     text: "Your journey to professional driving starts here. Gain practical driving skills, master navigation and prepare for opportunities in Rwanda\'s transport industry.",
-    image: kimuTrainingHero,
+    image: kimuMaitriseTransformation,
+    width: 1203,
+    height: 802,
     credit: 'KIMU Transport',
     source: '',
   },
@@ -27,6 +29,8 @@ const slides = [
     title: ['LEARN WITH GUIDANCE.', 'DRIVE WITH CONFIDENCE.'],
     text: 'Build practical driving skills with clear instruction, focused practice and professional guidance.',
     image: blackMaleDriverPhoto,
+    width: 1600,
+    height: 1067,
     credit: 'KIMU Transport',
     source: '',
   },
@@ -320,6 +324,11 @@ export default function Home() {
               key={item.label}
               src={item.image}
               alt=""
+              width={item.width}
+              height={item.height}
+              loading={index === 0 ? 'eager' : 'lazy'}
+              fetchpriority={index === 0 ? 'high' : 'auto'}
+              decoding="async"
               className={index === slide ? 'is-active' : ''}
               aria-hidden={index !== slide}
             />
