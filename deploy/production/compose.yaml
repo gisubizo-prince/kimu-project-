@@ -13,7 +13,7 @@ services:
       JWT_SECRET: ${JWT_SECRET:?Set a unique secret of at least 32 characters}
       JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-15m}
       CLIENT_URL: https://${PUBLIC_DOMAIN:?Set PUBLIC_DOMAIN}
-      PUBLIC_APP_URL: https://${PUBLIC_DOMAIN:?Set PUBLIC_DOMAIN}
+      PUBLIC_APP_URL: https://www.kimudigital.com
       TRUST_PROXY_HOPS: "1"
       CERTIFICATE_STORAGE_DIR: /data/certificates
     volumes:

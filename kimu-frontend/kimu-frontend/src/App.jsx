@@ -52,6 +52,7 @@ export default function App() {
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/verify-certificate/:id" element={<VerifyCertificate />} />
+          <Route path="/cerificate/:id" element={<VerifyCertificate />} />
 
           <Route
             element={

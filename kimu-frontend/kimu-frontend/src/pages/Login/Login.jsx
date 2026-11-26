@@ -18,13 +18,22 @@ export default function Login() {
 
   useEffect(() => {
     const previousTitle = document.title;
-    const robots = document.createElement('meta');
-    robots.name = 'robots';
-    robots.content = 'noindex,follow';
-    document.head.appendChild(robots);
+    let robots = document.querySelector('meta[name="robots"]');
+    const previousRobots = robots?.content;
+    const createdRobots = !robots;
+    if (!robots) {
+      robots = document.createElement('meta');
+      robots.name = 'robots';
+      document.head.appendChild(robots);
+    }
+    robots.content = 'noindex, follow';
     document.title = 'Staff Login | KIMU Digital';
     return () => {
-      robots.remove();
+      if (createdRobots) {
+        robots.remove();
+      } else {
+        robots.content = previousRobots;
+      }
       document.title = previousTitle;
     };
   }, []);

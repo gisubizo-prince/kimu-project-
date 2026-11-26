@@ -6,18 +6,12 @@ const { protect, authorize } = require('../middleware/auth');
 const storage = require('../services/certificateStorage');
 const { createQrPng, createQrSvg, createPrintablePdf } = require('../services/certificatePdf');
 const { publicVerificationLimit } = require('../middleware/rateLimit');
+const publicAppOrigin = require('../config/publicAppOrigin');
 
 const router = express.Router();
 const clean = (v) => String(v || '').trim().replace(/[\x00-\x1f\x7f]/g, '');
 const isDateOnly = (value) => /^\d{4}-\d{2}-\d{2}$/.test(value || '') && !Number.isNaN(new Date(`${value}T00:00:00.000Z`).getTime()) && new Date(`${value}T00:00:00.000Z`).toISOString().slice(0, 10) === value;
-const publicOrigin = () => {
-  const configured = process.env.NODE_ENV === 'production'
-    ? process.env.PUBLIC_APP_URL
-    : process.env.PUBLIC_APP_URL || process.env.CLIENT_URL || 'http://localhost:5173';
-  if (!configured) throw pdfError('PUBLIC_APP_URL must be configured in production.', 500);
-  try { return new URL(configured).origin; } catch { throw pdfError('PUBLIC_APP_URL must be a valid public application URL.', 500); }
-};
-const publicVerificationUrl = (identifier) => `${publicOrigin()}/verify-certificate/${encodeURIComponent(identifier)}`;
+const publicVerificationUrl = (identifier) => `${publicAppOrigin()}/verify-certificate/${encodeURIComponent(identifier)}`;
 const verificationUrl = (certificate) => publicVerificationUrl(certificate.verificationToken || certificate.certificateId);
 const view = (doc) => ({
   certificateId: doc.certificateId, studentName: doc.studentName, course: doc.course,

@@ -24,7 +24,7 @@ Set through the host’s secret/configuration facility, never by committing `.en
 | `JWT_EXPIRES_IN` | Explicit duration from 1 minute through 24 hours; current recommended starting value is `15m` |
 | `JWT_ISSUER`, `JWT_AUDIENCE` | Match the intended API/client values; current defaults are `kimu-api` and `kimu-client` |
 | `CLIENT_URL` | Exact public HTTPS SPA origin (origin only, no path) |
-| `PUBLIC_APP_URL` | Exact public HTTPS SPA origin used in certificate QR links |
+| `PUBLIC_APP_URL` | `https://www.kimudigital.com`; production QR links are pinned to this official origin |
 | `TRUST_PROXY_HOPS` | Exact number of trusted reverse-proxy hops; use `0` only when clients connect directly |
 | `CERTIFICATE_STORAGE_DIR` | Absolute path on private persistent storage |
 | `PDF_QR_PAGE`, `PDF_QR_SIZE_MM`, `PDF_QR_MARGIN_MM`, `PDF_QR_CORNER` | Reviewed per certificate template |
@@ -33,6 +33,8 @@ Set through the host’s secret/configuration facility, never by committing `.en
 Email report delivery additionally requires `MAIL_HOST`, `MAIL_PORT`, `MAIL_SECURE`, `MAIL_USER`, `MAIL_PASSWORD`, and `REPORT_RECIPIENT_EMAIL`; `MAIL_FROM` is optional. If email delivery is not configured, the endpoint returns a controlled unavailable response.
 
 Frontend builds require `VITE_API_URL=https://<api-host>/api`. It is public client configuration, not a secret. The production build deliberately fails when this value is missing, HTTP, localhost, or missing `/api`.
+
+Deploy the frontend from `kimu-frontend/kimu-frontend` with its `vercel.json`. Keep `kimutransport.vercel.app` assigned as an alias to that Vercel project so the host-based redirect can forward legacy links to `https://www.kimudigital.com` with their paths intact. After deployment, verify an old-host certificate URL redirects to the official host and that `/cerificate/<id>` opens the public verifier. A 404 from the old hostname means the alias or redirect deployment is not active.
 
 For the one-time admin bootstrap, configure `SEED_ADMIN_EMAIL`, a unique `SEED_ADMIN_PASSWORD` of at least 12 characters, and `SEED_ADMIN_NAME`; set `SEED_ADMIN_ALLOW=true` for only the approved one-time production run, then unset it and rotate/remove the bootstrap credential. Do not leave the seed flag enabled.
 

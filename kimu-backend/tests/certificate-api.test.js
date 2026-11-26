@@ -30,6 +30,7 @@ const Certificate = require('../models/Certificate');
 const AuditLog = require('../models/AuditLog');
 const storage = require('../services/certificateStorage');
 const app = require('../app');
+const publicAppOrigin = require('../config/publicAppOrigin');
 
 async function createPdf(label) {
   const doc = await PDFDocument.create();
@@ -125,6 +126,10 @@ test('certificate API persistence, authorization, validation, lifecycle and audi
   const patch = (body) => ({ method: 'PATCH', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${adminToken}` }, body: JSON.stringify(body) });
   const get = (url, token = adminToken) => fetch(url, { headers: token ? { Authorization: `Bearer ${token}` } : {} });
   const encode = (buffer) => buffer.toString('base64');
+
+  await t.test('production QR origin ignores a stale configured URL', () => {
+    assert.equal(publicAppOrigin({ NODE_ENV: 'production', PUBLIC_APP_URL: 'https://kimutransport.vercel.app' }), 'https://www.kimudigital.com');
+  });
 
   t.after(async () => {
     await new Promise((resolve) => server.close(resolve));

@@ -51,6 +51,8 @@ test('SPA deep links load and refresh on desktop, tablet, and mobile widths', as
     assert.ok(widthCheck.document <= widthCheck.viewport, `verification page overflows at ${width}px (${widthCheck.document}px)`);
     assert.equal((await page.reload({ waitUntil: 'networkidle' })).status(), 200, 'direct route refresh returns the SPA');
   }
+  await page.goto(`${SPA_URL}/cerificate/BROWSER-SMOKE-MISSING`, { waitUntil: 'networkidle' });
+  await page.getByText('Certificate not found.').waitFor();
 });
 
 test('staff can sign in and load the protected dashboard without browser console errors', async () => {
