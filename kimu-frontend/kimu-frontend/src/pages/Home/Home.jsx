@@ -9,7 +9,8 @@ import practicePhoto from '../../assets/hero-photos/black-woman-practice.jpg';
 import blackMaleDriverPhoto from '../../assets/hero-photos/black-man-driver.jpg';
 import gpsPhoto from '../../assets/hero-photos/gps-navigation.jpg';
 import kimuMaitriseTransformation from '../../assets/hero-photos/kimu-maitrise-transformation.jpg';
-import './Home.css';
+import './Home.css?hero-premium';
+import './HomeHeroPremium.css';
 
 
 
