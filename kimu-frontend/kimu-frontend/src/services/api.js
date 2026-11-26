@@ -56,11 +56,7 @@ api.interceptors.response.use(
     }
 
     if (error.response.status === 401) {
-      localStorage.removeItem(TOKEN_KEY);
-      localStorage.removeItem('kimu_user');
-      if (error.config?.url !== '/auth/logout' && window.location.pathname !== '/login') {
-        window.location.href = '/login';
-      }
+      window.dispatchEvent(new Event('kimu:unauthorized'));
     }
 
     const message = error.response.data?.message || 'Something went wrong. Please try again.';

@@ -1,5 +1,5 @@
-import { lazy, Suspense } from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { lazy, Suspense, useEffect } from 'react';
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import ProtectedRoute from './routes/ProtectedRoute';
 import AppLayout from './components/layout/AppLayout';
@@ -26,9 +26,26 @@ const TrainedDrivers = lazy(() => import('./pages/TrainedDrivers/TrainedDrivers'
 const Certverify = lazy(() => import('./pages/Certverify/Certverify'));
 const VerifyCertificate = lazy(() => import('./pages/Certverify/VerifyCertificate'));
 
+function RouteCanonical() {
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    let canonical = document.querySelector('link[rel="canonical"]');
+    if (!canonical) {
+      canonical = document.createElement('link');
+      canonical.rel = 'canonical';
+      document.head.appendChild(canonical);
+    }
+    canonical.href = new URL(pathname || '/', 'https://www.kimudigital.com').href;
+  }, [pathname]);
+
+  return null;
+}
+
 export default function App() {
   return (
     <BrowserRouter>
+      <RouteCanonical />
       <AuthProvider>
         <NetworkLoader />
         <Suspense fallback={<LoadingIndicator />}>

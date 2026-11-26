@@ -20,7 +20,7 @@ export default function Login() {
     const previousTitle = document.title;
     const robots = document.createElement('meta');
     robots.name = 'robots';
-    robots.content = 'noindex,nofollow';
+    robots.content = 'noindex,follow';
     document.head.appendChild(robots);
     document.title = 'Staff Login | KIMU Digital';
     return () => {

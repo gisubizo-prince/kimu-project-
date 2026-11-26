@@ -36,6 +36,17 @@ export function AuthProvider({ children }) {
       .finally(() => setIsLoading(false));
   }, []);
 
+  useEffect(() => {
+    function handleUnauthorized() {
+      localStorage.removeItem(TOKEN_KEY);
+      localStorage.removeItem(USER_KEY);
+      setUser(null);
+    }
+
+    window.addEventListener('kimu:unauthorized', handleUnauthorized);
+    return () => window.removeEventListener('kimu:unauthorized', handleUnauthorized);
+  }, []);
+
   const login = useCallback(async (email, password) => {
     const res = await authApi.login(email, password);
     const { token, user: loggedInUser } = res.data.data;
