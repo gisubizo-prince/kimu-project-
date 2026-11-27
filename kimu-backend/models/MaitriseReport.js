@@ -5,7 +5,7 @@ const CAR_PLATES = ['RAI631P', 'RAK165B', 'RAJ016W'];
 const CONDITIONS = ['Good', 'Fair', 'Problem'];
 
 const carSchema = new mongoose.Schema({
-  car: { type: String, enum: CAR_NAMES, required: true },
+  car: { type: String, required: true, trim: true },
   plate: { type: String, required: true, trim: true },
   status: { type: String, enum: ['Used', 'Not used'], required: true },
   teacher: { type: String, trim: true, default: null },
@@ -33,8 +33,8 @@ const reportSchema = new mongoose.Schema({
     type: [carSchema],
     required: true,
     validate: {
-      validator: (cars) => cars.length === CAR_NAMES.length && cars.every((car, index) => car.car === CAR_NAMES[index]),
-      message: 'A report must include Levin 1, Levin 2, and Dongfeng in order.',
+      validator: (cars) => Array.isArray(cars) && cars.length > 0 && cars.every((car) => car && car.car && car.plate),
+      message: 'At least one vehicle with a name and plate is required.',
     },
   },
   totals: {

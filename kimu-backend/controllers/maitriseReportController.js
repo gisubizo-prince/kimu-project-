@@ -12,30 +12,31 @@ async function create(req, res, next) {
     const newStudentsAttended = wholeNumber(newStudentsAttendedValue);
     if (newStudentsAttended === null) return res.status(400).json({ success: false, message: 'New students attended must be a whole number greater than or equal to zero.' });
     if (!String(reportedBy || '').trim()) return res.status(400).json({ success: false, message: 'Reporter name is required.' });
-    if (!Array.isArray(cars) || cars.length !== CAR_NAMES.length) return res.status(400).json({ success: false, message: 'Include all three vehicles in the report.' });
+    if (!Array.isArray(cars) || cars.length === 0) return res.status(400).json({ success: false, message: 'At least one vehicle is required.' });
 
     const normalizedCars = [];
-    for (let index = 0; index < CAR_NAMES.length; index += 1) {
+    for (let index = 0; index < cars.length; index += 1) {
       const car = cars[index];
       if (!car || typeof car !== 'object') return res.status(400).json({ success: false, message: 'Each vehicle entry must be an object.' });
-      if (car.car !== CAR_NAMES[index]) return res.status(400).json({ success: false, message: 'Vehicles must be Levin 1, Levin 2, and Dongfeng in order.' });
+      if (!String(car.car || '').trim()) return res.status(400).json({ success: false, message: `Vehicle ${index + 1} name is required.` });
+      if (!String(car.plate || '').trim()) return res.status(400).json({ success: false, message: `Vehicle ${index + 1} plate is required.` });
       if (car.status === 'Not used') {
-        normalizedCars.push({ car: CAR_NAMES[index], plate: CAR_PLATES[index], status: 'Not used', teacher: null, km_start: null, km_end: null, km_used: 0, condition_start: null, condition_end: null, start_time: null, end_time: null, hours_worked: 0, problem_details: '' });
+        normalizedCars.push({ car: String(car.car).trim(), plate: String(car.plate).trim(), status: 'Not used', teacher: null, km_start: null, km_end: null, km_used: 0, condition_start: null, condition_end: null, start_time: null, end_time: null, hours_worked: 0, problem_details: '' });
         continue;
       }
-      if (car.status !== 'Used') return res.status(400).json({ success: false, message: `Choose whether ${CAR_NAMES[index]} was used.` });
+      if (car.status !== 'Used') return res.status(400).json({ success: false, message: `Choose whether ${String(car.car).trim()} was used.` });
       const kmStart = finiteNumber(car.km_start);
       const kmEnd = finiteNumber(car.km_end);
       const start = parseTime(car.start_time);
       const end = parseTime(car.end_time);
-      if (!String(car.teacher || '').trim()) return res.status(400).json({ success: false, message: `Enter the teacher for ${CAR_NAMES[index]}.` });
-      if (kmStart === null || kmEnd === null || (CAR_NAMES[index] !== 'Dongfeng' && kmEnd < kmStart)) return res.status(400).json({ success: false, message: `Check the kilometre readings for ${CAR_NAMES[index]}. The ending reading must be at least the starting reading.` });
-      if (!CONDITIONS.includes(car.condition_start) || !CONDITIONS.includes(car.condition_end)) return res.status(400).json({ success: false, message: `Choose valid start and end conditions for ${CAR_NAMES[index]}.` });
-      if (start === null || end === null || end.minutes <= start.minutes) return res.status(400).json({ success: false, message: `End time must be later than start time for ${CAR_NAMES[index]}.` });
+      if (!String(car.teacher || '').trim()) return res.status(400).json({ success: false, message: `Enter the teacher for ${String(car.car).trim()}.` });
+      if (kmStart === null || kmEnd === null || kmEnd < kmStart) return res.status(400).json({ success: false, message: `Check the kilometre readings for ${String(car.car).trim()}. The ending reading must be at least the starting reading.` });
+      if (!CONDITIONS.includes(car.condition_start) || !CONDITIONS.includes(car.condition_end)) return res.status(400).json({ success: false, message: `Choose valid start and end conditions for ${String(car.car).trim()}.` });
+      if (start === null || end === null || end.minutes <= start.minutes) return res.status(400).json({ success: false, message: `End time must be later than start time for ${String(car.car).trim()}.` });
       const problemDetails = String(car.problem_details || '').trim();
-      if ((car.condition_start === 'Problem' || car.condition_end === 'Problem') && !problemDetails) return res.status(400).json({ success: false, message: `Describe the condition problem for ${CAR_NAMES[index]}.` });
+      if ((car.condition_start === 'Problem' || car.condition_end === 'Problem') && !problemDetails) return res.status(400).json({ success: false, message: `Describe the condition problem for ${String(car.car).trim()}.` });
       normalizedCars.push({
-        car: CAR_NAMES[index], plate: CAR_PLATES[index], status: 'Used', teacher: String(car.teacher).trim(), km_start: kmStart, km_end: kmEnd,
+        car: String(car.car).trim(), plate: String(car.plate).trim(), status: 'Used', teacher: String(car.teacher).trim(), km_start: kmStart, km_end: kmEnd,
         km_used: Math.max(kmEnd - kmStart, 0), condition_start: car.condition_start, condition_end: car.condition_end,
         start_time: start.value, end_time: end.value, hours_worked: Number(((end.minutes - start.minutes) / 60).toFixed(2)), problem_details: problemDetails,
       });

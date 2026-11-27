@@ -79,24 +79,44 @@ export default function MaitriseReport() {
     }));
   }
 
+  function addCar() {
+    setForm((current) => ({
+      ...current,
+      cars: [...current.cars, { car: '', plate: '', status: '', teacher: '', km_start: '', km_end: '', condition_start: '', condition_end: '', start_time: '', end_time: '', problem_details: '', confirm_unusual: false }],
+    }));
+  }
+
+  function removeCar() {
+    setForm((current) => {
+      const updated = current.cars.filter((_, index) => index !== carIndex);
+      return {
+        ...current,
+        cars: updated.length > 0 ? updated : [{ car: '', plate: '', status: '', teacher: '', km_start: '', km_end: '', condition_start: '', condition_end: '', start_time: '', end_time: '', problem_details: '', confirm_unusual: false }],
+      };
+    });
+    setCarIndex((index) => Math.max(index - 1, 0));
+  }
+
   function advanceCar() {
     setError('');
-    if (!currentCar.status) return setError('Choose whether this car was used today.');
+    if (!currentCar.car.trim()) return setError('Enter the vehicle name.');
+    if (!currentCar.plate.trim()) return setError('Enter the plate number.');
+    if (!currentCar.status) return setError('Choose whether this vehicle was used today.');
     if (currentCar.status === 'Used') {
       const startKm = numeric(currentCar.km_start);
       const endKm = numeric(currentCar.km_end);
       const startTime = parseTrainingTime(currentCar.start_time);
       const endTime = parseTrainingTime(currentCar.end_time);
-      if (!currentCar.teacher.trim()) return setError('Enter the teacher who used this car.');
-      if (startKm === null || endKm === null || (currentCar.car !== 'Dongfeng' && endKm < startKm)) return setError('The ending KM must be greater than or equal to the starting KM.');
+      if (!currentCar.teacher.trim()) return setError('Enter the teacher who used this vehicle.');
+      if (startKm === null || endKm === null || endKm < startKm) return setError('The ending KM must be greater than or equal to the starting KM.');
       if (!CONDITIONS.includes(currentCar.condition_start) || !CONDITIONS.includes(currentCar.condition_end)) return setError('Choose Good, Fair, or Problem for both vehicle conditions.');
       if (!startTime || !endTime || endTime.minutes <= startTime.minutes) return setError('Enter valid times and make sure the end time is later than the start time.');
       if ((currentCar.condition_start === 'Problem' || currentCar.condition_end === 'Problem') && !currentCar.problem_details.trim()) return setError('Describe the vehicle condition problem.');
       const hours = (endTime.minutes - startTime.minutes) / 60;
-      const unusual = (currentCar.car !== 'Dongfeng' && endKm - startKm > 300) || hours > 12;
+      const unusual = endKm - startKm > 300 || hours > 12;
       if (unusual && !currentCar.confirm_unusual) return setError('Is this correct? Confirm the unusual KM or class duration before continuing.');
     }
-    if (carIndex < CAR_NAMES.length - 1) setCarIndex((index) => index + 1);
+    if (carIndex < form.cars.length - 1) setCarIndex((index) => index + 1);
     else setStep(3);
   }
 
@@ -122,7 +142,7 @@ export default function MaitriseReport() {
   function previousStep() {
     setError('');
     if (step === 2 && carIndex > 0) setCarIndex((index) => index - 1);
-    else if (step === 3) { setStep(2); setCarIndex(CAR_NAMES.length - 1); }
+    else if (step === 3) { setStep(2); setCarIndex(form.cars.length - 1); }
     else setStep((current) => Math.max(current - 1, 0));
   }
 
@@ -228,7 +248,7 @@ export default function MaitriseReport() {
     </section> : step === 6 && savedReport ? <GeneratedReport report={savedReport} onNew={startNewReport} onPdf={() => downloadPdf(savedReport)} onJson={() => downloadJson(savedReport)} onExcel={() => downloadExcel(savedReport)} /> : <>
       <nav className="maitrise-report__progress" aria-label="Report steps">{stepNames.map((name, index) => <div key={name} className={index === step ? 'is-current' : index < step ? 'is-complete' : ''}><span>{index + 1}</span>{name}</div>)}</nav>
       <section className="maitrise-report__panel">
-        <div className="maitrise-report__section-heading"><div><p className="kimu-eyebrow">STEP {step + 1} OF 6</p><h2>{step === 2 ? `Vehicle ${carIndex + 1} of ${CAR_NAMES.length}: ${currentCar.car} (${currentCar.plate})` : title}</h2></div></div>
+        <div className="maitrise-report__section-heading"><div><p className="kimu-eyebrow">STEP {step + 1} OF 6</p><h2>{step === 2 ? `Vehicle ${carIndex + 1} of ${form.cars.length}: ${currentCar.car} (${currentCar.plate})` : title}</h2></div></div>
         {step === 0 && <div className="maitrise-report__form-grid">
           <label>Training date<input type="date" lang="en-GB" value={form.date} onChange={(event) => updateForm('date', event.target.value)} /></label>
           <label>Class or group<input value={form.class_group} onChange={(event) => updateForm('class_group', event.target.value)} placeholder="e.g. MAITRISE GROUP A" /></label>
@@ -241,7 +261,7 @@ export default function MaitriseReport() {
           <div className="maitrise-report__computed"><span>Total registered</span><strong>{(wholeNumber(form.students.attended) || 0) + (wholeNumber(form.students.missed) || 0)}</strong></div>
         </div>}
 
-        {step === 2 && <VehicleStep car={currentCar} updateCar={updateCar} />}
+        {step === 2 && <VehicleStep car={currentCar} updateCar={updateCar} carIndex={carIndex} totalCars={form.cars.length} addCar={addCar} removeCar={removeCar} />}
 
         {step === 3 && <div className="maitrise-report__incident">
           <p>Did anything serious or unusual happen during today&apos;s training? For example, an accident, vehicle breakdown, student injury, teacher issue, or delay.</p>
@@ -268,13 +288,17 @@ export default function MaitriseReport() {
   </main>;
 }
 
-function VehicleStep({ car, updateCar }) {
+function VehicleStep({ car, updateCar, carIndex, totalCars, addCar, removeCar }) {
   const start = parseTrainingTime(car.start_time);
   const end = parseTrainingTime(car.end_time);
   const kmUsed = numeric(car.km_end) !== null && numeric(car.km_start) !== null ? numeric(car.km_end) - numeric(car.km_start) : 0;
   const hours = start && end && end.minutes > start.minutes ? (end.minutes - start.minutes) / 60 : 0;
   const unusual = kmUsed > 300 || hours > 12;
   return <div className="maitrise-report__vehicle-step">
+    <div className="maitrise-report__form-grid">
+      <label>Vehicle name<input value={car.car} onChange={(event) => updateCar('car', event.target.value)} placeholder="e.g. Levin 1" /></label>
+      <label>Plate number<input value={car.plate} onChange={(event) => updateCar('plate', event.target.value)} placeholder="e.g. RAI631P" /></label>
+    </div>
     <div className="maitrise-report__choice-row">
       <button type="button" className={`maitrise-report__choice ${car.status === 'Used' ? 'is-selected' : ''}`} onClick={() => updateCar('status', 'Used')}>Used today</button>
       <button type="button" className={`maitrise-report__choice ${car.status === 'Not used' ? 'is-selected' : ''}`} onClick={() => updateCar('status', 'Not used')}>Not used</button>
@@ -294,6 +318,10 @@ function VehicleStep({ car, updateCar }) {
       {unusual && <label className="maitrise-report__unusual"><input type="checkbox" checked={car.confirm_unusual} onChange={(event) => updateCar('confirm_unusual', event.target.checked)} /><span>Is this correct? I verified the mileage or class duration.</span></label>}
     </>}
     {car.status === 'Not used' && <p className="maitrise-report__note-preview">This vehicle will appear as NOT USED and will not be included in totals.</p>}
+    <div className="maitrise-report__vehicle-actions" style={{ marginTop: 20, display: 'flex', gap: 10, justifyContent: 'flex-end' }}>
+      {totalCars > 1 && <button type="button" className="kimu-btn kimu-btn--secondary" onClick={removeCar} disabled={carIndex === 0 && totalCars === 1}>Remove this vehicle</button>}
+      <button type="button" className="kimu-btn kimu-btn--primary" onClick={addCar}>Add another vehicle</button>
+    </div>
   </div>;
 }
 
